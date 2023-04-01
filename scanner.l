@@ -48,16 +48,18 @@ write                { reservedToken(); }
 [+]                  { printValue(yytext, "PLUS") ;}
 [-]                  { printValue(yytext, "MINUS") ;}
 [*]                  { printValue(yytext, "TIMES") ;}
-[/]                  { printValue(yytext, "SLASH") ;}
+[/]                  { printValue(yytext, "OVER") ;}
 [(]                  { printValue(yytext, "LPAR") ;}
 [)]                  { printValue(yytext, "RPAR") ;}
 [;]                  { printValue(yytext, "SEMI") ;}
 [A-Za-z][A-Za-z0-9]* { printValue(yytext, "ID") ;}
+[0-9]*[.][0-9]*      { printValue(yytext, "REAL_VAL") ;}
 [0-9]*               { printValue(yytext, "INT_VAL") ;}
 ["][^"]*["]          { printValue(yytext, "STR_VAL"); }
 \n                   {}
 [{][^\{\}]*[}]       {}
-.                    { /* ignore white space */ }
+[ ]                  {}
+.                    { printf("LEXICAL ERROR (%d): Unknown symbol %s\n", yylineno, yytext); yyterminate();} 
 
 %%
 
