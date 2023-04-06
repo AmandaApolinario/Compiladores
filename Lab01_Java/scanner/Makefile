@@ -4,7 +4,7 @@ JAVAC=javac
 JAVA=java
 # ROOT é a raiz dos diretórios com todos os roteiros de laboratórios
 YEAR=$(shell pwd | grep -o '20..-.')
-ROOT=/home/pupabremenkamp/labs/tools
+ROOT=/home/lmscaramussa/Documents/Compiladores/Lab01_Java/scanner
 # Caminho para o JAR do ANTLR em labs/tools
 ANTLR_PATH=$(ROOT)/antlr-4.11.1-complete.jar
 # Opção de configuração do CLASSPATH para o ambiente Java

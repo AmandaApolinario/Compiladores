@@ -31,6 +31,7 @@ INT_VAL=30
 STR_VAL=31
 WHITESPACE=32
 COMMENT=33
+UNKNOWN=34
 'begin'=1
 'bool'=2
 'else'=3
@@ -48,6 +49,7 @@ COMMENT=33
 'until'=15
 'var'=16
 'write'=17
+':='=18
 '='=19
 '<'=20
 '+'=21
