@@ -1,18 +1,14 @@
-{ Sample program in EZ language -
-computes factorial
+for {
+	var msg Message
+	// Read in a new message as JSON and map it to a Message object
+	err := ws.ReadJSON(&msg)
+	if err != nil {
+		log.Printf("error: %v", err)
+		delete(clients, ws)
+		break
+	}
+	//convert msg to byte
+	// Send the newly received message to the broadcast channel
+	fmt.Println("msg: ", msg)
+	room.updateBroadcast(&msg)
 }
-program fact;
-var
-int x;
-int fact;
-begin
-read x; { input an integer }
-if 0 < x then { don’t compute if x <= 0 }
-fact := 1;
-repeat
-fact := fact * x;
-x := x - 1;
-until x = 0
-write fact; { output factorial of x }
-end
-end

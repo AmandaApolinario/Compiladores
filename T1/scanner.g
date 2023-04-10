@@ -60,9 +60,13 @@ DOT              : '.'                  ;
 SEMI             : ';'                  ;
 COLON            : ':'                  ;
 
+ID               : [a-zA-Z][a-zA-Z0-9]* ;
+ID_CHAMADA_FUNCAO: [a-zA-Z][a-zA-Z0-9]*'.' ;
+FUNCTION         : [a-zA-Z][a-zA-Z0-9]*'(' ;
 REAL_VAL         : [0-9]*[.][0-9]*      ;
 INT_VAL          : [0-9]+               ;
 STR_VAL          : '"' ~["]* '"'        ;
+COMMENT          : '//' ~[\r\n]* -> skip; 
+BLOCK_COMMENT    : '/*' .*? '*/' -> skip; 
 WHITESPACE       : [ \t\r\n]+           -> skip;
-COMMENT          : '//' ~[{}]* '\n'     -> skip;
 UNKNOWN          : .                    ;
