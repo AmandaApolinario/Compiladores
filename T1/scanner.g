@@ -14,10 +14,10 @@ FUNC             : 'func'               ;
 GO               : 'go'                 ;
 GOTO             : 'goto'               ;
 IF               : 'if'                 ;
-IMPORT           : 'import'             ;
+IMPORT           : 'import' ~[\r\n]* -> skip; 
 INTERFACE        : 'interface'          ;
 MAP              : 'map'                ;
-PACKAGE          : 'package'            ;
+PACKAGE          : 'package' ~[\r\n]* -> skip; 
 RANGE            : 'range'              ;
 RETURN           : 'return'             ;
 SELECT           : 'select'             ;
@@ -25,6 +25,13 @@ STRUCT           : 'struct'             ;
 SWITCH           : 'switch'             ;
 TYPE             : 'type'               ;
 VAR              : 'var'                ;
+FLOAT32          : 'float32'            ; 
+FLOAT64          : 'float64'            ; 
+STRING           : 'string'             ; 
+TRUE             : 'true'               ; 
+FALSE            : 'false'              ;
+
+
 
 PLUS             : '+'                  ;
 MINUS            : '-'                  ;
@@ -61,8 +68,6 @@ SEMI             : ';'                  ;
 COLON            : ':'                  ;
 
 ID               : [a-zA-Z][a-zA-Z0-9]* ;
-ID_CHAMADA_FUNCAO: [a-zA-Z][a-zA-Z0-9]*'.' ;
-FUNCTION         : [a-zA-Z][a-zA-Z0-9]*'(' ;
 REAL_VAL         : [0-9]*[.][0-9]*      ;
 INT_VAL          : [0-9]+               ;
 STR_VAL          : '"' ~["]* '"'        ;
