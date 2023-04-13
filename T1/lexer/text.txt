@@ -3,73 +3,76 @@ package main
 import "fmt"
 
 func main() {
-// Operações aritméticas básicas
-a_ := 10
-b := 5
-soma := a + b
-subtracao := a - b
-multiplicacao := a * b
-divisao := a / b
+    // Operações aritméticas básicas
+    a_ := 10
+    b := 5
+    soma := a + b
+    subtracao := a - b
+    multiplicacao := a * b
+    divisao := a / b
 
-fmt.Println("Soma:", soma)
-fmt.Println("Subtração:", subtracao)
-fmt.Println("Multiplicação:", multiplicacao)
-fmt.Println("Divisão:", divisao)
+    fmt.Println("Soma:", soma)
+    fmt.Println("Subtração:", subtracao)
+    fmt.Println("Multiplicação:", multiplicacao)
+    fmt.Println("Divisão:", divisao)
 
-// Comandos de atribuição
-c := 7
-d := c + 3
+    /*
+    Comentário de mais de uma linha
+    */
 
-fmt.Println("Valor de d:", d)
+    // Comandos de atribuição
+    c := 7
+    d := c + 3
 
-// Execução de blocos sequenciais de código
-if d > 10 {
-fmt.Println("d é maior que 10")
-} else {
-fmt.Println("d é menor ou igual a 10")
-}
+    fmt.Println("Valor de d:", d)
 
-// Estrutura de escolha (if-then-else)
-if a < b {
-fmt.Println("a é menor que b")
-} else if a > b {
-fmt.Println("a é maior que b")
-} else {
-fmt.Println("a é igual a b")
-}
+    // Execução de blocos sequenciais de código
+    if d > 10 {
+        fmt.Println("d é maior que 10")
+    } else {
+        fmt.Println("d é menor ou igual a 10")
+    }
 
-// Estrutura de repetição (for)
-for i := 1; i <= 5; i++ {
-fmt.Println("Número:", i)
-}
+    // Estrutura de escolha (if-then-else)
+    if a < b {
+        fmt.Println("a é menor que b")
+    } else if a > b {
+        fmt.Println("a é maior que b")
+    } else {
+        fmt.Println("a é igual a b")
+    }
 
-// Declaração e manipulação de tipos básicos
-var numInt int = 42
-var numFloat float64 = 3.14
-var texto string = "Olá, mundo!"
-var flagBool bool = true
+    // Estrutura de repetição (for)
+    for i := 1; i <= 5; i++ {
+        fmt.Println("Número:", i)
+    }
 
+    // Declaração e manipulação de tipos básicos
+    var numInt int = 42
+    var numFloat float64 = 3.14
+    var texto string = "Olá, mundo!"
+    var flagBool bool = true
 
-var new_num = -3.14
-var new_num_int = -3
+    var new_num = -3.14
+    var new_num_int = -3
 
-fmt.Println("Número inteiro:", numInt)
-fmt.Println("Número de ponto flutuante:", numFloat)
-fmt.Println("Texto:", texto)
-fmt.Println("Flag booleana:", flagBool)
+    fmt.Println("Número inteiro:", numInt)
+    fmt.Println("Número de ponto flutuante:", numFloat)
+    fmt.Println("Texto:", texto)
+    fmt.Println("Flag booleana:", flagBool)
 
-// Declaração e manipulação de tipos compostos (slices)
-var numeros []int = []int{1, 2, 3, 4, 5}
-fmt.Println("Slice de números:", numeros)
+    // Declaração e manipulação de tipos compostos (slices)
+    var numeros []int = []int{1, 2, 3, 4, 5}
+    fmt.Println("Slice de números:", numeros)
 
-// Chamada de função com parâmetros fixos
-resultado := somaDoisNumeros(8, 5)
-fmt.Println("Resultado da função:", resultado)
+    // Chamada de função com parâmetros fixos
+    resultado := somaDoisNumeros(8, 5) 
+    fmt.Println("Resultado da função:", resultado)
 }
 
 // Função que realiza a soma de dois números
 func somaDoisNumeros(a, b int) int {
-return a + b
+    return a + b
 }
 
 
