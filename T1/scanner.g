@@ -1,4 +1,6 @@
-lexer grammar scanner;
+grammar scanner;
+
+
 
 BREAK            : 'break'              ;
 CASE             : 'case'               ;

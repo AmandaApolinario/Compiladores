@@ -4,9 +4,9 @@ JAVAC=javac
 JAVA=java
 # ROOT é a raiz dos diretórios com todos os roteiros de laboratórios
 YEAR=$(shell pwd | grep -o '20..-.')
-ROOT=/home/pupabremenkamp/Compiladores/Lab02_Java/scanner
+ROOT=/home/zambon/Teaching/$(YEAR)/CC/labs
 # Caminho para o JAR do ANTLR em labs/tools
-ANTLR_PATH=$(ROOT)/antlr-4.11.1-complete.jar
+ANTLR_PATH=$(ROOT)/tools/antlr-4.11.1-complete.jar
 # Opção de configuração do CLASSPATH para o ambiente Java
 CLASS_PATH_OPTION=-cp .:$(ANTLR_PATH)
 # Configuração do comando de compilação do ANTLR
@@ -14,7 +14,7 @@ ANTLR4=$(JAVA) -jar $(ANTLR_PATH)
 # Configuração do ambiente de teste do ANTLR
 GRUN=$(JAVA) $(CLASS_PATH_OPTION) org.antlr.v4.gui.TestRig
 # Nome da gramática
-GRAMMAR_NAME=scanner
+GRAMMAR_NAME=Exemplo03
 # Diretório para aonde vão os arquivos gerados
 GEN_PATH=parser
 
@@ -33,3 +33,4 @@ run:
 # Remove os arquivos gerados pelo ANTLR
 clean:
 	@rm -rf $(GEN_PATH)
+
