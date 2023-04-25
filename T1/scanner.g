@@ -1,5 +1,9 @@
 grammar scanner;
 
+declaration: constDecl | typeDecl | varDecl;
+constDecl: CONST (constSpec | L_PAREN (constSpec eos)* R_PAREN);
+constSpec: identifierList (type_? ASSIGN expressionList)?;
+
 
 
 BREAK            : 'break'              ;
