@@ -1,23 +1,38 @@
 grammar scanner;
 
-declaration: constDecl | typeDecl | varDecl;
-constDecl: CONST (constSpec | LPAR (constSpec eos)* RPAR);
-constSpec: IDList (type_? ASSIGN expressionList)?;
-IDList: ID (COMMA ID)*;
-expressionList: expression (COMMA expression)*;
-typeDecl: TYPE (typeSpec | LPAR (typeSpec eos)* RPAR);
-typeSpec: ID ASSIGN? type_;
+begin: ((functionDecl | methodDecl | declaration) eos)* EOF;
+
 functionDecl: FUNC ID (signature block?);
+
+declaration: (constDecl | typeDecl | varDecl);
+
+constDecl: CONST (constSpec | LPAR (constSpec eos)* RPAR);
+
+constSpec: IDList (type_? ASSIGN expressionList)?;
+
+IDList: ID (COMMA ID)*;
+
+expressionList: expression (COMMA expression)*;
+
+typeDecl: TYPE (typeSpec | LPAR (typeSpec eos)* RPAR);
+
+typeSpec: ID ASSIGN? type_;
+
 methodDecl: FUNC receiver ID ( signature block?);
+
 receiver: parameters;
+
 varDecl: VAR (varSpec | LPAR (varSpec eos)* RPAR);
+
 varSpec:
 	IDList (
 		type_ (ASSIGN expressionList)?
 		| ASSIGN expressionList
-	);
+);
+
 block: LCURLYBRACES statementList? RCURLYBRACES;
-statementList: ((SEMI?) statement eos)+;
+
+statementList: ((SEMI?) statement SEMI)+;
 
 statement:
 	declaration
@@ -44,6 +59,7 @@ typeName: qualifiedIdent | ID;
 qualifiedIdent: ID DOT ID;
 
 expressionStmt: expression;
+
 incDecStmt: expression (PLUSONE | MINUSONE);
 
 assignment: expressionList assign_op expressionList;
@@ -60,7 +76,7 @@ assign_op: (
 
 emptyStmt: SEMI;
 
-labeledStmt: ID COLON statement?;
+labeledStmt: ID COLON statement;
 
 returnStmt: RETURN expressionList?;
 
