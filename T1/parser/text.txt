@@ -8,14 +8,14 @@ func main() {
     b := 5
     soma := a + b
     subtracao := a - b
-    multiplicacao := a * b
-    divisao := a / b
+    //multiplicacao := a * b
+    //divisao := a / b
 
     fmt.Println("Soma:", soma)
     fmt.Println("Subtração:", subtracao)
     fmt.Println("Multiplicação:", multiplicacao)
     fmt.Println("Divisão:", divisao)
-
+    
     /*
     Comentário de mais de uma linha
     */
@@ -62,7 +62,7 @@ func main() {
     fmt.Println("Flag booleana:", flagBool)
 
     // Declaração e manipulação de tipos compostos (slices)
-    var numeros []int = []int{1, 2, 3, 4, 5}
+    // var numeros []int = []int{1, 2, 3, 4, 5}
     fmt.Println("Slice de números:", numeros)
 
     // Chamada de função com parâmetros fixos
@@ -74,5 +74,3 @@ func main() {
 func somaDoisNumeros(a, b int) int {
     return a + b
 }
-
-

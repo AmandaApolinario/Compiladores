@@ -6,17 +6,17 @@ functionDecl: FUNC ID (signature block?);
 
 declaration: (constDecl | typeDecl | varDecl);
 
+typeSpec: ID ASSIGN? type_;
+
 constDecl: CONST (constSpec | LPAR (constSpec eos)* RPAR);
 
-constSpec: IDList (type_? ASSIGN expressionList)?;
+constSpec: idList (type_? ASSIGN expressionList)?;
 
-IDList: ID (COMMA ID)*;
+idList: ID (COMMA ID)*;
 
 expressionList: expression (COMMA expression)*;
 
 typeDecl: TYPE (typeSpec | LPAR (typeSpec eos)* RPAR);
-
-typeSpec: ID ASSIGN? type_;
 
 methodDecl: FUNC receiver ID ( signature block?);
 
@@ -25,14 +25,14 @@ receiver: parameters;
 varDecl: VAR (varSpec | LPAR (varSpec eos)* RPAR);
 
 varSpec:
-	IDList (
-		type_ (ASSIGN expressionList)?
+	idList (
+		type_ (ASSIGN expressionList)
 		| ASSIGN expressionList
 );
 
 block: LCURLYBRACES statementList? RCURLYBRACES;
 
-statementList: ((SEMI?) statement SEMI)+;
+statementList: ((SEMI?) statement (SEMI?))+;
 
 statement:
 	declaration
@@ -48,17 +48,20 @@ statement:
 	| forStmt;
 
 simpleStmt:
-	incDecStmt
+      sendStmt
+    | incDecStmt
 	| assignment
 	| expressionStmt;
 
-type_: typeName | LPAR type_ RPAR;
+type_: typeName | typeLit | LPAR type_ RPAR;
 
 typeName: qualifiedIdent | ID;
 
 qualifiedIdent: ID DOT ID;
 
 expressionStmt: expression;
+
+sendStmt: channel = expression RECEIVE expression;
 
 incDecStmt: expression (PLUSONE | MINUSONE);
 
@@ -71,7 +74,7 @@ assign_op: (
 	| TIMES
 	| OVER
     | MOD
-)? ASSIGN;
+)? (ASSIGN | DECLARE_ASSIGN);
 
 
 emptyStmt: SEMI;
@@ -129,7 +132,7 @@ forClause:
 
 rangeClause: (
 		expressionList ASSIGN
-		| IDList ASSIGN
+		| idList DECLARE_ASSIGN
 	)? RANGE expression;
     
 
@@ -138,6 +141,8 @@ arrayType: LBRACK arrayLength RBRACK elementType;
 arrayLength: expression;
 
 elementType: type_;
+
+sliceType: LBRACK RBRACK elementType;
 
 methodSpec:
 	ID parameters result
@@ -154,15 +159,22 @@ result: parameters | type_;
 parameters:
 	LPAR (parameterDecl (COMMA parameterDecl)* COMMA?)? RPAR;
 
-parameterDecl: IDList? type_;
+parameterDecl: idList? type_;
 
 expression:
-	operand
+	primaryExpr
+	| operand
 	| unary_op = (
 		PLUS
-		| MINUS
-		| NOT
 		| TIMES
+		| MINUS
+		| OVER
+		| NOT
+	) expression
+	| expression mul_op = (
+		TIMES
+		| OVER
+		| MOD
 	) expression
 	| expression add_op = (PLUS | MINUS | OR) expression
 	| expression rel_op = (
@@ -176,6 +188,15 @@ expression:
 	| expression AND expression
 	| expression OR expression;
 
+primaryExpr:
+	operand
+	| primaryExpr (
+		(DOT ID)
+		| index
+		| slice_
+		| arguments
+	);
+
 identifierList: ID (COMMA ID)*;
 
 embeddedField: TIMES? typeName;
@@ -183,13 +204,33 @@ embeddedField: TIMES? typeName;
 typeLit:
 	arrayType
 	| functionType
+	| sliceType
 ;
 
-operand: ID | LPAR expression RPAR;
+operand: basicLit | ID | LPAR expression RPAR;
+
+basicLit:
+	INT_VAL
+	| STR_VAL
+	| REAL_VAL;
+
+index: LBRACK expression RBRACK;
+
+slice_:
+	LBRACK (
+		expression? COLON expression?
+		| expression? COLON expression COLON expression
+	) RBRACK;
+
+arguments:
+	LPAR (
+		(expressionList (COMMA expressionList)?) COMMA?
+	)? RPAR;
 
 eos:
 	SEMI
 	| EOF
+	| EOS
 ;
 
 BREAK            : 'break'              ;
@@ -217,11 +258,6 @@ STRUCT           : 'struct'             ;
 SWITCH           : 'switch'             ;
 TYPE             : 'type'               ;
 VAR              : 'var'                ;
-FLOAT32          : 'float32'            ; 
-FLOAT64          : 'float64'            ; 
-STRING           : 'string'             ; 
-TRUE             : 'true'               ; 
-FALSE            : 'false'              ;
 
 PLUS             : '+'                  ;
 MINUS            : '-'                  ;
@@ -237,15 +273,15 @@ AND              : '&&'                 ;
 OR               : '||'                 ;
 PLUSONE          : '++'                 ;
 MINUSONE         : '--'                 ;
-ISEQUAL          : '=='                 ;
+ISEQUAL           : '=='                 ;
 LESSTHAN         : '<'                  ;
 MORETHAN         : '>'                  ;
-EQUAL            : '='                  ;
+ASSIGN            : '='                  ;
 NOT              : '!'                  ;
 NOTEQUAL         : '!='                 ;
 LESSEQTHAN       : '<='                 ;
 MOREEQTHAN       : '>='                 ;
-ASSIGN           : ':='                 ;
+DECLARE_ASSIGN   : ':='                 ;
 LPAR             : '('                  ;
 RPAR             : ')'                  ;
 LBRACK           : '['                  ;
