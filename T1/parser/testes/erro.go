@@ -6,13 +6,12 @@ func main() {
     // Operações aritméticas básicas
     a_ := 10
     b := 5
-    soma := a + b
+    soma := a + 
     subtracao := a - b
     multiplicacao := a * b
     divisao := a / b
-    
 
-    fmt.Println("Soma:", soma)
+    fmt.Println("Soma:" soma)
     fmt.Println("Subtração:", subtracao)
     fmt.Println("Multiplicação:", multiplicacao)
     fmt.Println("Divisão:", divisao)
