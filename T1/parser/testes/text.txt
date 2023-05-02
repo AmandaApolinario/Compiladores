@@ -8,8 +8,8 @@ func main() {
     b := 5
     soma := a + b
     subtracao := a - b
-    //multiplicacao := a * b
-    //divisao := a / b
+    multiplicacao := a * b
+    divisao := a / b
 
     fmt.Println("Soma:", soma)
     fmt.Println("Subtração:", subtracao)
