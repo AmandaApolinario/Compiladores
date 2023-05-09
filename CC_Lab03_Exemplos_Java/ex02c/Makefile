@@ -6,7 +6,7 @@ JAVA=java
 YEAR=$(shell pwd | grep -o '20..-.')
 ROOT=/home/zambon/Teaching/$(YEAR)/CC/labs
 # Caminho para o JAR do ANTLR em labs/tools
-ANTLR_PATH=$(ROOT)/tools/antlr-4.11.1-complete.jar
+ANTLR_PATH=$(ROOT)/antlr-4.11.1-complete.jar
 # Opção de configuração do CLASSPATH para o ambiente Java
 CLASS_PATH_OPTION=-cp .:$(ANTLR_PATH)
 # Configuração do comando de compilação do ANTLR

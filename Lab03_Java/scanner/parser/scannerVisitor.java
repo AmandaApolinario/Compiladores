@@ -1,4 +1,7 @@
 // Generated from java-escape by ANTLR 4.11.1
+
+    package parser;
+
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -76,11 +79,61 @@ public interface scannerVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitWritestmt(scannerParser.WritestmtContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link scannerParser#expr}.
+	 * Visit a parse tree produced by the {@code boolTrue}
+	 * labeled alternative in {@link scannerParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpr(scannerParser.ExprContext ctx);
+	T visitBoolTrue(scannerParser.BoolTrueContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code expOperation}
+	 * labeled alternative in {@link scannerParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpOperation(scannerParser.ExpOperationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code boolFalse}
+	 * labeled alternative in {@link scannerParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolFalse(scannerParser.BoolFalseContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code expReal}
+	 * labeled alternative in {@link scannerParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpReal(scannerParser.ExpRealContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code expInt}
+	 * labeled alternative in {@link scannerParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpInt(scannerParser.ExpIntContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code expPar}
+	 * labeled alternative in {@link scannerParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpPar(scannerParser.ExpParContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code expStr}
+	 * labeled alternative in {@link scannerParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpStr(scannerParser.ExpStrContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code expId}
+	 * labeled alternative in {@link scannerParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpId(scannerParser.ExpIdContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link scannerParser#op}.
 	 * @param ctx the parse tree

@@ -1,4 +1,7 @@
 // Generated from java-escape by ANTLR 4.11.1
+
+    package parser;
+
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -732,30 +735,105 @@ public class scannerParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprContext extends ParserRuleContext {
-		public TerminalNode LPAR() { return getToken(scannerParser.LPAR, 0); }
+		public ExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_expr; }
+	 
+		public ExprContext() { }
+		public void copyFrom(ExprContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class BoolTrueContext extends ExprContext {
+		public TerminalNode TRUE() { return getToken(scannerParser.TRUE, 0); }
+		public BoolTrueContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof scannerVisitor ) return ((scannerVisitor<? extends T>)visitor).visitBoolTrue(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class ExpOperationContext extends ExprContext {
 		public List<ExprContext> expr() {
 			return getRuleContexts(ExprContext.class);
 		}
 		public ExprContext expr(int i) {
 			return getRuleContext(ExprContext.class,i);
 		}
-		public TerminalNode RPAR() { return getToken(scannerParser.RPAR, 0); }
-		public TerminalNode TRUE() { return getToken(scannerParser.TRUE, 0); }
-		public TerminalNode FALSE() { return getToken(scannerParser.FALSE, 0); }
-		public TerminalNode INT_VAL() { return getToken(scannerParser.INT_VAL, 0); }
-		public TerminalNode REAL_VAL() { return getToken(scannerParser.REAL_VAL, 0); }
-		public TerminalNode STR_VAL() { return getToken(scannerParser.STR_VAL, 0); }
-		public TerminalNode ID() { return getToken(scannerParser.ID, 0); }
 		public OpContext op() {
 			return getRuleContext(OpContext.class,0);
 		}
-		public ExprContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_expr; }
+		public ExpOperationContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof scannerVisitor ) return ((scannerVisitor<? extends T>)visitor).visitExpr(this);
+			if ( visitor instanceof scannerVisitor ) return ((scannerVisitor<? extends T>)visitor).visitExpOperation(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class BoolFalseContext extends ExprContext {
+		public TerminalNode FALSE() { return getToken(scannerParser.FALSE, 0); }
+		public BoolFalseContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof scannerVisitor ) return ((scannerVisitor<? extends T>)visitor).visitBoolFalse(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class ExpRealContext extends ExprContext {
+		public TerminalNode REAL_VAL() { return getToken(scannerParser.REAL_VAL, 0); }
+		public ExpRealContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof scannerVisitor ) return ((scannerVisitor<? extends T>)visitor).visitExpReal(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class ExpIntContext extends ExprContext {
+		public TerminalNode INT_VAL() { return getToken(scannerParser.INT_VAL, 0); }
+		public ExpIntContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof scannerVisitor ) return ((scannerVisitor<? extends T>)visitor).visitExpInt(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class ExpParContext extends ExprContext {
+		public TerminalNode LPAR() { return getToken(scannerParser.LPAR, 0); }
+		public ExprContext expr() {
+			return getRuleContext(ExprContext.class,0);
+		}
+		public TerminalNode RPAR() { return getToken(scannerParser.RPAR, 0); }
+		public ExpParContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof scannerVisitor ) return ((scannerVisitor<? extends T>)visitor).visitExpPar(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class ExpStrContext extends ExprContext {
+		public TerminalNode STR_VAL() { return getToken(scannerParser.STR_VAL, 0); }
+		public ExpStrContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof scannerVisitor ) return ((scannerVisitor<? extends T>)visitor).visitExpStr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class ExpIdContext extends ExprContext {
+		public TerminalNode ID() { return getToken(scannerParser.ID, 0); }
+		public ExpIdContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof scannerVisitor ) return ((scannerVisitor<? extends T>)visitor).visitExpId(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -780,6 +858,10 @@ public class scannerParser extends Parser {
 			switch (_input.LA(1)) {
 			case LPAR:
 				{
+				_localctx = new ExpParContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+
 				setState(101);
 				match(LPAR);
 				setState(102);
@@ -790,36 +872,54 @@ public class scannerParser extends Parser {
 				break;
 			case TRUE:
 				{
+				_localctx = new BoolTrueContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(105);
 				match(TRUE);
 				}
 				break;
 			case FALSE:
 				{
+				_localctx = new BoolFalseContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(106);
 				match(FALSE);
 				}
 				break;
 			case INT_VAL:
 				{
+				_localctx = new ExpIntContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(107);
 				match(INT_VAL);
 				}
 				break;
 			case REAL_VAL:
 				{
+				_localctx = new ExpRealContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(108);
 				match(REAL_VAL);
 				}
 				break;
 			case STR_VAL:
 				{
+				_localctx = new ExpStrContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(109);
 				match(STR_VAL);
 				}
 				break;
 			case ID:
 				{
+				_localctx = new ExpIdContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(110);
 				match(ID);
 				}
@@ -837,7 +937,7 @@ public class scannerParser extends Parser {
 					_prevctx = _localctx;
 					{
 					{
-					_localctx = new ExprContext(_parentctx, _parentState);
+					_localctx = new ExpOperationContext(new ExprContext(_parentctx, _parentState));
 					pushNewRecursionContext(_localctx, _startState, RULE_expr);
 					setState(113);
 					if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");

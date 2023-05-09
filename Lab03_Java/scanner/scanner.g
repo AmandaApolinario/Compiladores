@@ -1,5 +1,9 @@
 grammar scanner;
 
+@header {
+    package parser;
+}
+
 program:
     PROGRAM ID SEMI varssect stmtsect
 ;
@@ -52,14 +56,14 @@ writestmt:
 ;
 
 expr:
-    expr op expr 
-    | LPAR expr RPAR 
-    | TRUE 
-    | FALSE 
-    | INT_VAL 
-    | REAL_VAL 
-    | STR_VAL 
-    | ID
+    expr op expr #expOperation
+    | LPAR expr RPAR #expPar
+    | TRUE #boolTrue
+    | FALSE #boolFalse
+    | INT_VAL #expInt
+    | REAL_VAL #expReal
+    | STR_VAL #expStr
+    | ID #expId
 ;
 
 op: 

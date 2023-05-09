@@ -4,7 +4,7 @@ JAVAC=javac
 JAVA=java
 # ROOT é a raiz dos diretórios com todos os roteiros de laboratórios
 YEAR=$(shell pwd | grep -o '20..-.')
-ROOT=/home/pupabremenkamp/Compiladores/Lab02_Java/scanner
+ROOT=/home/abapolinario/Compiladores/Lab03_Java/scanner
 # Caminho para o JAR do ANTLR em labs/tools
 ANTLR_PATH=$(ROOT)/antlr-4.11.1-complete.jar
 # Opção de configuração do CLASSPATH para o ambiente Java
@@ -17,6 +17,8 @@ GRUN=$(JAVA) $(CLASS_PATH_OPTION) org.antlr.v4.gui.TestRig
 GRAMMAR_NAME=scanner
 # Diretório para aonde vão os arquivos gerados
 GEN_PATH=parser
+# Diretório para os arquivos .class
+BIN_PATH=bin
 
 # Executa o ANTLR e o compilador Java
 all: antlr javac
@@ -24,12 +26,18 @@ all: antlr javac
 # Executa o ANTLR para compilar a gramática
 antlr: $(GRAMMAR_NAME).g
 	$(ANTLR4) -no-listener -visitor -o $(GEN_PATH) $(GRAMMAR_NAME).g
-# Executa o javac para compilar os arquivos gerados
+# Compila todos os subdiretórios e joga todos os .class em BIN_PATH pra organizar
 javac:
-	$(JAVAC) $(CLASS_PATH_OPTION) $(GEN_PATH)/*.java
-# Executa o parser. Comando: $ make run FILE=arquivo_de_teste
+	rm -rf $(BIN_PATH)
+	mkdir $(BIN_PATH)
+	$(JAVAC) $(CLASS_PATH_OPTION) -d $(BIN_PATH) */*.java Main.java
+# Executa o front-end. Comando: $ make run FILE=arquivo_de_teste
+# 'Main' é a classe com a função principal
 run:
-	cd $(GEN_PATH) && $(GRUN) $(GRAMMAR_NAME) program -gui $(FILE)
+	$(JAVA) $(CLASS_PATH_OPTION):$(BIN_PATH) Main $(FILE)
+# Executa o TestRig para exibir a parse tree
+debug:
+	cd $(BIN_PATH) && $(GRUN) $(GEN_PATH).$(GRAMMAR_NAME) program -gui $(FILE)
 # Remove os arquivos gerados pelo ANTLR
 clean:
-	@rm -rf $(GEN_PATH)
+	@rm -rf $(GEN_PATH) $(BIN_PATH)
