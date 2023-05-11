@@ -1,5 +1,0 @@
-func main() {
-    soma := a + b
-    multiplicacao := a * b
-    divisao := a / b
-}
