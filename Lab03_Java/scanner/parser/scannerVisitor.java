@@ -31,11 +31,33 @@ public interface scannerVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVardecl(scannerParser.VardeclContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link scannerParser#typespec}.
+	 * Visit a parse tree produced by the {@code typeBool}
+	 * labeled alternative in {@link scannerParser#typespec}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTypespec(scannerParser.TypespecContext ctx);
+	T visitTypeBool(scannerParser.TypeBoolContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code typeInt}
+	 * labeled alternative in {@link scannerParser#typespec}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeInt(scannerParser.TypeIntContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code typeReal}
+	 * labeled alternative in {@link scannerParser#typespec}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeReal(scannerParser.TypeRealContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code typeStr}
+	 * labeled alternative in {@link scannerParser#typespec}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeStr(scannerParser.TypeStrContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link scannerParser#stmtsect}.
 	 * @param ctx the parse tree

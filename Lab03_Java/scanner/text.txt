@@ -3,12 +3,15 @@ computes factorial
 }
 program fact;
 var
-int x;
+string algo;
+int fact;
 int fact;
 begin
 read x; { input an integer }
 if 0 < x then { don’t compute if x <= 0 }
 fact := 1;
+algo := "batata";
+algo2 := "maça";
 repeat
 fact := fact * x;
 x := x - 1;

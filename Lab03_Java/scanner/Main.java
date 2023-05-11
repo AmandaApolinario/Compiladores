@@ -39,7 +39,8 @@ public class Main {
 		visitor.visit(tree);
 
 		// Saída final.
-		System.out.println("Result = " + visitor.toString());
+		System.out.println("Result = " + visitor.strTable);
+		System.out.println(visitor.varTable);
 	}
 
 }

@@ -17,10 +17,10 @@ vardecl:
 ;
 
 typespec:
-    BOOL 
-    | INT 
-    | REAL 
-    | STRING
+    BOOL #typeBool
+    | INT #typeInt
+    | REAL #typeReal
+    | STRING #typeStr
 ;
 
 stmtsect:
