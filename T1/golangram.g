@@ -53,7 +53,9 @@ simpleStmt:
 	| assignment
 	| expressionStmt;
 
-type_: typeName | typeLit | LPAR type_ RPAR;
+type_: typeName | 
+		typeLit | 
+		LPAR type_ RPAR;
 
 typeName: qualifiedIdent | ID;
 
@@ -210,9 +212,9 @@ typeLit:
 operand: basicLit | ID | LPAR expression RPAR;
 
 basicLit:
-	INT_VAL
-	| STR_VAL
-	| REAL_VAL;
+	INT_VAL #intVal
+	| STR_VAL #strVal
+	| REAL_VAL #realVal;
 
 index: LBRACK expression RBRACK;
 

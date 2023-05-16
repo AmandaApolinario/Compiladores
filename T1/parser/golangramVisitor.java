@@ -382,11 +382,26 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitOperand(golangramParser.OperandContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link golangramParser#basicLit}.
+	 * Visit a parse tree produced by the {@code intVal}
+	 * labeled alternative in {@link golangramParser#basicLit}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitBasicLit(golangramParser.BasicLitContext ctx);
+	T visitIntVal(golangramParser.IntValContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code strVal}
+	 * labeled alternative in {@link golangramParser#basicLit}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStrVal(golangramParser.StrValContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code realVal}
+	 * labeled alternative in {@link golangramParser#basicLit}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRealVal(golangramParser.RealValContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link golangramParser#index}.
 	 * @param ctx the parse tree

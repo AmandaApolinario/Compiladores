@@ -28,4 +28,9 @@ public final class StrTable extends ArrayList<String>{
 		return sb.toString();
 	}
 
+	public StrTable copy() {
+        StrTable copiedTable = new StrTable();
+        copiedTable.addAll(this);
+        return copiedTable;
+    }
 }

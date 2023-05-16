@@ -8,7 +8,6 @@ func main() {
 	fmt.Println("Resultado da função:", resultado)
 }
 
-// Função que realiza a soma de dois números
-func somaDoisNumeros(a, b int) int {
+func somaDoisNumeros() {
 	return a + b
 }
