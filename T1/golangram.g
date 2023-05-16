@@ -209,7 +209,10 @@ typeLit:
 	| sliceType
 ;
 
-operand: basicLit | ID | LPAR expression RPAR;
+operand: basicLit #operandBasicLit
+		| ID #operandID
+		| LPAR expression RPAR #operandLRPAR
+		;
 
 basicLit:
 	INT_VAL #intVal

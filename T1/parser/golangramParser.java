@@ -4107,22 +4107,49 @@ public class golangramParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class OperandContext extends ParserRuleContext {
-		public BasicLitContext basicLit() {
-			return getRuleContext(BasicLitContext.class,0);
+		public OperandContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
 		}
-		public TerminalNode ID() { return getToken(golangramParser.ID, 0); }
+		@Override public int getRuleIndex() { return RULE_operand; }
+	 
+		public OperandContext() { }
+		public void copyFrom(OperandContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class OperandLRPARContext extends OperandContext {
 		public TerminalNode LPAR() { return getToken(golangramParser.LPAR, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
 		public TerminalNode RPAR() { return getToken(golangramParser.RPAR, 0); }
-		public OperandContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_operand; }
+		public OperandLRPARContext(OperandContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof golangramVisitor ) return ((golangramVisitor<? extends T>)visitor).visitOperand(this);
+			if ( visitor instanceof golangramVisitor ) return ((golangramVisitor<? extends T>)visitor).visitOperandLRPAR(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class OperandBasicLitContext extends OperandContext {
+		public BasicLitContext basicLit() {
+			return getRuleContext(BasicLitContext.class,0);
+		}
+		public OperandBasicLitContext(OperandContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof golangramVisitor ) return ((golangramVisitor<? extends T>)visitor).visitOperandBasicLit(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class OperandIDContext extends OperandContext {
+		public TerminalNode ID() { return getToken(golangramParser.ID, 0); }
+		public OperandIDContext(OperandContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof golangramVisitor ) return ((golangramVisitor<? extends T>)visitor).visitOperandID(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -4137,6 +4164,7 @@ public class golangramParser extends Parser {
 			case REAL_VAL:
 			case INT_VAL:
 			case STR_VAL:
+				_localctx = new OperandBasicLitContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(598);
@@ -4144,6 +4172,7 @@ public class golangramParser extends Parser {
 				}
 				break;
 			case ID:
+				_localctx = new OperandIDContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(599);
@@ -4151,6 +4180,7 @@ public class golangramParser extends Parser {
 				}
 				break;
 			case LPAR:
+				_localctx = new OperandLRPARContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(600);

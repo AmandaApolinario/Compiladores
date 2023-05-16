@@ -8,6 +8,8 @@ func main() {
     var numFloat float64 = 3.14
     var texto string = "Olá, mundo!"
     var flagBool bool = true
+    var new
+    new = 10
 
     var new_num = -3.14
     var new_num_int = -3

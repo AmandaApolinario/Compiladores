@@ -41,10 +41,10 @@ public final class VarTable {
 		return table.get(i).type;
 	}
 
-	public String toString() {
+	public String toString(String funcName) {
 		StringBuilder sb = new StringBuilder();
 		Formatter f = new Formatter(sb);
-		f.format("Variables table:\n");
+		f.format("Variables table %s:\n", funcName);
 		for (int i = 0; i < table.size(); i++) {
 			f.format("Entry %d -- name: %s, line: %d, type: %s\n", i,
 	                 getName(i), getLine(i), getType(i).toString());

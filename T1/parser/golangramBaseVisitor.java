@@ -444,7 +444,21 @@ public class golangramBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitOperand(golangramParser.OperandContext ctx) { return visitChildren(ctx); }
+	@Override public T visitOperandBasicLit(golangramParser.OperandBasicLitContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitOperandID(golangramParser.OperandIDContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitOperandLRPAR(golangramParser.OperandLRPARContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
