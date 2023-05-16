@@ -53,11 +53,11 @@ public final class FuncTable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         Formatter f = new Formatter(sb);
-        f.format("Functions table:\n");
+        f.format("Functions table:\n" );
         for (int i = 0; i < table.size(); i++) {
             FunctionEntry entry = table.get(i);
-			System.out.println(entry.strTable.toString());
             f.format("Entry %d -- name: %s\n", i, entry.name);
+			System.out.println(entry.strTable.toString(entry.name));
 		}
         f.close();
         return sb.toString();
