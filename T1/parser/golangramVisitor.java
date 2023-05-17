@@ -64,18 +64,6 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTypeDecl(golangramParser.TypeDeclContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link golangramParser#methodDecl}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMethodDecl(golangramParser.MethodDeclContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link golangramParser#receiver}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitReceiver(golangramParser.ReceiverContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link golangramParser#varDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -310,23 +298,11 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSliceType(golangramParser.SliceTypeContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link golangramParser#methodSpec}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMethodSpec(golangramParser.MethodSpecContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link golangramParser#functionType}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFunctionType(golangramParser.FunctionTypeContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link golangramParser#signature}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSignature(golangramParser.SignatureContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link golangramParser#result}.
 	 * @param ctx the parse tree

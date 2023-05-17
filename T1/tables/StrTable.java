@@ -17,20 +17,14 @@ public final class StrTable extends ArrayList<String>{
 		return super.add(s);
 	}
 
-	public String toString(String funcName) {
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		Formatter f = new Formatter(sb);
-		f.format("Strings table: %s\n", funcName);
+		f.format("Strings table:\n");
 		for (int i = 0; i < this.size(); i++) {
 			f.format("Entry %d -- %s\n", i, this.get(i));
 		}
 		f.close();
 		return sb.toString();
 	}
-
-	public StrTable copy() {
-        StrTable copiedTable = new StrTable();
-        copiedTable.addAll(this);
-        return copiedTable;
-    }
 }

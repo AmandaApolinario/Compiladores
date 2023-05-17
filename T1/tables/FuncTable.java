@@ -27,8 +27,8 @@ public final class FuncTable {
 		return null;
 	}
 
-    public void addFunction(String functionName, StrTable strTable, VarTable varTable) {
-        FunctionEntry entry = new FunctionEntry(functionName, strTable, varTable);
+    public void addFunction(String functionName, VarTable varTable) {
+        FunctionEntry entry = new FunctionEntry(functionName, varTable);
         table.add(entry);
     }
 	
@@ -39,7 +39,6 @@ public final class FuncTable {
         for (int i = 0; i < table.size(); i++) {
             FunctionEntry entry = table.get(i);
             f.format("Entry %d -- name: %s\n", i, entry.name);
-			System.out.println(entry.strTable.toString(entry.name));
 			System.out.println(entry.varTable.toString(entry.name));
 		}
         f.close();
@@ -49,12 +48,10 @@ public final class FuncTable {
     private static class FunctionEntry {
         private final String name;
 
-	   	StrTable strTable;
 	   	VarTable varTable;
 
-        FunctionEntry(String name, StrTable strTable, VarTable varTable) {
+        FunctionEntry(String name, VarTable varTable) {
             this.name = name;
-			this.strTable = strTable.copy();
 			this.varTable = varTable;
         }
     }

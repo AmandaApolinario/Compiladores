@@ -8,9 +8,13 @@ func main() {
 	fmt.Println("Resultado da função:", resultado)
 };
 
-func somaDoisNumeros(a, b) {
+func somaDoisNumeros(a int, b int) {
 	var texto string = "Olá, mundo!"
 	fmt.Println("Num a:", a)
 	fmt.Println("Num b:", b)
 	return a + b
+};
+
+func testaDiferentesTiposs(a string, b int) {
+
 }

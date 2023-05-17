@@ -36,6 +36,7 @@ public class Main {
 		// Saída final.
 		//System.out.println("Result = " + visitor.strTable);
 		System.out.println(visitor.funcTable.toString());
+		System.out.println(visitor.strTable.toString());
 }
 
 }

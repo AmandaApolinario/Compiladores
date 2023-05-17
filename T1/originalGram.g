@@ -1,8 +1,8 @@
 grammar golangram;
 
-begin: ((functionDecl | declaration) eos)* EOF;
+begin: ((functionDecl | methodDecl | declaration) eos)* EOF;
 
-functionDecl: FUNC ID (parameters block?);
+functionDecl: FUNC ID (signature block?);
 
 declaration: (constDecl | typeDecl | varDecl);
 
@@ -17,6 +17,10 @@ idList: ID (COMMA ID)*;
 expressionList: expression (COMMA expression)*;
 
 typeDecl: TYPE (typeSpec | LPAR (typeSpec eos)* RPAR);
+
+methodDecl: FUNC receiver ID ( signature block?);
+
+receiver: parameters;
 
 varDecl: VAR (varSpec | LPAR (varSpec eos)* RPAR);
 
@@ -142,14 +146,22 @@ elementType: type_;
 
 sliceType: LBRACK RBRACK elementType;
 
-functionType: FUNC parameters;
+methodSpec:
+	ID parameters result
+	| ID parameters;
+
+functionType: FUNC signature;
+
+signature:
+	parameters result
+	| parameters;
 
 result: parameters | type_;
 
 parameters:
 	LPAR (parameterDecl (COMMA parameterDecl)* COMMA?)? RPAR;
 
-parameterDecl: ID? type_;
+parameterDecl: idList? type_;
 
 expression:
 	primaryExpr

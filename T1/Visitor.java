@@ -7,22 +7,22 @@ import typing.Type;
 public class Visitor extends golangramBaseVisitor<Void> {
 
     FuncTable funcTable = new FuncTable();
-    StrTable strTable;
+    StrTable strTable = new StrTable();
     VarTable varTable;
     String funcName;
     Type type;
 
     @Override public Void visitFunctionDecl(golangramParser.FunctionDeclContext ctx) {
         funcName = ctx.ID().getText();
-        strTable = new StrTable();
         varTable = new VarTable();
 
         visit(ctx.block());
+        visit(ctx.parameters());
         int isNewFunc = funcTable.containsFunction(ctx.ID().getText());
 
         if (isNewFunc == -1) {
 
-            funcTable.addFunction(ctx.ID().getText(), strTable, varTable);
+            funcTable.addFunction(ctx.ID().getText(), varTable);
 
         } else {
             System.out.println("Nao eh possivel declarar duas funcoes com o mesmo nome. Declarando: " + ctx.ID().getText());
@@ -44,58 +44,12 @@ public class Visitor extends golangramBaseVisitor<Void> {
         return null;
      }
 
-     /*@Override public Void visitAssignment(golangramParser.AssignmentContext ctx) { 
-        String leftExpressionValue = visitExpressionList(ctx.expressionList(0));
-        System.out.println(leftExpressionValue);
-        return null; 
-    }
-
-    @Override public String visitExpressionList(golangramParser.ExpressionListContext ctx) { 
-        String leftExpressionValue = visitExpressionList(ctx.expression(0));
-        return leftExpressionValue;
-    }
+     @Override public Void visitParameterDecl(golangramParser.ParameterDeclContext ctx) { 
+        visit(ctx.type_());
+        varTable.addVar(ctx.ID().getText(), ctx.getStart().getLine(), type);
+        return null;
+     }
 	
-    @Override public String visitExpression(golangramParser.ExpressionContext ctx) { 
-        return visitChildren(ctx); 
-    }
-	
-	@Override public String visitPrimaryExpr(golangramParser.PrimaryExprContext ctx) { 
-        return "teste"; 
-    }*/
-	
-    /*@Override public String operandID(golangramParser.PrimaryExprContext ctx) { 
-        return visitChildren(ctx); 
-    }*/
-
-    //idList: ID (COMMA ID)*;
-
-    // typeName: qualifiedIdent | ID;
-
-    //qualifiedIdent: ID DOT ID;
-
-    //labeledStmt: ID COLON statement;
-
-    //breakStmt: BREAK ID?;
-
-    //continueStmt: CONTINUE ID?;
-
-    //gotoStmt: GOTO ID;
-
-    //typeSwitchGuard: (ID ASSIGN)? operand DOT LPAR TYPE RPAR;
-
-    //primaryExpr:
-	/*operand
-	| primaryExpr (
-		(DOT ID)
-		| index
-		| slice_
-		| arguments
-	);*/
-
-    //identifierList: ID (COMMA ID)*;
-
-    //operand: basicLit | ID | LPAR expression RPAR;
-
     @Override public Void visitStrVal(golangramParser.StrValContext ctx) { 
         strTable.add(ctx.STR_VAL().getText());
         type = Type.STR_TYPE;

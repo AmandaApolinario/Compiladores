@@ -8,7 +8,7 @@ func main() {
 	fmt.Println("Resultado da função:", resultado)
 };
 
-func main(a, b) {
+func main(a int, b int) {
 	var texto string = "Olá, mundo!"
 	fmt.Println("Num a:", a)
 	fmt.Println("Num b:", b)
