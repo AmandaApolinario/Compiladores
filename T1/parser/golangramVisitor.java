@@ -46,6 +46,12 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitConstSpec(golangramParser.ConstSpecContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link golangramParser#declareAssignment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclareAssignment(golangramParser.DeclareAssignmentContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link golangramParser#idList}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -94,11 +100,33 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(golangramParser.StatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link golangramParser#simpleStmt}.
+	 * Visit a parse tree produced by the {@code simpleIncDecStmt}
+	 * labeled alternative in {@link golangramParser#simpleStmt}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSimpleStmt(golangramParser.SimpleStmtContext ctx);
+	T visitSimpleIncDecStmt(golangramParser.SimpleIncDecStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code simpleDeclareAssignment}
+	 * labeled alternative in {@link golangramParser#simpleStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSimpleDeclareAssignment(golangramParser.SimpleDeclareAssignmentContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code simpleAssignment}
+	 * labeled alternative in {@link golangramParser#simpleStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSimpleAssignment(golangramParser.SimpleAssignmentContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code simpleExpressionStmt}
+	 * labeled alternative in {@link golangramParser#simpleStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSimpleExpressionStmt(golangramParser.SimpleExpressionStmtContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link golangramParser#type_}.
 	 * @param ctx the parse tree
@@ -106,29 +134,11 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitType_(golangramParser.Type_Context ctx);
 	/**
-	 * Visit a parse tree produced by {@link golangramParser#typeName}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTypeName(golangramParser.TypeNameContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link golangramParser#qualifiedIdent}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitQualifiedIdent(golangramParser.QualifiedIdentContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link golangramParser#expressionStmt}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitExpressionStmt(golangramParser.ExpressionStmtContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link golangramParser#sendStmt}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSendStmt(golangramParser.SendStmtContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link golangramParser#incDecStmt}.
 	 * @param ctx the parse tree
@@ -292,12 +302,6 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitElementType(golangramParser.ElementTypeContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link golangramParser#sliceType}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSliceType(golangramParser.SliceTypeContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link golangramParser#functionType}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -399,12 +403,6 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitIndex(golangramParser.IndexContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link golangramParser#slice_}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSlice_(golangramParser.Slice_Context ctx);
 	/**
 	 * Visit a parse tree produced by {@link golangramParser#arguments}.
 	 * @param ctx the parse tree

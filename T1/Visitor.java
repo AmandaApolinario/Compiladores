@@ -19,7 +19,6 @@ public class Visitor extends golangramBaseVisitor<Void> {
         visit(ctx.block());
         visit(ctx.parameters());
         int isNewFunc = funcTable.containsFunction(ctx.ID().getText());
-
         if (isNewFunc == -1) {
 
             funcTable.addFunction(ctx.ID().getText(), varTable);
@@ -32,23 +31,40 @@ public class Visitor extends golangramBaseVisitor<Void> {
         return null; 
     }
 
-    // typeSpec: ID ASSIGN? type_;
-    @Override public Void visitTypeSpec(golangramParser.TypeSpecContext ctx) {
-        int isNewVar = varTable.lookupVar(ctx.ID().getText());
+
+    /*@Override public Void visitSimpleDeclareAssignment(golangramParser.SimpleDeclareAssignmentContext ctx) { 
+        int isNewVar = varTable.lookupVar(ctx.toString());
+        System.out.println(ctx.ID().getText());
         if (isNewVar == -1) {
-            varTable.addVar(ctx.ID().getText(), ctx.getStart().getLine(), type);
+            varTable.addVar(ctx.ID().getText(), ctx.getStart().getLine(), Type.INT_TYPE);
         } else {
             System.out.println("Nao eh possivel declarar duas variaveis com o mesmo nome. Declarando: " + ctx.ID().getText());
             System.exit(1);
         }
         return null;
-     }
+    }*/
 
-     @Override public Void visitParameterDecl(golangramParser.ParameterDeclContext ctx) { 
+    //DUVIDA
+    //O PRIMEIRO TYPE AINDA É NULL QUANDO ELE CHEGA NA HORA DE ADICIONAR NA VAR TABLE
+    @Override public Void visitIdList(golangramParser.IdListContext ctx) { 
+        int isNewVar = varTable.lookupVar(ctx.ID(0).getText());
+        if (isNewVar == -1) {
+            varTable.addVar(ctx.ID(0).getText(), ctx.getStart().getLine(), Type.INT_TYPE);
+        } else {
+            System.out.println("Nao eh possivel declarar duas variaveis com o mesmo nome. Declarando: " + ctx.ID(0).getText());
+            System.exit(1);
+        }
+        return null;      
+
+    }
+
+    //DUVIDA
+    //TODOS OS PARAMETROS TAO VIRANDO STRING
+    @Override public Void visitParameterDecl(golangramParser.ParameterDeclContext ctx) { 
         visit(ctx.type_());
         varTable.addVar(ctx.ID().getText(), ctx.getStart().getLine(), type);
         return null;
-     }
+    }
 	
     @Override public Void visitStrVal(golangramParser.StrValContext ctx) { 
         strTable.add(ctx.STR_VAL().getText());

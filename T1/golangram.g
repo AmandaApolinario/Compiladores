@@ -12,17 +12,19 @@ constDecl: CONST (constSpec | LPAR (constSpec eos)* RPAR);
 
 constSpec: idList (type_? ASSIGN expressionList)?;
 
+declareAssignment: ID DECLARE_ASSIGN basicLit;
+
 idList: ID (COMMA ID)*;
 
 expressionList: expression (COMMA expression)*;
 
 typeDecl: TYPE (typeSpec | LPAR (typeSpec eos)* RPAR);
 
-varDecl: VAR (varSpec | LPAR (varSpec eos)* RPAR);
+varDecl: VAR varSpec;
 
 varSpec:
 	idList (
-		type_ (ASSIGN expressionList)
+		type_ (ASSIGN expressionList)?
 		| ASSIGN expressionList
 );
 
@@ -35,31 +37,25 @@ statement:
 	| labeledStmt
 	| simpleStmt
 	| returnStmt
-	| breakStmt
-	| continueStmt
+	| BREAK
+	| CONTINUE
 	| fallthroughStmt
 	| block
 	| ifStmt
 	| switchStmt
 	| forStmt;
 
-simpleStmt:
-      sendStmt
-    | incDecStmt
-	| assignment
-	| expressionStmt;
+simpleStmt: incDecStmt #simpleIncDecStmt
+    | declareAssignment #simpleDeclareAssignment
+	| assignment #simpleAssignment
+	| expressionStmt #simpleExpressionStmt
+	; 
 
-type_: typeName | 
+type_: ID | 
 		typeLit | 
 		LPAR type_ RPAR;
 
-typeName: qualifiedIdent | ID;
-
-qualifiedIdent: ID DOT ID;
-
 expressionStmt: expression;
-
-sendStmt: channel = expression RECEIVE expression;
 
 incDecStmt: expression (PLUSONE | MINUSONE);
 
@@ -140,8 +136,6 @@ arrayLength: expression;
 
 elementType: type_;
 
-sliceType: LBRACK RBRACK elementType;
-
 functionType: FUNC parameters;
 
 result: parameters | type_;
@@ -183,18 +177,16 @@ primaryExpr:
 	| primaryExpr (
 		(DOT ID)
 		| index
-		| slice_
 		| arguments
 	);
 
 identifierList: ID (COMMA ID)*;
 
-embeddedField: TIMES? typeName;
+embeddedField: TIMES? ID;
 
 typeLit:
 	arrayType
 	| functionType
-	| sliceType
 ;
 
 operand: basicLit #operandBasicLit
@@ -208,12 +200,6 @@ basicLit:
 	| REAL_VAL #realVal;
 
 index: LBRACK expression RBRACK;
-
-slice_:
-	LBRACK (
-		expression? COLON expression?
-		| expression? COLON expression COLON expression
-	) RBRACK;
 
 arguments:
 	LPAR (
