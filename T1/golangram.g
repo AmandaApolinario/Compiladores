@@ -62,14 +62,13 @@ incDecStmt: expression (PLUSONE | MINUSONE);
 assignment: expressionList assign_op expressionList;
 
 assign_op: (
-	PLUS
+	PLUSparam
 	| MINUS
 	| OR
 	| TIMES
 	| OVER
     | MOD
 )? (ASSIGN | DECLARE_ASSIGN);
-
 
 emptyStmt: SEMI;
 
@@ -79,8 +78,6 @@ returnStmt: RETURN expressionList?;
 
 breakStmt: BREAK ID?;
 continueStmt: CONTINUE ID?;
-
-gotoStmt: GOTO ID;
 
 fallthroughStmt: FALLTHROUGH;
 

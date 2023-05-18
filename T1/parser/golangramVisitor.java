@@ -188,12 +188,6 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitContinueStmt(golangramParser.ContinueStmtContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link golangramParser#gotoStmt}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGotoStmt(golangramParser.GotoStmtContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link golangramParser#fallthroughStmt}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
