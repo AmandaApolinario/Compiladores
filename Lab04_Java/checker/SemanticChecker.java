@@ -206,8 +206,33 @@ public class SemanticChecker extends EZParserBaseVisitor<Type> {
 	 }
 
 	@Override public Type visitTimesOver(EZParser.TimesOverContext ctx) { 
+		Type esq = visit(ctx.expr(0));
+		Type dir = visit(ctx.expr(1));
+		
+		if (esq.equals(Type.INT_TYPE) && dir.equals(Type.INT_TYPE)){
+			return Type.INT_TYPE;
+		} else if (esq.equals(Type.INT_TYPE) && dir.equals(Type.BOOL_TYPE)){
+			return Type.BOOL_TYPE;
+		} else if (esq.equals(Type.BOOL_TYPE) && dir.equals(Type.INT_TYPE)){
+			return Type.BOOL_TYPE;
+		} else if (esq.equals(Type.BOOL_TYPE) && dir.equals(Type.BOOL_TYPE)){
+			return Type.BOOL_TYPE;
+		} else {
+			return null;
+			//errooooooooo
+		}
 
+		return null;
 	}
+
+	@Override public Type visitEqLt(EZParser.EqLtContext ctx) {
+		Type esq = visit(ctx.expr(0));
+		Type dir = visit(ctx.expr(1));
+		
+
+		return null;
+	 }
+	
 	
 	
 }
