@@ -1,0 +1,17 @@
+{ Sample program in EZ language -
+  adds one to the input
+}
+
+program addone;
+var
+    int x;
+
+begin
+    x := x + 1;
+    x := "teste" + 3.2;
+    x := "teste" + 3;
+    x := true + 1;
+    x := true + 3.2;
+    x := true + "teste";
+
+end
