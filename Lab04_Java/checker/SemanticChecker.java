@@ -126,9 +126,22 @@ public class SemanticChecker extends EZParserBaseVisitor<Type> {
 	@Override
 	public Type visitAssign_stmt(Assign_stmtContext ctx) {
 		// Visita recursivamente a expressão da direita para procurar erros. 
-		visit(ctx.expr());
+		Type expr = visit(ctx.expr());
+
 		// Verifica se a variável a ser atribuída foi declarada.
 		checkVar(ctx.ID().getSymbol());
+		int id = vt.lookupVar(ctx.ID().getText());
+
+		Type idType = vt.getType(id);
+
+		if (expr.equals(idType)){
+			System.out.println(idType);
+			return idType;
+		} else if (idType.equals(Type.INT_TYPE) && expr.equals(Type.BOOL_TYPE)) {
+			System.out.println(Type.REAL_TYPE);
+			return Type.REAL_TYPE;
+		}
+		System.out.println("null Assign_stmt");
 		return null; // Java says must return something even when Type
 	}
 
@@ -164,44 +177,45 @@ public class SemanticChecker extends EZParserBaseVisitor<Type> {
 	@Override public Type visitExprTrue(EZParser.ExprTrueContext ctx) { return Type.BOOL_TYPE; }
 
 	@Override public Type visitExprFalse(EZParser.ExprFalseContext ctx) { return Type.BOOL_TYPE; }
-	
 
 	@Override public Type visitPlusMinus(EZParser.PlusMinusContext ctx) {
 		Type esq = visit(ctx.expr(0));
 		Type dir = visit(ctx.expr(1));
 		
-		if (ctx.PLUS().getText().equals("+")) {
+		if (ctx.PLUS() != null){
 			if (esq.equals(dir)){
-				System.out.println(esq);
+				//System.out.println(esq);
 				return esq;
 			} else if (esq.equals(Type.STR_TYPE) || dir.equals(Type.STR_TYPE)) {
-				System.out.println(Type.STR_TYPE);
+				//System.out.println(Type.STR_TYPE);
 				return Type.STR_TYPE;
 			} else if (esq.equals(Type.BOOL_TYPE)) {
-				System.out.println(dir);
+				//System.out.println(dir);
 				return dir;
 			} else if (dir.equals(Type.BOOL_TYPE)) {
-				System.out.println(esq);
+				//System.out.println(esq);
 				return esq;
 			} else if (esq.equals(Type.REAL_TYPE) || dir.equals(Type.REAL_TYPE)) {
-				System.out.println(Type.BOOL_TYPE);
-				return Type.BOOL_TYPE;
-			}  
-		} else {
+				//System.out.println(Type.REAL_TYPE);
+				return Type.REAL_TYPE;
+			} 
+		} else if (ctx.MINUS() != null ) {
 			if (esq.equals(Type.INT_TYPE) && dir.equals(Type.INT_TYPE)){
+				//System.out.println(Type.INT_TYPE);
 				return Type.INT_TYPE;
-			} else if (esq.equals(Type.INT_TYPE) && dir.equals(Type.BOOL_TYPE)){
-				return Type.BOOL_TYPE;
-			} else if (esq.equals(Type.BOOL_TYPE) && dir.equals(Type.INT_TYPE)){
-				return Type.BOOL_TYPE;
-			} else if (esq.equals(Type.BOOL_TYPE) && dir.equals(Type.BOOL_TYPE)){
-				return Type.BOOL_TYPE;
-			} else {
-				return null;
-				//errooooooooo
-			}
-		}
+			} else if (esq.equals(Type.INT_TYPE) && dir.equals(Type.REAL_TYPE)){
+				//System.out.println(Type.REAL_TYPE);
+				return Type.REAL_TYPE;
+			} else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.INT_TYPE)){
+				//System.out.println(Type.REAL_TYPE);
+				return Type.REAL_TYPE;
+			} else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.REAL_TYPE)){
+				//System.out.println(Type.REAL_TYPE);
+				return Type.REAL_TYPE;
+			} 
 
+		}
+		//System.out.println("null PlusMinus");
 		return null;
 	 }
 
@@ -210,18 +224,19 @@ public class SemanticChecker extends EZParserBaseVisitor<Type> {
 		Type dir = visit(ctx.expr(1));
 		
 		if (esq.equals(Type.INT_TYPE) && dir.equals(Type.INT_TYPE)){
+			//System.out.println(Type.INT_TYPE);
 			return Type.INT_TYPE;
-		} else if (esq.equals(Type.INT_TYPE) && dir.equals(Type.BOOL_TYPE)){
-			return Type.BOOL_TYPE;
-		} else if (esq.equals(Type.BOOL_TYPE) && dir.equals(Type.INT_TYPE)){
-			return Type.BOOL_TYPE;
-		} else if (esq.equals(Type.BOOL_TYPE) && dir.equals(Type.BOOL_TYPE)){
-			return Type.BOOL_TYPE;
-		} else {
-			return null;
-			//errooooooooo
-		}
-
+		} else if (esq.equals(Type.INT_TYPE) && dir.equals(Type.REAL_TYPE)){
+			//System.out.println(Type.REAL_TYPE);
+			return Type.REAL_TYPE;
+		} else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.INT_TYPE)){
+			//System.out.println(Type.REAL_TYPE);
+			return Type.REAL_TYPE;
+		} else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.REAL_TYPE)){
+			//System.out.println(Type.REAL_TYPE);
+			return Type.REAL_TYPE;
+		} 
+		//System.out.println("null TimesOver");
 		return null;
 	}
 
@@ -229,7 +244,17 @@ public class SemanticChecker extends EZParserBaseVisitor<Type> {
 		Type esq = visit(ctx.expr(0));
 		Type dir = visit(ctx.expr(1));
 		
-
+		if (esq.equals(dir) && !esq.equals(Type.BOOL_TYPE)){
+			//System.out.println(Type.BOOL_TYPE);
+			return Type.BOOL_TYPE;
+		} else if (esq.equals(Type.INT_TYPE) && dir.equals(Type.REAL_TYPE)){
+			//System.out.println(Type.BOOL_TYPE);
+			return Type.BOOL_TYPE;
+		} else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.INT_TYPE)){
+			//System.out.println(Type.BOOL_TYPE);
+			return Type.BOOL_TYPE;
+		} 
+		//System.out.println("null eqlt");
 		return null;
 	 }
 	
