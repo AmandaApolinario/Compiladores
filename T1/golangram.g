@@ -51,9 +51,9 @@ simpleStmt: incDecStmt #simpleIncDecStmt
 	| expressionStmt #simpleExpressionStmt
 	; 
 
-type_: ID | 
-		typeLit | 
-		LPAR type_ RPAR;
+type_: ID 
+	| typeLit 
+	| LPAR type_ RPAR;
 
 expressionStmt: expression;
 

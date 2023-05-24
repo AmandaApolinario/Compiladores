@@ -67,7 +67,7 @@ public class Visitor extends golangramBaseVisitor<Type> {
             System.out.println("Nao eh possivel declarar duas variaveis com o mesmo nome. Declarando: " + ctx.idList().ID(0).getText());
             System.exit(1);
         }
-        return null;      
+        return null;          
     }
 
     @Override public Type visitParameterDecl(golangramParser.ParameterDeclContext ctx) { 
@@ -120,8 +120,94 @@ public class Visitor extends golangramBaseVisitor<Type> {
                 System.out.println(Type.REAL_TYPE);
                 return Type.REAL_TYPE;
             }
+        } else if (ctx.MINUS() != null) {
+            if (esq.equals(dir) && !esq.equals(Type.BOOL_TYPE) && !esq.equals(Type.STR_TYPE)){
+                System.out.println(dir);
+                return dir;
+            } else if (esq.equals(Type.INT_TYPE) && dir.equals(Type.REAL_TYPE)){
+                System.out.println(Type.REAL_TYPE);
+                return Type.REAL_TYPE;
+            } else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.INT_TYPE)){
+                System.out.println(Type.REAL_TYPE);
+                return Type.REAL_TYPE;
+            }
         }
-        System.out.println("null");
+        System.out.println("null add op");
+        return null;
+    }
+	
+    @Override public Type visitMul_opExpression(golangramParser.Mul_opExpressionContext ctx) { 
+        Type esq = visit(ctx.expression(0));
+        Type dir = visit(ctx.expression(1));
+
+        if (ctx.TIMES() != null || ctx.OVER() != null) {
+            if (esq.equals(dir) && !esq.equals(Type.BOOL_TYPE) && !esq.equals(Type.STR_TYPE)){
+                System.out.println(dir);
+                return dir;
+            } else if (esq.equals(Type.INT_TYPE) && dir.equals(Type.REAL_TYPE)){
+                System.out.println(Type.REAL_TYPE);
+                return Type.REAL_TYPE;
+            } else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.INT_TYPE)){
+                System.out.println(Type.REAL_TYPE);
+                return Type.REAL_TYPE;
+            }
+        } else if (ctx.MOD() != null) {
+            if (esq.equals(Type.INT_TYPE) && dir.equals(Type.INT_TYPE)){
+                System.out.println(Type.INT_TYPE);
+                return Type.INT_TYPE;
+            }
+        }
+
+        System.out.println("null mult op");
+        return null;
+    }
+
+    @Override public Type visitRel_opExpression(golangramParser.Rel_opExpressionContext ctx) { 
+        Type esq = visit(ctx.expression(0));
+        Type dir = visit(ctx.expression(1));
+
+        if (esq.equals(Type.INT_TYPE) && dir.equals(Type.INT_TYPE)){
+            System.out.println(Type.BOOL_TYPE);
+            return Type.BOOL_TYPE;
+        } else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.REAL_TYPE)){
+            System.out.println(Type.BOOL_TYPE);
+            return Type.BOOL_TYPE;
+        } else if (esq.equals(Type.INT_TYPE) && dir.equals(Type.REAL_TYPE)){
+            System.out.println(Type.BOOL_TYPE);
+            return Type.BOOL_TYPE;
+        } else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.INT_TYPE)){
+            System.out.println(Type.BOOL_TYPE);
+            return Type.BOOL_TYPE;
+        } else if (esq.equals(Type.STR_TYPE) && dir.equals(Type.STR_TYPE)){
+            System.out.println(Type.BOOL_TYPE);
+            return Type.BOOL_TYPE;
+        } else if (esq.equals(Type.BOOL_TYPE) && dir.equals(Type.BOOL_TYPE)) {
+            if (ctx.ISEQUAL() != null || ctx.NOTEQUAL() != null) {
+                System.out.println(Type.BOOL_TYPE);
+                return Type.BOOL_TYPE;
+            }
+        }
+
+        System.out.println("null rel op");
+        return null;
+    }
+	
+	@Override public Type visitIncDecStmt(golangramParser.IncDecStmtContext ctx) {
+        Type exp = visit(ctx.expression());
+        //tem q pegar o tipo da variavel
+
+        //ESSE É O MEU PROBLEMA
+        //checkVar(ctx.expression().visitPrimaryExprExpression().visitOperandID().getSymbol());
+		//int id = vt.lookupVar(ctx.ID().getText());
+
+		//Type idType = vt.getType(id);
+
+        if (exp.equals(Type.INT_TYPE) || exp.equals(Type.REAL_TYPE)) {
+            System.out.println(exp);
+            return exp;
+        }
+
+        System.out.println("null inc dec");
         return null;
     }
 	
