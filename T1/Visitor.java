@@ -6,7 +6,7 @@ import tables.StrTable;
 
 import typing.Type;
 
-public class Visitor extends golangramBaseVisitor<Void> {
+public class Visitor extends golangramBaseVisitor<Type> {
 
     FuncTable funcTable = new FuncTable();
     StrTable strTable = new StrTable();
@@ -14,7 +14,7 @@ public class Visitor extends golangramBaseVisitor<Void> {
     String funcName;
     Type type;
 
-    @Override public Void visitFunctionDecl(golangramParser.FunctionDeclContext ctx) {
+    @Override public Type visitFunctionDecl(golangramParser.FunctionDeclContext ctx) {
         funcName = ctx.ID().getText();
         varTable = new VarTable();
 
@@ -35,7 +35,7 @@ public class Visitor extends golangramBaseVisitor<Void> {
     }
 
 
-    @Override public Void visitSimpleDeclareAssignment(golangramParser.SimpleDeclareAssignmentContext ctx) { 
+    @Override public Type visitSimpleDeclareAssignment(golangramParser.SimpleDeclareAssignmentContext ctx) { 
         int isNewVar = varTable.lookupVar(ctx.toString());
         
         if (isNewVar == -1) {
@@ -47,10 +47,9 @@ public class Visitor extends golangramBaseVisitor<Void> {
         return null;
     }
 
-    
-
-    @Override public Void visitVarSpec(golangramParser.VarSpecContext ctx) { 
+    @Override public Type visitVarSpec(golangramParser.VarSpecContext ctx) { 
         visit(ctx.type_());
+        visit(ctx.expressionList());
         String t = ctx.type_().ID().getText();
 
         if(t.equals("string")) {
@@ -71,23 +70,7 @@ public class Visitor extends golangramBaseVisitor<Void> {
         return null;      
     }
 
-    //DUVIDA
-    //O PRIMEIRO TYPE AINDA É NULL QUANDO ELE CHEGA NA HORA DE ADICIONAR NA VAR TABLE
-   /*  @Override public Void visitIdList(golangramParser.IdListContext ctx) { 
-        int isNewVar = varTable.lookupVar(ctx.ID(0).getText());
-        if (isNewVar == -1) {
-            varTable.addVar(ctx.ID(0).getText(), ctx.getStart().getLine(), Type.INT_TYPE);
-        } else {
-            System.out.println("Nao eh possivel declarar duas variaveis com o mesmo nome. Declarando: " + ctx.ID(0).getText());
-            System.exit(1);
-        }
-        return null;      
-
-    }*/
-
-    //DUVIDA
-    //TODOS OS PARAMETROS TAO VIRANDO STRING
-    @Override public Void visitParameterDecl(golangramParser.ParameterDeclContext ctx) { 
+    @Override public Type visitParameterDecl(golangramParser.ParameterDeclContext ctx) { 
 
         int isNewVar = varTable.lookupVar(ctx.ID().getText());
         if (isNewVar == -1) {
@@ -99,23 +82,48 @@ public class Visitor extends golangramBaseVisitor<Void> {
         return null;
     }
 	
-    @Override public Void visitStrVal(golangramParser.StrValContext ctx) { 
+    @Override public Type visitStrVal(golangramParser.StrValContext ctx) { 
         strTable.add(ctx.STR_VAL().getText());
         type = Type.STR_TYPE;
-        return null; 
+        return Type.STR_TYPE; 
     }
 
-    @Override public Void visitIntVal(golangramParser.IntValContext ctx) { 
+    @Override public Type visitIntVal(golangramParser.IntValContext ctx) { 
         type = Type.INT_TYPE;
-        return null;
+        return Type.INT_TYPE;
     }
 
 
-	@Override public Void visitRealVal(golangramParser.RealValContext ctx) { 
+	@Override public Type visitRealVal(golangramParser.RealValContext ctx) { 
         type = Type.REAL_TYPE;
-        return null;
+        return Type.REAL_TYPE;
     }
 
+    @Override public Type visitBoolVal(golangramParser.BoolValContext ctx) { 
+        type = Type.BOOL_TYPE;
+        return Type.BOOL_TYPE;
+    }
+	
+
+	@Override public Type visitAdd_opExpression(golangramParser.Add_opExpressionContext ctx) { 
+        Type esq = visit(ctx.expression(0));
+        Type dir = visit(ctx.expression(1));
+
+        if (ctx.PLUS() != null) {
+            if (esq.equals(dir) && !esq.equals(Type.BOOL_TYPE)){
+                System.out.println(dir);
+                return dir;
+            } else if (esq.equals(Type.INT_TYPE) && dir.equals(Type.REAL_TYPE)){
+                System.out.println(Type.REAL_TYPE);
+                return Type.REAL_TYPE;
+            } else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.INT_TYPE)){
+                System.out.println(Type.REAL_TYPE);
+                return Type.REAL_TYPE;
+            }
+        }
+        System.out.println("null");
+        return null;
+    }
 	
 	
 }

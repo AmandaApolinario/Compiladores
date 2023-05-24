@@ -34,9 +34,8 @@ public class Main {
 		visitor.visit(tree);
 
 		// Saída final.
-		//System.out.println("Result = " + visitor.strTable);
-		System.out.println(visitor.funcTable.toString());
-		System.out.println(visitor.strTable.toString());
+		//System.out.println(visitor.funcTable.toString());
+		//System.out.println(visitor.strTable.toString());
 }
 
 }

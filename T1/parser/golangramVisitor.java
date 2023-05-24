@@ -320,11 +320,61 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParameterDecl(golangramParser.ParameterDeclContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link golangramParser#expression}.
+	 * Visit a parse tree produced by the {@code orExpression}
+	 * labeled alternative in {@link golangramParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpression(golangramParser.ExpressionContext ctx);
+	T visitOrExpression(golangramParser.OrExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code mul_opExpression}
+	 * labeled alternative in {@link golangramParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMul_opExpression(golangramParser.Mul_opExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code andExpression}
+	 * labeled alternative in {@link golangramParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAndExpression(golangramParser.AndExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code unary_opExpression}
+	 * labeled alternative in {@link golangramParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnary_opExpression(golangramParser.Unary_opExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code rel_opExpression}
+	 * labeled alternative in {@link golangramParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRel_opExpression(golangramParser.Rel_opExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code add_opExpression}
+	 * labeled alternative in {@link golangramParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAdd_opExpression(golangramParser.Add_opExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code operandExpression}
+	 * labeled alternative in {@link golangramParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOperandExpression(golangramParser.OperandExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code primaryExprExpression}
+	 * labeled alternative in {@link golangramParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrimaryExprExpression(golangramParser.PrimaryExprExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link golangramParser#primaryExpr}.
 	 * @param ctx the parse tree
@@ -392,11 +442,24 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRealVal(golangramParser.RealValContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code boolVal}
+	 * labeled alternative in {@link golangramParser#basicLit}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolVal(golangramParser.BoolValContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link golangramParser#index}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitIndex(golangramParser.IndexContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link golangramParser#bool}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBool(golangramParser.BoolContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link golangramParser#arguments}.
 	 * @param ctx the parse tree

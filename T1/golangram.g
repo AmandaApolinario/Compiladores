@@ -143,21 +143,21 @@ parameters:
 parameterDecl: ID? type_;
 
 expression:
-	primaryExpr
-	| operand
+	primaryExpr #primaryExprExpression
+	| operand #operandExpression
 	| unary_op = (
 		PLUS
 		| TIMES
 		| MINUS
 		| OVER
 		| NOT
-	) expression
+	) expression #unary_opExpression
 	| expression mul_op = (
 		TIMES
 		| OVER
 		| MOD
-	) expression
-	| expression add_op = (PLUS | MINUS | OR) expression
+	) expression # mul_opExpression
+	| expression add_op = (PLUS | MINUS | OR) expression #add_opExpression
 	| expression rel_op = (
 		ISEQUAL
 		| NOTEQUAL
@@ -165,9 +165,9 @@ expression:
 		| LESSEQTHAN
 		| MORETHAN
 		| MOREEQTHAN
-	) expression
-	| expression AND expression
-	| expression OR expression;
+	) expression #rel_opExpression
+	| expression AND expression #andExpression
+	| expression OR expression #orExpression ;
 
 primaryExpr:
 	operand
@@ -194,9 +194,15 @@ operand: basicLit #operandBasicLit
 basicLit:
 	INT_VAL #intVal
 	| STR_VAL #strVal
-	| REAL_VAL #realVal;
+	| REAL_VAL #realVal
+	| bool #boolVal
+	;
 
 index: LBRACK expression RBRACK;
+
+bool:
+	TRUE
+	| FALSE;
 
 arguments:
 	LPAR (
@@ -217,6 +223,8 @@ CONTINUE         : 'continue'           ;
 DEFAULT          : 'default'            ;
 DEFER            : 'defer'              ;
 ELSE             : 'else'               ;
+TRUE             : 'true'               ;
+FALSE            : 'false'              ;
 FALLTHROUGH      : 'fallthrough'        ;
 FOR              : 'for'                ;
 FUNC             : 'func'               ;
