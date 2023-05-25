@@ -145,6 +145,7 @@ public class Visitor extends golangramBaseVisitor<Type> {
         return null;
     }
 	
+	
     @Override public Type visitStrVal(golangramParser.StrValContext ctx) { 
         strTable.add(ctx.STR_VAL().getText());
         type = Type.STR_TYPE;
@@ -264,6 +265,20 @@ public class Visitor extends golangramBaseVisitor<Type> {
         }
 
         System.out.println("null inc dec");
+        return null;
+    }
+
+    @Override public Type visitUnary_opExpression(golangramParser.Unary_opExpressionContext ctx) { 
+        Type exp = visit(ctx.expression());
+
+        if (ctx.NOT() != null) {
+            if(exp.equals(Type.BOOL_TYPE)){
+                System.out.printf("ta em unary: %s\n",Type.BOOL_TYPE);
+                return Type.BOOL_TYPE;
+            }
+        }
+
+        System.out.println("null unary op");
         return null;
     }
 
