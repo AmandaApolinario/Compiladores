@@ -2,7 +2,7 @@ grammar golangram;
 
 begin: ((functionDecl | declaration) eos)* EOF;
 
-functionDecl: FUNC ID (parameters block?);
+functionDecl: FUNC ID (parameters type_? block?);
 
 declaration: (constDecl | typeDecl | varDecl);
 

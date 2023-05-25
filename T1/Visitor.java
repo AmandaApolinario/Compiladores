@@ -19,6 +19,7 @@ public class Visitor extends golangramBaseVisitor<Type> {
         varTable = new VarTable();
 
         visit(ctx.parameters());
+        //visit(ctx.type_());
         visit(ctx.block());
         
         int isNewFunc = funcTable.containsFunction(ctx.ID().getText());
@@ -58,6 +59,8 @@ public class Visitor extends golangramBaseVisitor<Type> {
             type = Type.INT_TYPE;
         } else if (t.equals("float32")){
             type = Type.REAL_TYPE;
+        } else if (t.equals("bool")){
+            type = Type.BOOL_TYPE;
         }
 
         int isNewVar = varTable.lookupVar(ctx.idList().ID(0).getText());
