@@ -64,6 +64,12 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpressionList(golangramParser.ExpressionListContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link golangramParser#funcCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncCall(golangramParser.FuncCallContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link golangramParser#typeDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -375,6 +381,13 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPrimaryExprExpression(golangramParser.PrimaryExprExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code funcCallExpression}
+	 * labeled alternative in {@link golangramParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncCallExpression(golangramParser.FuncCallExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link golangramParser#primaryExpr}.
 	 * @param ctx the parse tree

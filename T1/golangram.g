@@ -16,7 +16,10 @@ declareAssignment: ID DECLARE_ASSIGN basicLit;
 
 idList: ID (COMMA ID)*;
 
-expressionList: expression (COMMA expression)*;
+expressionList: expression (COMMA expression)*
+			;
+
+funcCall: ID arguments;
 
 typeDecl: TYPE (typeSpec | LPAR (typeSpec eos)* RPAR);
 
@@ -143,6 +146,8 @@ parameters:
 parameterDecl: ID? type_;
 
 expression:
+	funcCall #funcCallExpression
+	|
 	primaryExpr #primaryExprExpression
 	| operand #operandExpression
 	| unary_op = (
@@ -170,8 +175,8 @@ expression:
 	| expression OR expression #orExpression ;
 
 primaryExpr:
-	operand
-	| primaryExpr (
+	operand|
+ primaryExpr (
 		(DOT ID)
 		| index
 		| arguments

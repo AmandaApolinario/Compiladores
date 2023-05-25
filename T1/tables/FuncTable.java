@@ -10,12 +10,12 @@ public final class FuncTable {
 	Type type;
 
     public int containsFunction(String functionName) {
-        for (FunctionEntry entry : table) {
-            if (entry.name.equals(functionName)) {
-                return 1;
-            }
-        }
-        return -1;
+        for (int i = 0; i < table.size(); i++) {
+			if (table.get(i).name.equals(functionName)) {
+				return i;
+			}
+		}
+		return -1;
     }
 
 	private FunctionEntry getFunction(String functionName) {
@@ -27,8 +27,8 @@ public final class FuncTable {
 		return null;
 	}
 
-    public void addFunction(String functionName, VarTable varTable) {
-        FunctionEntry entry = new FunctionEntry(functionName, varTable);
+    public void addFunction(String functionName, VarTable varTable, Type returnType) {
+        FunctionEntry entry = new FunctionEntry(functionName, varTable, returnType);
         table.add(entry);
     }
 	
@@ -45,14 +45,21 @@ public final class FuncTable {
         return sb.toString();
     }
 
+    public Type getReturn(int i) {
+		return table.get(i).returnType;
+	}
+
     private static class FunctionEntry {
         private final String name;
 
 	   	VarTable varTable;
 
-        FunctionEntry(String name, VarTable varTable) {
+        Type returnType;
+
+        FunctionEntry(String name, VarTable varTable, Type returnType) {
             this.name = name;
 			this.varTable = varTable;
+            this.returnType = returnType;
         }
     }
 }
