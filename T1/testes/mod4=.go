@@ -7,7 +7,23 @@ func teste() int {
 };
 
 func main() {
-	var a = 3;
+
+	/*var vetor1 [5]int
+
+    // Atribuindo valores ao vetor
+   
+	vetor1[0] = 10
+    vetor1[1] = 20
+    vetor1[2] = 30
+    vetor1[3] = 40
+    vetor1[4] = 50*/
+
+	/*var i = 0
+    for i < 5 {
+        //fmt.Println(i)
+        i++
+    }*/
+	/*var a = 3;
 	//var b int = 5.3;
 	var c = 2.4;
 	var d float32 = 2.4;
@@ -22,6 +38,6 @@ func main() {
 
 	var isgrs float32 = teste();
 	var teste bool = true;
-	teste = !teste;
+	teste = !teste;*/
 
 }

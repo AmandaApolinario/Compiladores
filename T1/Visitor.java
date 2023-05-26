@@ -15,19 +15,21 @@ public class Visitor extends golangramBaseVisitor<Type> {
     VarTable varTable;
     String funcName;
     Type type;
+    int parametersCount = 0;
+    int argumentsCount = 0;
 
-        // Testa se o dado token foi declarado antes.
-        private Type checkVar(Token token) {
-            String text = token.getText();
-            int line = token.getLine();
-               int idx = varTable.lookupVar(text);
-            if (idx == -1) {
-                System.err.printf("SEMANTIC ERROR (%d): variable '%s' was not declared.\n", line, text);
-                System.exit(1);
-                return null; // Never reached.
-            }
-            return varTable.getType(idx);
+    // Testa se o dado token foi declarado antes.
+    private Type checkVar(Token token) {
+        String text = token.getText();
+        int line = token.getLine();
+           int idx = varTable.lookupVar(text);
+        if (idx == -1) {
+            System.err.printf("SEMANTIC ERROR (%d): variable '%s' was not declared.\n", line, text);
+            System.exit(1);
+            return null; // Never reached.
         }
+        return varTable.getType(idx);
+    }
 
     @Override public Type visitFunctionDecl(golangramParser.FunctionDeclContext ctx) {
         funcName = ctx.ID().getText();
@@ -54,9 +56,9 @@ public class Visitor extends golangramBaseVisitor<Type> {
                     t2 = Type.BOOL_TYPE;
                 } 
 
-                funcTable.addFunction(ctx.ID().getText(), varTable, t2);
+                funcTable.addFunction(ctx.ID().getText(), varTable, t2, parametersCount);
             } else {
-                funcTable.addFunction(ctx.ID().getText(), varTable, null);
+                funcTable.addFunction(ctx.ID().getText(), varTable, null, parametersCount);
             }
 
         } else {
@@ -67,6 +69,12 @@ public class Visitor extends golangramBaseVisitor<Type> {
         return null; 
     }
 
+    @Override public Type visitParameters(golangramParser.ParametersContext ctx) {
+        parametersCount = ctx.parameterDecl().size();
+
+        return null;    
+     }
+	
 
     @Override public Type visitSimpleDeclareAssignment(golangramParser.SimpleDeclareAssignmentContext ctx) { 
         int isNewVar = varTable.lookupVar(ctx.toString());
@@ -291,20 +299,32 @@ public class Visitor extends golangramBaseVisitor<Type> {
         return idType;
 
     }
-	
+
+    @Override public Type visitExpressionList(golangramParser.ExpressionListContext ctx) {
+        argumentsCount = ctx.expression().size();
+        visitChildren(ctx);
+        return null; 
+    }
 	
 	@Override public Type visitFuncCall(golangramParser.FuncCallContext ctx) { 
         funcName = ctx.ID().getText();
 
+        argumentsCount = 0;
         visit(ctx.arguments());
         
         int isDeclaredFunc = funcTable.containsFunction(ctx.ID().getText());
         if (isDeclaredFunc != -1) {
-
-            Type typeReturn = funcTable.getReturn(isDeclaredFunc);
-            if(typeReturn != null) {
-                System.out.println(typeReturn);
-                return typeReturn;
+            int parameters = funcTable.getQtdParams(isDeclaredFunc);
+            if (parameters == argumentsCount) {
+                System.out.println("quantidade certa de parametros");
+                Type typeReturn = funcTable.getReturn(isDeclaredFunc);
+                if(typeReturn != null) {
+                    System.out.println(typeReturn);
+                    return typeReturn;
+                }
+            } else {
+                System.out.printf("A quantidade correta de parametros da função %s é %d, você digitou %d!",ctx.ID().getText(), parameters, argumentsCount);
+                System.exit(1);
             }
 
         } else {

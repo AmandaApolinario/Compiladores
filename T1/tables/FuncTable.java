@@ -27,8 +27,8 @@ public final class FuncTable {
 		return null;
 	}
 
-    public void addFunction(String functionName, VarTable varTable, Type returnType) {
-        FunctionEntry entry = new FunctionEntry(functionName, varTable, returnType);
+    public void addFunction(String functionName, VarTable varTable, Type returnType, int paramCount) {
+        FunctionEntry entry = new FunctionEntry(functionName, varTable, returnType, paramCount);
         table.add(entry);
     }
 	
@@ -49,17 +49,21 @@ public final class FuncTable {
 		return table.get(i).returnType;
 	}
 
+    public int getQtdParams(int i) {
+		return table.get(i).paramCount;
+	}
+
     private static class FunctionEntry {
         private final String name;
-
 	   	VarTable varTable;
-
         Type returnType;
+        int paramCount;
 
-        FunctionEntry(String name, VarTable varTable, Type returnType) {
+        FunctionEntry(String name, VarTable varTable, Type returnType, int paramCount) {
             this.name = name;
 			this.varTable = varTable;
             this.returnType = returnType;
+            this.paramCount = paramCount;
         }
     }
 }
