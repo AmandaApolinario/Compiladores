@@ -47,8 +47,7 @@ statement:
 	| switchStmt
 	| forStmt;
 
-simpleStmt:
-      sendStmt
+simpleStmt: sendStmt
     | incDecStmt
 	| assignment
 	| expressionStmt;
@@ -138,11 +137,9 @@ rangeClause: (
 	)? RANGE expression;
     
 
-arrayType: LBRACK arrayLength RBRACK elementType;
+arrayType: LBRACK arrayLength RBRACK type_;
 
 arrayLength: expression;
-
-elementType: type_;
 
 sliceType: LBRACK RBRACK elementType;
 

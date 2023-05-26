@@ -7,17 +7,6 @@ func teste() int {
 };
 
 func main() {
-
-	/*var vetor1 [5]int
-
-    // Atribuindo valores ao vetor
-   
-	vetor1[0] = 10
-    vetor1[1] = 20
-    vetor1[2] = 30
-    vetor1[3] = 40
-    vetor1[4] = 50*/
-
 	/*var i = 0
     for i < 5 {
         //fmt.Println(i)

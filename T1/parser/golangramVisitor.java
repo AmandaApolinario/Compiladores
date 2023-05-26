@@ -296,12 +296,6 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArrayLength(golangramParser.ArrayLengthContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link golangramParser#elementType}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitElementType(golangramParser.ElementTypeContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link golangramParser#functionType}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

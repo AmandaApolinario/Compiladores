@@ -27,7 +27,8 @@ varDecl: VAR varSpec;
 
 varSpec:
 	idList (
-		type_ (ASSIGN expressionList)?
+		arrayType (ASSIGN expressionList)?
+		| type_ (ASSIGN expressionList)?
 		| ASSIGN expressionList
 );
 
@@ -130,11 +131,9 @@ rangeClause: (
 	)? RANGE expression;
     
 
-arrayType: LBRACK arrayLength RBRACK elementType;
+arrayType: LBRACK arrayLength RBRACK type_;
 
 arrayLength: expression;
-
-elementType: type_;
 
 functionType: FUNC parameters;
 

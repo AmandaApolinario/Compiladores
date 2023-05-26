@@ -125,6 +125,19 @@ public class Visitor extends golangramBaseVisitor<Type> {
             } else {
                 typeExp = type;
             }
+        } else if (ctx.arrayType() != null) {
+            String s = ctx.arrayType().type_().getText();
+
+            if(s.equals("string")) {
+                typeExp = Type.STR_TYPE;
+            } else if (s.equals("int")){
+                typeExp = Type.INT_TYPE;
+            } else if (s.equals("float32")){
+                typeExp = Type.REAL_TYPE;
+            } else if (s.equals("bool")){
+                typeExp = Type.BOOL_TYPE;
+            } 
+      
         }
 
         int isNewVar = varTable.lookupVar(ctx.idList().ID(0).getText());
@@ -302,8 +315,8 @@ public class Visitor extends golangramBaseVisitor<Type> {
 
     @Override public Type visitExpressionList(golangramParser.ExpressionListContext ctx) {
         argumentsCount = ctx.expression().size();
-        visitChildren(ctx);
-        return null; 
+        
+        return visitChildren(ctx);
     }
 	
 	@Override public Type visitFuncCall(golangramParser.FuncCallContext ctx) { 
