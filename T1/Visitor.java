@@ -36,7 +36,6 @@ public class Visitor extends golangramBaseVisitor<Type> {
         varTable = new VarTable();
 
         visit(ctx.parameters());
-        //visit(ctx.type_());
         visit(ctx.block());
         
         int isNewFunc = funcTable.containsFunction(ctx.ID().getText());
@@ -150,9 +149,28 @@ public class Visitor extends golangramBaseVisitor<Type> {
             System.exit(1);
         }
 
-        System.out.println("null var spec");
+        System.out.println("Tipo de variavel errado em var spec");
+        System.exit(1);
         return null;          
     }
+
+    @Override public Type visitSimpleArrayStmt(golangramParser.SimpleArrayStmtContext ctx) { 
+
+        Type arrayType = visit(ctx.arrayStmt().operand());
+
+        Type stmtType = visit(ctx.arrayStmt().basicLit());
+
+
+        if (arrayType.equals(stmtType)) {
+            System.out.println(type);
+            return type;
+        }
+        
+        System.out.println("Tipo de variavel errado na declaração do vetor");
+        System.exit(1);
+        return null;
+    }
+	
 
     @Override public Type visitParameterDecl(golangramParser.ParameterDeclContext ctx) { 
 
@@ -165,7 +183,6 @@ public class Visitor extends golangramBaseVisitor<Type> {
         }
         return null;
     }
-	
 	
     @Override public Type visitStrVal(golangramParser.StrValContext ctx) { 
         strTable.add(ctx.STR_VAL().getText());
@@ -217,7 +234,8 @@ public class Visitor extends golangramBaseVisitor<Type> {
                 return Type.REAL_TYPE;
             }
         }
-        System.out.println("null add op");
+        System.out.println("Tipo de variavel errado em add op");
+        System.exit(1);
         return null;
     }
 	
@@ -243,7 +261,8 @@ public class Visitor extends golangramBaseVisitor<Type> {
             }
         }
 
-        System.out.println("null mult op");
+        System.out.println("Tipo de variavel errado em mult op");
+        System.exit(1);
         return null;
     }
 
@@ -273,7 +292,8 @@ public class Visitor extends golangramBaseVisitor<Type> {
             }
         }
 
-        System.out.println("null rel op");
+        System.out.println("Tipo de variavel errado em rel op");
+        System.exit(1);
         return null;
     }
 	
@@ -285,7 +305,8 @@ public class Visitor extends golangramBaseVisitor<Type> {
             return exp;
         }
 
-        System.out.println("null inc dec");
+        System.out.println("Tipo de variavel errado em inc dec");
+        System.exit(1);
         return null;
     }
 
@@ -299,7 +320,8 @@ public class Visitor extends golangramBaseVisitor<Type> {
             }
         }
 
-        System.out.println("null unary op");
+        System.out.println("Tipo de variavel errado em unary op");
+        System.exit(1);
         return null;
     }
 
@@ -345,8 +367,7 @@ public class Visitor extends golangramBaseVisitor<Type> {
             System.exit(1);
         }
 
-        return null;//OLHA ISSO AQ EIN EU N VI SE ERA PRA SER NULL
+        return null;
     }
-	
 	
 }

@@ -22,6 +22,12 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunctionDecl(golangramParser.FunctionDeclContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link golangramParser#arrayStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayStmt(golangramParser.ArrayStmtContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link golangramParser#declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -105,6 +111,13 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStatement(golangramParser.StatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code simpleArrayStmt}
+	 * labeled alternative in {@link golangramParser#simpleStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSimpleArrayStmt(golangramParser.SimpleArrayStmtContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code simpleIncDecStmt}
 	 * labeled alternative in {@link golangramParser#simpleStmt}.

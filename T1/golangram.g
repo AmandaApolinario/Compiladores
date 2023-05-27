@@ -4,6 +4,8 @@ begin: ((functionDecl | declaration) eos)* EOF;
 
 functionDecl: FUNC ID (parameters type_? block?);
 
+arrayStmt: operand index ASSIGN basicLit;
+
 declaration: (constDecl | typeDecl | varDecl);
 
 typeSpec: ID ASSIGN? type_;
@@ -49,7 +51,9 @@ statement:
 	| switchStmt
 	| forStmt;
 
-simpleStmt: incDecStmt #simpleIncDecStmt
+simpleStmt: 
+	arrayStmt #simpleArrayStmt
+	| incDecStmt #simpleIncDecStmt
     | declareAssignment #simpleDeclareAssignment
 	| assignment #simpleAssignment
 	| expressionStmt #simpleExpressionStmt
@@ -264,7 +268,7 @@ MINUSONE         : '--'                 ;
 ISEQUAL           : '=='                 ;
 LESSTHAN         : '<'                  ;
 MORETHAN         : '>'                  ;
-ASSIGN            : '='                  ;
+ASSIGN           : '='                  ;
 NOT              : '!'                  ;
 NOTEQUAL         : '!='                 ;
 LESSEQTHAN       : '<='                 ;
