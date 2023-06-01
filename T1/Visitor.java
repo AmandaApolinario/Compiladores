@@ -354,7 +354,7 @@ public class Visitor extends golangramBaseVisitor<Type> {
                 System.out.println("quantidade certa de parametros");
                 Type typeReturn = funcTable.getReturn(isDeclaredFunc);
                 if(typeReturn != null) {
-                    System.out.println(typeReturn);
+                    //System.out.println(typeReturn);
                     return typeReturn;
                 }
             } else {

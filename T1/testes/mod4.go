@@ -19,19 +19,6 @@ func main() {
 	var l bool = 1 >= 3.2
 	var m bool = "abc" > "123"
 	//var n bool = true > true //erro
-	
-	
-	if (true == false) {
-
-	} else if (true != false) {
-
-	}
-
-	/*var o int = 1
-	var p float32 = 3.2
-	o++
-	p--*/
-	//d++ //erro
 
 	var q int = 1 % 2
 	//var r float32 3.3 % 2 //erro

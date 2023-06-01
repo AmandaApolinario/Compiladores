@@ -5,7 +5,7 @@ import "fmt"
 func main() {
 	var c string = "teste"
 	var a int 
-	//b := 25
+	b := 25
 	var count int
 	const d = 3
 };
