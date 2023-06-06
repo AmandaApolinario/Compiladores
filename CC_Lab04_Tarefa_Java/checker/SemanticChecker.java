@@ -6,6 +6,9 @@ import static typing.Type.NO_TYPE;
 import static typing.Type.REAL_TYPE;
 import static typing.Type.STR_TYPE;
 
+import ast.NodeKind;
+import ast.AST;
+
 import org.antlr.v4.runtime.Token;
 
 import parser.EZParser;
@@ -61,7 +64,7 @@ import typing.Type;
  * retornamos NO_TYPE. Esse mesmo valor de retorno é usado para indicar
  * erros de tipos.
  */
-public class SemanticChecker extends EZParserBaseVisitor<Type> {
+public class SemanticChecker extends EZParserBaseVisitor<AST> {
 
 	private StrTable st = new StrTable();   // Tabela de strings.
     private VarTable vt = new VarTable();   // Tabela de variáveis.
@@ -133,35 +136,35 @@ public class SemanticChecker extends EZParserBaseVisitor<Type> {
 
     // Visita a regra type_spec: BOOL
     @Override
-    public Type visitBoolType(EZParser.BoolTypeContext ctx) {
+    public AST visitBoolType(EZParser.BoolTypeContext ctx) {
     	this.lastDeclType = Type.BOOL_TYPE;
     	return NO_TYPE;
     }
 
     // Visita a regra type_spec: INT
 	@Override
-	public Type visitIntType(EZParser.IntTypeContext ctx) {
+	public AST visitIntType(EZParser.IntTypeContext ctx) {
 		this.lastDeclType = Type.INT_TYPE;
 		return NO_TYPE;
 	}
 
 	// Visita a regra type_spec: REAL
 	@Override
-	public Type visitRealType(EZParser.RealTypeContext ctx) {
+	public AST visitRealType(EZParser.RealTypeContext ctx) {
 		this.lastDeclType = Type.REAL_TYPE;
 		return NO_TYPE;
     }
 
 	// Visita a regra type_spec: STRING
 	@Override
-	public Type visitStrType(EZParser.StrTypeContext ctx) {
+	public AST visitStrType(EZParser.StrTypeContext ctx) {
 		this.lastDeclType = Type.STR_TYPE;
 		return NO_TYPE;
 	}
 
     // Visita a regra var_decl: type_spec ID SEMI
     @Override
-    public Type visitVar_decl(EZParser.Var_declContext ctx) {
+    public AST visitVar_decl(EZParser.Var_declContext ctx) {
     	// Visita a declaração de tipo para definir a variável lastDeclType.
     	visit(ctx.type_spec());
     	// Agora testa se a variável foi redeclarada.
@@ -171,7 +174,7 @@ public class SemanticChecker extends EZParserBaseVisitor<Type> {
 
     // Visita a regra assign_stmt: ID ASSIGN expr SEMI
 	@Override
-	public Type visitAssign_stmt(Assign_stmtContext ctx) {
+	public AST visitAssign_stmt(Assign_stmtContext ctx) {
 		// Visita recursivamente a expressão da direita para procurar erros.
 		Type exprType = visit(ctx.expr());
 		// Verifica se a variável a ser atribuída foi declarada.
@@ -183,7 +186,7 @@ public class SemanticChecker extends EZParserBaseVisitor<Type> {
 
 	// Visita a regra if_stmt: IF expr THEN stmt+ (ELSE stmt+)? END
 	@Override
-	public Type visitIf_stmt(If_stmtContext ctx) {
+	public AST visitIf_stmt(If_stmtContext ctx) {
 		// Visita recursivamente a expressão de teste para ver se
 		// ela tem o tipo Booleano.
 		Type exprType = visit(ctx.expr());
@@ -193,7 +196,7 @@ public class SemanticChecker extends EZParserBaseVisitor<Type> {
 
 	// Visita a regra read_stmt: READ ID SEMI
 	@Override
-	public Type visitRead_stmt(Read_stmtContext ctx) {
+	public AST visitRead_stmt(Read_stmtContext ctx) {
 		// Verifica se a variável que vai receber o valor lido foi declarada.
 		checkVar(ctx.ID().getSymbol());
 		return NO_TYPE;
@@ -201,7 +204,7 @@ public class SemanticChecker extends EZParserBaseVisitor<Type> {
 
 	// Visita a regra repeat-stmt: REPEAT stmt-list UNTIL expr
 	@Override
-	public Type visitRepeat_stmt(Repeat_stmtContext ctx) {
+	public AST visitRepeat_stmt(Repeat_stmtContext ctx) {
 		// Visita recursivamente a expressão de teste para ver se
 		// ela tem o tipo Booleano.
 		Type exprType = visit(ctx.expr());
@@ -211,7 +214,7 @@ public class SemanticChecker extends EZParserBaseVisitor<Type> {
 
 	// Visita a regra expr: expr op=(TIMES | OVER) expr
 	@Override
-	public Type visitTimesOver(TimesOverContext ctx) {
+	public AST visitTimesOver(TimesOverContext ctx) {
 		// Visita recursivamente as expressões da esquerda e direita
 		// para determinar os seus tipos.
 		Type l = visit(ctx.expr(0));
@@ -231,18 +234,20 @@ public class SemanticChecker extends EZParserBaseVisitor<Type> {
 
 	// Visita a regra expr: expr op=(PLUS | MINUS) expr
 	@Override
-	public Type visitPlusMinus(PlusMinusContext ctx) {
-		Type l = visit(ctx.expr(0));
-		Type r = visit(ctx.expr(1));
+	public AST visitPlusMinus(PlusMinusContext ctx) {
+		AST l = visit(ctx.expr(0));
+		AST r = visit(ctx.expr(1));
 		if (l == NO_TYPE || r == NO_TYPE) {
 			return NO_TYPE;
 		}
-		Type unif;
+		Unif unif;
 		// Aqui precisamos diferenciar entre '+' e '-',
 		// por isso que a regra na gramática associa o nome 'op' ao
 		// operador.
 		if (ctx.op.getType() == EZParser.PLUS) {
 			unif = l.unifyPlus(r);
+			newSubtree(NodeKind.PLUS_NODE, unif.type, l, r)// usar create conv node
+			
 		} else {
 			unif = l.unifyOtherArith(r);
 		}
@@ -254,7 +259,7 @@ public class SemanticChecker extends EZParserBaseVisitor<Type> {
 
 	// Visita a regra expr: expr op=(EQ | LT) expr
 	@Override
-	public Type visitEqLt(EqLtContext ctx) {
+	public AST visitEqLt(EqLtContext ctx) {
 		Type l = visit(ctx.expr(0));
 		Type r = visit(ctx.expr(1));
 		if (l == NO_TYPE || r == NO_TYPE) {
@@ -269,48 +274,51 @@ public class SemanticChecker extends EZParserBaseVisitor<Type> {
 
 	// Visita a regra expr: LPAR expr RPAR
 	@Override
-	public Type visitExprPar(ExprParContext ctx) {
+	public AST visitExprPar(ExprParContext ctx) {
 		// Propaga o tipo da expressão entre parênteses para cima.
 		return visit(ctx.expr());
 	}
 
 	// Visita a regra expr: TRUE
 	@Override
-	public Type visitExprTrue(ExprTrueContext ctx) {
-		return BOOL_TYPE;
+	public AST visitExprTrue(ExprTrueContext ctx) {
+		return new AST(NodeKind.BOOL_VAL_NODE, 1, BOOL_TYPE);
 	}
 
 	// Visita a regra expr: FALSE
 	@Override
-	public Type visitExprFalse(ExprFalseContext ctx) {
-		return BOOL_TYPE;
+	public AST visitExprFalse(ExprFalseContext ctx) {
+		return new AST(NodeKind.BOOL_VAL_NODE, 0, BOOL_TYPE);
 	}
 
 	// Visita a regra expr: INT_VAL
 	@Override
-	public Type visitExprIntVal(ExprIntValContext ctx) {
-		return INT_TYPE;
+	public AST visitExprIntVal(ExprIntValContext ctx) {
+
+		return new AST(NodeKind.INT_VAL_NODE, Integer.parseInt(ctx.getText()), INT_TYPE);
 	}
 
 	// Visita a regra expr: REAL_VAL
 	@Override
-	public Type visitExprRealVal(ExprRealValContext ctx) {
-		return REAL_TYPE;
+	public AST visitExprRealVal(ExprRealValContext ctx) {
+		return new AST(NodeKind.REAL_VAL_NODE, Float.valueOf(ctx.getText()).floatValue(), REAL_TYPE);
 	}
 
 	@Override
 	// Visita a regra expr: STR_VAL
-	public Type visitExprStrVal(ExprStrValContext ctx) {
+	public AST visitExprStrVal(ExprStrValContext ctx) {
 		// Adiciona a string na tabela de strings.
-		st.add(ctx.STR_VAL().getText());
-		return STR_TYPE;
+		int indice = st.add(ctx.STR_VAL().getText());
+		return new AST(NodeKind.STR_VAL_NODE, indice, STR_TYPE);
 	}
 
 	@Override
 	// Visita a regra expr: ID
-	public Type visitExprId(ExprIdContext ctx) {
+	public AST visitExprId(ExprIdContext ctx) {
 		// Verifica se a variável usada na expressão foi declarada.
-		return checkVar(ctx.ID().getSymbol());
+		Type type = checkVar(ctx.ID().getSymbol());
+		Int indice = vt.lookupVar(ctx.ID().getText());
+		return new AST(NodeKind.VAR_USE_NODE, indice, type);
 	}
 
 }
