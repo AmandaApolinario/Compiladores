@@ -12,7 +12,7 @@ import checker.SemanticChecker;
 public class Main {
 
 	/*
-	 *  Programa principal para funcionamento do compilador.
+	 *  Programa principal para funcionamento de compilador.
 	 *
 	 *  Esta função espera um único argumento: o nome do
 	 *  programa a ser compilado. Em um código real certamente
