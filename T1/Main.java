@@ -33,6 +33,10 @@ public class Main {
 		Visitor visitor = new Visitor();
 		visitor.visit(tree);
 
+		System.out.println("PARSE SUCCESSFUL!");
+		checker.printTables();
+		checker.printAST();
+
 		// Saída final.
 		//System.out.println(visitor.funcTable.toString());
 		//System.out.println(visitor.strTable.toString());

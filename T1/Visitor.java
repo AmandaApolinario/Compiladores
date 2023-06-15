@@ -7,8 +7,13 @@ import tables.StrTable;
 import org.antlr.v4.runtime.Token;
 
 import typing.Type;
+import typing.Conv;
+import typing.Conv.Unif;
 
-public class Visitor extends golangramBaseVisitor<Type> {
+import ast.NodeKind;
+import ast.AST;
+
+public class Visitor extends golangramBaseVisitor<AST> {
 
     FuncTable funcTable = new FuncTable();
     StrTable strTable = new StrTable();
@@ -18,20 +23,35 @@ public class Visitor extends golangramBaseVisitor<Type> {
     int parametersCount = 0;
     int argumentsCount = 0;
 
-    // Testa se o dado token foi declarado antes.
-    private Type checkVar(Token token) {
-        String text = token.getText();
-        int line = token.getLine();
-           int idx = varTable.lookupVar(text);
-        if (idx == -1) {
-            System.err.printf("SEMANTIC ERROR (%d): variable '%s' was not declared.\n", line, text);
-            System.exit(1);
+    AST root;
+
+    AST checkVar(Token token) {
+    	String text = token.getText();
+    	int line = token.getLine();
+   		int idx = varTable.lookupVar(text);
+    	if (idx == -1) {
+    		System.err.printf("SEMANTIC ERROR (%d): variable '%s' was not declared.\n", line, text);
+    		System.exit(1);
             return null; // Never reached.
         }
-        return varTable.getType(idx);
+    	return new AST(NodeKind.VAR_USE_NODE, idx, varTable.getType(idx));
     }
 
-    @Override public Type visitFunctionDecl(golangramParser.FunctionDeclContext ctx) {
+    AST newVar(Token token) {
+    	String text = token.getText();
+    	int line = token.getLine();
+   		int idx = varTable.lookupVar(text);
+        if (idx != -1) {
+        	System.err.printf("SEMANTIC ERROR (%d): variable '%s' already declared at line %d.\n", line, text, varTable.getLine(idx));
+        	System.exit(1);
+            return null; // Never reached.
+        }
+        idx = varTable.addVar(text, line, type);
+        return new AST(NodeKind.VAR_DECL_NODE, idx, type);
+    }
+
+
+    @Override public AST visitFunctionDecl(golangramParser.FunctionDeclContext ctx) {
         funcName = ctx.ID().getText();
         varTable = new VarTable();
 
@@ -68,14 +88,14 @@ public class Visitor extends golangramBaseVisitor<Type> {
         return null; 
     }
 
-    @Override public Type visitParameters(golangramParser.ParametersContext ctx) {
+    @Override public AST visitParameters(golangramParser.ParametersContext ctx) {
         parametersCount = ctx.parameterDecl().size();
 
         return null;    
      }
 	
 
-    @Override public Type visitSimpleDeclareAssignment(golangramParser.SimpleDeclareAssignmentContext ctx) { 
+    @Override public AST visitSimpleDeclareAssignment(golangramParser.SimpleDeclareAssignmentContext ctx) { 
         int isNewVar = varTable.lookupVar(ctx.toString());
         
         if (isNewVar == -1) {
@@ -87,8 +107,8 @@ public class Visitor extends golangramBaseVisitor<Type> {
         return null;
     }
 
-    @Override public Type visitVarSpec(golangramParser.VarSpecContext ctx) { 
-        Type typeExp = null;
+    @Override public AST visitVarSpec(golangramParser.VarSpecContext ctx) { 
+        AST typeExp = null;
         
         if (ctx.expressionList() != null){
             typeExp = visit(ctx.expressionList());
@@ -111,68 +131,65 @@ public class Visitor extends golangramBaseVisitor<Type> {
             } 
 
             if (typeExp != null){
-                if (type.equals(typeExp)){
-                    typeExp = type;
-                    System.out.println(typeExp);
-                } else if (typeExp.equals(Type.INT_TYPE) && type.equals(Type.REAL_TYPE)) {
-                    typeExp = Type.REAL_TYPE;
-                    System.out.println(typeExp);
+                if (type.equals(typeExp.type)){
+                    typeExp.type = type;
+                    System.out.println(typeExp.type);
+                } else if (typeExp.type.equals(Type.INT_TYPE) && type.equals(Type.REAL_TYPE)) {
+                    typeExp.type = Type.REAL_TYPE;
+                    System.out.println(typeExp.type);
                 } else {
                     System.out.println("null var spec");
                     return null;
                 }
             } else {
-                typeExp = type;
+                typeExp.type = type;
             }
         } else if (ctx.arrayType() != null) {
             String s = ctx.arrayType().type_().getText();
 
             if(s.equals("string")) {
-                typeExp = Type.STR_TYPE;
+                typeExp.type = Type.STR_TYPE;
             } else if (s.equals("int")){
-                typeExp = Type.INT_TYPE;
+                typeExp.type = Type.INT_TYPE;
             } else if (s.equals("float32")){
-                typeExp = Type.REAL_TYPE;
+                typeExp.type = Type.REAL_TYPE;
             } else if (s.equals("bool")){
-                typeExp = Type.BOOL_TYPE;
+                typeExp.type = Type.BOOL_TYPE;
             } 
       
         }
 
         int isNewVar = varTable.lookupVar(ctx.idList().ID(0).getText());
         if (isNewVar == -1) {
-            varTable.addVar(ctx.idList().ID(0).getText(), ctx.getStart().getLine(), typeExp);
+            varTable.addVar(ctx.idList().ID(0).getText(), ctx.getStart().getLine(), typeExp.type);
             System.out.println(typeExp);
-            return typeExp;
         } else {
             System.out.println("Nao eh possivel declarar duas variaveis com o mesmo nome. Declarando: " + ctx.idList().ID(0).getText());
             System.exit(1);
         }
 
-        System.out.println("Tipo de variavel errado em var spec");
-        System.exit(1);
-        return null;          
+    	return newVar(ctx.idList().ID(0).getSymbol());       
     }
 
-    @Override public Type visitSimpleArrayStmt(golangramParser.SimpleArrayStmtContext ctx) { 
+    @Override public AST visitSimpleArrayStmt(golangramParser.SimpleArrayStmtContext ctx) { 
 
-        Type arrayType = visit(ctx.arrayStmt().operand());
+        AST array = visit(ctx.arrayStmt().operand());
+        AST stmt = visit(ctx.arrayStmt().basicLit());
 
-        Type stmtType = visit(ctx.arrayStmt().basicLit());
-
+        Type arrayType = array.type;
+		Type stmtType = stmt.type;
+		Unif unif = arrayType.unifyComp(stmtType);
 
         if (arrayType.equals(stmtType)) {
-            System.out.println(type);
-            return type;
+            // NAO PRECISA FAZER TALVEZ ?
+
         }
-        
-        System.out.println("Tipo de variavel errado na declaração do vetor");
-        System.exit(1);
+
         return null;
     }
 	
 
-    @Override public Type visitParameterDecl(golangramParser.ParameterDeclContext ctx) { 
+    @Override public AST visitParameterDecl(golangramParser.ParameterDeclContext ctx) { 
 
         int isNewVar = varTable.lookupVar(ctx.ID().getText());
         if (isNewVar == -1) {
@@ -184,190 +201,221 @@ public class Visitor extends golangramBaseVisitor<Type> {
         return null;
     }
 	
-    @Override public Type visitStrVal(golangramParser.StrValContext ctx) { 
+    @Override public AST visitStrVal(golangramParser.StrValContext ctx) { 
         strTable.add(ctx.STR_VAL().getText());
         type = Type.STR_TYPE;
-        return Type.STR_TYPE; 
+        return null; 
     }
 
-    @Override public Type visitIntVal(golangramParser.IntValContext ctx) { 
+    @Override public AST visitIntVal(golangramParser.IntValContext ctx) { 
         type = Type.INT_TYPE;
-        return Type.INT_TYPE;
+        return null;
     }
 
 
-	@Override public Type visitRealVal(golangramParser.RealValContext ctx) { 
+	@Override public AST visitRealVal(golangramParser.RealValContext ctx) { 
         type = Type.REAL_TYPE;
-        return Type.REAL_TYPE;
+        return null;
     }
 
-    @Override public Type visitBoolVal(golangramParser.BoolValContext ctx) { 
+    @Override public AST visitBoolVal(golangramParser.BoolValContext ctx) { 
         type = Type.BOOL_TYPE;
-        return Type.BOOL_TYPE;
+        return null;
     }
 	
 
-	@Override public Type visitAdd_opExpression(golangramParser.Add_opExpressionContext ctx) { 
-        Type esq = visit(ctx.expression(0));
-        Type dir = visit(ctx.expression(1));
+	@Override public AST visitAdd_opExpression(golangramParser.Add_opExpressionContext ctx) { 
+        AST esq = visit(ctx.expression(0));
+        AST dir = visit(ctx.expression(1));
+
+        Type lt = esq.type;
+        Type rt = dir.type;
+        Unif unif;
 
         if (ctx.PLUS() != null) {
-            if (esq.equals(dir) && !esq.equals(Type.BOOL_TYPE)){
-                System.out.println(dir);
-                return dir;
-            } else if (esq.equals(Type.INT_TYPE) && dir.equals(Type.REAL_TYPE)){
-                System.out.println(Type.REAL_TYPE);
-                return Type.REAL_TYPE;
-            } else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.INT_TYPE)){
-                System.out.println(Type.REAL_TYPE);
-                return Type.REAL_TYPE;
-            }
+           unif = lt.unifyPlus(rt);
         } else if (ctx.MINUS() != null) {
-            if (esq.equals(dir) && !esq.equals(Type.BOOL_TYPE) && !esq.equals(Type.STR_TYPE)){
-                System.out.println(dir);
-                return dir;
-            } else if (esq.equals(Type.INT_TYPE) && dir.equals(Type.REAL_TYPE)){
-                System.out.println(Type.REAL_TYPE);
-                return Type.REAL_TYPE;
-            } else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.INT_TYPE)){
-                System.out.println(Type.REAL_TYPE);
-                return Type.REAL_TYPE;
-            }
+			unif = lt.unifyOtherArith(rt);
+        } else {
+            unif = lt.unifyPlus(rt);
+			typeError(ctx.add_op.getLine(), ctx.add_op.getText(), lt, rt);
         }
-        System.out.println("Tipo de variavel errado em add op");
-        System.exit(1);
-        return null;
+
+        esq = Conv.createConvNode(unif.lc,esq);
+		dir = Conv.createConvNode(unif.rc, dir);
+
+        if (ctx.add_op.getType() == golangramLexer.PLUS) {
+			return AST.newSubtree(NodeKind.PLUS_NODE, unif.type, esq,dir);
+		} else { // MINUS
+			return AST.newSubtree(NodeKind.MINUS_NODE, unif.type, esq,dir);
+		}
+
     }
 	
-    @Override public Type visitMul_opExpression(golangramParser.Mul_opExpressionContext ctx) { 
-        Type esq = visit(ctx.expression(0));
-        Type dir = visit(ctx.expression(1));
+    @Override public AST visitMul_opExpression(golangramParser.Mul_opExpressionContext ctx) { 
+        AST esq = visit(ctx.expression(0));
+        AST dir = visit(ctx.expression(1));
+
+        Type lt = esq.type;
+		Type rt = dir.type;
+		Unif unif = lt.unifyOtherArith(rt);
+
+        if (unif.type == Type.NO_TYPE) {
+			typeError(ctx.mul_op.getLine(), ctx.mul_op.getText(), lt, rt);
+		}
+
+        esq = Conv.createConvNode(unif.lc, esq);
+        dir = Conv.createConvNode(unif.rc, dir);
 
         if (ctx.TIMES() != null || ctx.OVER() != null) {
-            if (esq.equals(dir) && !esq.equals(Type.BOOL_TYPE) && !esq.equals(Type.STR_TYPE)){
-                System.out.println(dir);
-                return dir;
-            } else if (esq.equals(Type.INT_TYPE) && dir.equals(Type.REAL_TYPE)){
-                System.out.println(Type.REAL_TYPE);
-                return Type.REAL_TYPE;
-            } else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.INT_TYPE)){
-                System.out.println(Type.REAL_TYPE);
-                return Type.REAL_TYPE;
-            }
-        } else if (ctx.MOD() != null) {
-            if (esq.equals(Type.INT_TYPE) && dir.equals(Type.INT_TYPE)){
-                System.out.println(Type.INT_TYPE);
-                return Type.INT_TYPE;
-            }
+			return AST.newSubtree(NodeKind.TIMES_NODE, unif.type, esq, dir);
+        } else {
+			return AST.newSubtree(NodeKind.OVER_NODE, unif.type, esq, dir);
         }
-
-        System.out.println("Tipo de variavel errado em mult op");
-        System.exit(1);
-        return null;
     }
 
-    @Override public Type visitRel_opExpression(golangramParser.Rel_opExpressionContext ctx) { 
-        Type esq = visit(ctx.expression(0));
-        Type dir = visit(ctx.expression(1));
+    @Override public AST visitRel_opExpression(golangramParser.Rel_opExpressionContext ctx) { 
+        AST esq = visit(ctx.expression(0));
+        AST dir = visit(ctx.expression(1));
 
-        if (esq.equals(Type.INT_TYPE) && dir.equals(Type.INT_TYPE)){
-            System.out.println(Type.BOOL_TYPE);
-            return Type.BOOL_TYPE;
-        } else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.REAL_TYPE)){
-            System.out.println(Type.BOOL_TYPE);
-            return Type.BOOL_TYPE;
-        } else if (esq.equals(Type.INT_TYPE) && dir.equals(Type.REAL_TYPE)){
-            System.out.println(Type.BOOL_TYPE);
-            return Type.BOOL_TYPE;
-        } else if (esq.equals(Type.REAL_TYPE) && dir.equals(Type.INT_TYPE)){
-            System.out.println(Type.BOOL_TYPE);
-            return Type.BOOL_TYPE;
-        } else if (esq.equals(Type.STR_TYPE) && dir.equals(Type.STR_TYPE)){
-            System.out.println(Type.BOOL_TYPE);
-            return Type.BOOL_TYPE;
-        } else if (esq.equals(Type.BOOL_TYPE) && dir.equals(Type.BOOL_TYPE)) {
-            if (ctx.ISEQUAL() != null || ctx.NOTEQUAL() != null) {
-                System.out.println(Type.BOOL_TYPE);
-                return Type.BOOL_TYPE;
-            }
+        Type lt = esq.type;
+		Type rt = dir.type;
+		Unif unif = lt.unifyComp(rt);
+
+        if (unif.type == Type.NO_TYPE) {
+			typeError(ctx.rel_op.getLine(), ctx.rel_op.getText(), lt, rt);
+		}
+
+        esq = Conv.createConvNode(unif.lc, esq);
+		dir = Conv.createConvNode(unif.rc, dir);
+
+        if (ctx.rel_op.getType() == golangramLexer.ISEQUAL) {
+			return AST.newSubtree(NodeKind.EQ_NODE, unif.type, esq, dir);
+
+		} else if (ctx.rel_op.getType() == golangramLexer.LESSTHAN) {
+			return AST.newSubtree(NodeKind.LT_NODE, unif.type, esq, dir);
+
+		} else if (ctx.rel_op.getType() == golangramLexer.NOTEQUAL) {
+			return AST.newSubtree(NodeKind.NOTEQ_NODE, unif.type, esq, dir);
+
+        } else if (ctx.rel_op.getType() == golangramLexer.MORETHAN) {
+			return AST.newSubtree(NodeKind.MT_NODE, unif.type, esq, dir);
+
+        } else if (ctx.rel_op.getType() == golangramLexer.LESSEQTHAN) {
+			return AST.newSubtree(NodeKind.LEQT_NODE, unif.type, esq, dir);
+
+        } else {
+			return AST.newSubtree(NodeKind.MEQT_NODE, unif.type, esq, dir);
         }
-
-        System.out.println("Tipo de variavel errado em rel op");
-        System.exit(1);
-        return null;
+        
+        // COMENTADO PQ A LINGUAGEM DO LAB SÓ TEM EQ E LT, TEM QUE ALTERAR NA TABELA
     }
 	
-	@Override public Type visitIncDecStmt(golangramParser.IncDecStmtContext ctx) {
-        Type exp = visit(ctx.expression());
+	@Override public AST visitIncDecStmt(golangramParser.IncDecStmtContext ctx) {
+        AST exp = visit(ctx.expression());
 
-        if (exp.equals(Type.INT_TYPE) || exp.equals(Type.REAL_TYPE)) {
-            System.out.println(exp);
-            return exp;
-        }
+        // TABELAAAAAAAAAAAAAAAA
 
-        System.out.println("Tipo de variavel errado em inc dec");
-        System.exit(1);
+        // if (exp.equals(Type.INT_TYPE) || exp.equals(Type.REAL_TYPE)) {
+        //     System.out.println(exp);
+        //     return exp;
+        // }
+
+        // System.out.println("Tipo de variavel errado em inc dec");
+        // System.exit(1);
         return null;
     }
 
-    @Override public Type visitUnary_opExpression(golangramParser.Unary_opExpressionContext ctx) { 
-        Type exp = visit(ctx.expression());
+    @Override public AST visitUnary_opExpression(golangramParser.Unary_opExpressionContext ctx) { 
+        AST exp = visit(ctx.expression());
 
-        if (ctx.NOT() != null) {
-            if(exp.equals(Type.BOOL_TYPE)){
-                System.out.printf("ta em unary: %s\n",Type.BOOL_TYPE);
-                return Type.BOOL_TYPE;
-            }
-        }
+        //TABELAAAAAAAAAAAAAAAAAAA
 
-        System.out.println("Tipo de variavel errado em unary op");
-        System.exit(1);
+        // if (ctx.NOT() != null) {
+        //     if(exp.equals(Type.BOOL_TYPE)){
+        //         System.out.printf("ta em unary: %s\n",Type.BOOL_TYPE);
+        //         return Type.BOOL_TYPE;
+        //     }
+        // }
+
+        // System.out.println("Tipo de variavel errado em unary op");
+        // System.exit(1);
         return null;
     }
 
-    @Override public Type visitOperandID(golangramParser.OperandIDContext ctx) { 
-        checkVar(ctx.ID().getSymbol());
-		int id = varTable.lookupVar(ctx.ID().getText());
-
-		Type idType = varTable.getType(id);
-
-        return idType;
-
+    @Override public AST visitOperandID(golangramParser.OperandIDContext ctx) { 
+        return checkVar(ctx.ID().getSymbol());
     }
 
-    @Override public Type visitExpressionList(golangramParser.ExpressionListContext ctx) {
+    @Override public AST visitExpressionList(golangramParser.ExpressionListContext ctx) {
         argumentsCount = ctx.expression().size();
         
         return visitChildren(ctx);
     }
 	
-	@Override public Type visitFuncCall(golangramParser.FuncCallContext ctx) { 
-        funcName = ctx.ID().getText();
+	@Override public AST visitFuncCall(golangramParser.FuncCallContext ctx) { 
 
-        argumentsCount = 0;
-        visit(ctx.arguments());
+        // NAO SEI TEM Q FAZER 
         
-        int isDeclaredFunc = funcTable.containsFunction(ctx.ID().getText());
-        if (isDeclaredFunc != -1) {
-            int parameters = funcTable.getQtdParams(isDeclaredFunc);
-            if (parameters == argumentsCount) {
-                System.out.println("quantidade certa de parametros");
-                Type typeReturn = funcTable.getReturn(isDeclaredFunc);
-                if(typeReturn != null) {
-                    //System.out.println(typeReturn);
-                    return typeReturn;
-                }
-            } else {
-                System.out.printf("A quantidade correta de parametros da função %s é %d, você digitou %d!",ctx.ID().getText(), parameters, argumentsCount);
-                System.exit(1);
-            }
+        // funcName = ctx.ID().getText();
 
-        } else {
-            System.out.println("Nao eh possivel chamar uma função não declarada. Erro em: " + ctx.ID().getText());
-            System.exit(1);
-        }
+        // argumentsCount = 0;
+        // visit(ctx.arguments());
+        
+        // int isDeclaredFunc = funcTable.containsFunction(ctx.ID().getText());
+        // if (isDeclaredFunc != -1) {
+        //     int parameters = funcTable.getQtdParams(isDeclaredFunc);
+        //     if (parameters == argumentsCount) {
+        //         System.out.println("quantidade certa de parametros");
+        //         Type typeReturn = funcTable.getReturn(isDeclaredFunc);
+        //         if(typeReturn != null) {
+        //             //System.out.println(typeReturn);
+        //             return typeReturn;
+        //         }
+        //     } else {
+        //         System.out.printf("A quantidade correta de parametros da função %s é %d, você digitou %d!",ctx.ID().getText(), parameters, argumentsCount);
+        //         System.exit(1);
+        //     }
+
+        // } else {
+        //     System.out.println("Nao eh possivel chamar uma função não declarada. Erro em: " + ctx.ID().getText());
+        //     System.exit(1);
+        // }
 
         return null;
     }
+
+    private static void typeError(int lineNo, String op, Type t1, Type t2) {
+    	System.out.printf("SEMANTIC ERROR (%d): incompatible types for operator '%s', LHS is '%s' and RHS is '%s'.\n",
+    			lineNo, op, t1.toString(), t2.toString());
+    	System.exit(1);
+    }
+
+    public void printTables() {
+        System.out.print("\n\n");
+        System.out.print(strTable);
+        System.out.print("\n\n");
+    	System.out.print(varTable);
+    	System.out.print("\n\n");
+    }
+
+    // Exibe a AST no formato DOT em stderr.
+    public void printAST() {
+    	AST.printDot(root, varTable);
+    }
+
+    @Override
+	public AST visitProgram(ProgramContext ctx) {
+    	// Visita recursivamente os filhos para construir a AST.
+    	AST varsSect = visit(ctx.vars_sect());
+    	AST stmtSect = visit(ctx.stmt_sect());
+    	// Como esta é a regra inicial, chegamos na raiz da AST.
+    	this.root = AST.newSubtree(PROGRAM_NODE, NO_TYPE, varsSect, stmtSect);
+		return this.root;
+	}
+
+    //  FAZER NÓ PARA CADA FUNCAO QUE PODE SER CHAMADA NO INICIO DO PROGRAMA
+    // IGNORAR VARIAVEIS GLOBAIS
+    // 
 	
 }
