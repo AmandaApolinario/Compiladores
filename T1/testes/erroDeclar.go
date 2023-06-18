@@ -7,4 +7,4 @@ func main() {
 	var a int
 	var b float32
 
-};
+}

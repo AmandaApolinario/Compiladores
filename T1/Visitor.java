@@ -41,7 +41,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
     	String text = token.getText();
     	int line = token.getLine();
    		int idx = varTable.lookupVar(text);
-        if (idx != -1) {
+        if (idx == -1) {
         	System.err.printf("SEMANTIC ERROR (%d): variable '%s' already declared at line %d.\n", line, text, varTable.getLine(idx));
         	System.exit(1);
             return null; // Never reached.
@@ -108,10 +108,11 @@ public class Visitor extends golangramBaseVisitor<AST> {
     }
 
     @Override public AST visitVarSpec(golangramParser.VarSpecContext ctx) { 
-        AST typeExp = null;
+        AST astExp = null;
+        Type typeFinal = Type.NO_TYPE;
         
         if (ctx.expressionList() != null){
-            typeExp = visit(ctx.expressionList());
+            astExp = visit(ctx.expressionList());
         }
         
         String t;
@@ -130,45 +131,47 @@ public class Visitor extends golangramBaseVisitor<AST> {
                 type = Type.BOOL_TYPE;
             } 
 
-            if (typeExp != null){
-                if (type.equals(typeExp.type)){
-                    typeExp.type = type;
-                    System.out.println(typeExp.type);
-                } else if (typeExp.type.equals(Type.INT_TYPE) && type.equals(Type.REAL_TYPE)) {
-                    typeExp.type = Type.REAL_TYPE;
-                    System.out.println(typeExp.type);
+
+            if (astExp != null){
+                if (type.equals(typeFinal)){
+                    typeFinal = type;
+                
+                } else if (typeFinal.equals(Type.INT_TYPE) && type.equals(Type.REAL_TYPE)) {
+                    typeFinal = Type.REAL_TYPE;
+              
                 } else {
                     System.out.println("null var spec");
                     return null;
                 }
             } else {
-                typeExp.type = type;
+                System.out.println(type);
+                typeFinal = type;
             }
         } else if (ctx.arrayType() != null) {
             String s = ctx.arrayType().type_().getText();
 
             if(s.equals("string")) {
-                typeExp.type = Type.STR_TYPE;
+                typeFinal = Type.STR_TYPE;
             } else if (s.equals("int")){
-                typeExp.type = Type.INT_TYPE;
+                typeFinal = Type.INT_TYPE;
             } else if (s.equals("float32")){
-                typeExp.type = Type.REAL_TYPE;
+                typeFinal = Type.REAL_TYPE;
             } else if (s.equals("bool")){
-                typeExp.type = Type.BOOL_TYPE;
+                typeFinal = Type.BOOL_TYPE;
             } 
       
         }
 
         int isNewVar = varTable.lookupVar(ctx.idList().ID(0).getText());
         if (isNewVar == -1) {
-            varTable.addVar(ctx.idList().ID(0).getText(), ctx.getStart().getLine(), typeExp.type);
-            System.out.println(typeExp);
+            varTable.addVar(ctx.idList().ID(0).getText(), ctx.getStart().getLine(), typeFinal);
         } else {
             System.out.println("Nao eh possivel declarar duas variaveis com o mesmo nome. Declarando: " + ctx.idList().ID(0).getText());
             System.exit(1);
         }
-
-    	return newVar(ctx.idList().ID(0).getSymbol());       
+        AST node = AST.newSubtree(NodeKind.VAR_LIST_NODE, type);
+        node.addChild(newVar(ctx.idList().ID(0).getSymbol()));
+    	return node;       
     }
 
     @Override public AST visitSimpleArrayStmt(golangramParser.SimpleArrayStmtContext ctx) { 
@@ -395,7 +398,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
         System.out.print("\n\n");
         System.out.print(strTable);
         System.out.print("\n\n");
-    	System.out.print(varTable);
+    	System.out.print(funcTable.toString());
     	System.out.print("\n\n");
     }
 
@@ -404,15 +407,15 @@ public class Visitor extends golangramBaseVisitor<AST> {
     	AST.printDot(root, varTable);
     }
 
-    @Override
-	public AST visitProgram(ProgramContext ctx) {
-    	// Visita recursivamente os filhos para construir a AST.
-    	AST varsSect = visit(ctx.vars_sect());
-    	AST stmtSect = visit(ctx.stmt_sect());
-    	// Como esta é a regra inicial, chegamos na raiz da AST.
-    	this.root = AST.newSubtree(PROGRAM_NODE, NO_TYPE, varsSect, stmtSect);
-		return this.root;
-	}
+    @Override public AST visitBegin(golangramParser.BeginContext ctx) { 
+       
+        for (int i = 0; i < ctx.functionDecl().size(); i++) {
+            AST func = visit(ctx.functionDecl(i));
+            this.root = AST.newSubtree(NodeKind.PROGRAM_NODE, Type.NO_TYPE, func);
+        }
+        
+        return this.root;
+    }
 
     //  FAZER NÓ PARA CADA FUNCAO QUE PODE SER CHAMADA NO INICIO DO PROGRAMA
     // IGNORAR VARIAVEIS GLOBAIS
