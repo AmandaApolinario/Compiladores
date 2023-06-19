@@ -11,7 +11,7 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		// Cria um CharStream que lê os caracteres de stdin.
-		CharStream input = CharStreams.fromStream(System.in);
+		CharStream input = CharStreams.fromFileName(args[0]);
 
 		// Cria um lexer que consome a entrada do CharStream.
 		golangramLexer lexer = new golangramLexer(input);
@@ -34,8 +34,8 @@ public class Main {
 		visitor.visit(tree);
 
 		// Saída final.
-		//System.out.println(visitor.funcTable.toString());
-		//System.out.println(visitor.strTable.toString());
+		System.out.println(visitor.funcTable.toString());
+		System.out.println(visitor.strTable.toString());
 }
 
 }

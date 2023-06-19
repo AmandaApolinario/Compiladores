@@ -14,7 +14,7 @@ func somaDoisNumeros(a string, b int, c float) {
 
 };
 
-func somaDoisNumeros(a int, b int) {
+func aaaa(a int, b int) {
 	//b := 25
 	var count int
 }

@@ -176,6 +176,7 @@ public class Visitor extends golangramBaseVisitor<Type> {
 
         int isNewVar = varTable.lookupVar(ctx.ID().getText());
         if (isNewVar == -1) {
+            System.out.println("aaaaaaa");
             varTable.addVar(ctx.ID().getText(), ctx.getStart().getLine(), type);
         } else {
             System.out.println("Nao eh possivel declarar duas variaveis com o mesmo nome. Declarando: " + ctx.ID().getText());
