@@ -50,13 +50,23 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return new AST(NodeKind.VAR_DECL_NODE, idx, type);
     }
 
+    @Override public AST visitBegin(golangramParser.BeginContext ctx) { 
+       
+        for (int i = 0; i < ctx.functionDecl().size(); i++) {
+            AST func = visit(ctx.functionDecl(i));
+            this.root = AST.newSubtree(NodeKind.PROGRAM_NODE, Type.NO_TYPE, func);
+        }
+        
+        return this.root;
+    }
 
     @Override public AST visitFunctionDecl(golangramParser.FunctionDeclContext ctx) {
         funcName = ctx.ID().getText();
         varTable = new VarTable();
 
+        //precisa de uma ast pros parametros?
         visit(ctx.parameters());
-        visit(ctx.block());
+        AST blockAST = visit(ctx.block());
         
         int isNewFunc = funcTable.containsFunction(ctx.ID().getText());
         if (isNewFunc == -1) {
@@ -85,12 +95,13 @@ public class Visitor extends golangramBaseVisitor<AST> {
             System.exit(1);
         }
 
-        return null; 
+        //ta certo isso? 
+        return AST.newSubtree(NodeKind.PROGRAM_NODE, Type.NO_TYPE, blockAST); 
     }
 
     @Override public AST visitParameters(golangramParser.ParametersContext ctx) {
         parametersCount = ctx.parameterDecl().size();
-
+        //?????????????????
         return null;    
      }
 	
@@ -203,29 +214,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
         }
         return null;
     }
-	
-    @Override public AST visitStrVal(golangramParser.StrValContext ctx) { 
-        strTable.add(ctx.STR_VAL().getText());
-        type = Type.STR_TYPE;
-        return null; 
-    }
-
-    @Override public AST visitIntVal(golangramParser.IntValContext ctx) { 
-        type = Type.INT_TYPE;
-        return null;
-    }
-
-
-	@Override public AST visitRealVal(golangramParser.RealValContext ctx) { 
-        type = Type.REAL_TYPE;
-        return null;
-    }
-
-    @Override public AST visitBoolVal(golangramParser.BoolValContext ctx) { 
-        type = Type.BOOL_TYPE;
-        return null;
-    }
-	
 
 	@Override public AST visitAdd_opExpression(golangramParser.Add_opExpressionContext ctx) { 
         AST esq = visit(ctx.expression(0));
@@ -388,6 +376,29 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return null;
     }
 
+    @Override public AST visitStrVal(golangramParser.StrValContext ctx) { 
+        strTable.add(ctx.STR_VAL().getText());
+        type = Type.STR_TYPE;
+        return null; 
+    }
+
+    @Override public AST visitIntVal(golangramParser.IntValContext ctx) { 
+        type = Type.INT_TYPE;
+        return null;
+    }
+
+	@Override public AST visitRealVal(golangramParser.RealValContext ctx) { 
+        type = Type.REAL_TYPE;
+        return null;
+    }
+
+    @Override public AST visitBoolVal(golangramParser.BoolValContext ctx) { 
+        type = Type.BOOL_TYPE;
+        return null;
+    }
+	
+
+
     private static void typeError(int lineNo, String op, Type t1, Type t2) {
     	System.out.printf("SEMANTIC ERROR (%d): incompatible types for operator '%s', LHS is '%s' and RHS is '%s'.\n",
     			lineNo, op, t1.toString(), t2.toString());
@@ -407,18 +418,5 @@ public class Visitor extends golangramBaseVisitor<AST> {
     	AST.printDot(root, varTable);
     }
 
-    @Override public AST visitBegin(golangramParser.BeginContext ctx) { 
-       
-        for (int i = 0; i < ctx.functionDecl().size(); i++) {
-            AST func = visit(ctx.functionDecl(i));
-            this.root = AST.newSubtree(NodeKind.PROGRAM_NODE, Type.NO_TYPE, func);
-        }
-        
-        return this.root;
-    }
-
-    //  FAZER NÓ PARA CADA FUNCAO QUE PODE SER CHAMADA NO INICIO DO PROGRAMA
-    // IGNORAR VARIAVEIS GLOBAIS
-    // 
 	
 }
