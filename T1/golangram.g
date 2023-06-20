@@ -18,8 +18,7 @@ declareAssignment: ID DECLARE_ASSIGN basicLit;
 
 idList: ID (COMMA ID)*;
 
-expressionList: expression (COMMA expression)*
-			;
+expressionList: expression (COMMA expression)*;
 
 funcCall: ID arguments;
 

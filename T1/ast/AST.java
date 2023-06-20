@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tables.VarTable;
+import tables.FuncTable;
 import typing.Type;
 
 // Implementação dos nós da AST.
@@ -67,19 +68,20 @@ public class AST {
 	// Variáveis internas usadas para geração da saída em DOT.
 	// Estáticas porque só precisamos de uma instância.
 	private static int nr;
+	private static FuncTable ft;
 	private static VarTable vt;
 
 	// Imprime recursivamente a codificação em DOT da subárvore começando no nó atual.
 	// Usa stderr como saída para facilitar o redirecionamento, mas isso é só um hack.
 	private int printNodeDot() {
 		int myNr = nr++;
-
+		
 	    System.err.printf("node%d[label=\"", myNr);
 	    if (this.type != NO_TYPE) {
 	    	System.err.printf("(%s) ", this.type.toString());
 	    }
 	    if (this.kind == NodeKind.VAR_DECL_NODE || this.kind == NodeKind.VAR_USE_NODE) {
-	    	System.err.printf("%s@", vt.getName(this.intData));
+			System.err.printf("%s@", vt.getName(this.intData));
 	    } else {
 	    	System.err.printf("%s", this.kind.toString());
 	    }
@@ -103,10 +105,21 @@ public class AST {
 
 	// Imprime a árvore toda em stderr.
 	public static void printDot(AST tree, VarTable table) {
-	    nr = 0;
-	    vt = table;
-	    System.err.printf("digraph {\ngraph [ordering=\"out\"];\n");
-	    tree.printNodeDot();
-	    System.err.printf("}\n");
+	    // nr = 0;
+		// ft = table;
+		// System.err.printf("digraph {\ngraph [ordering=\"out\"];\n");
+
+		// for(int i=0; i < ft.getVarTableSize(); i++) {
+		// 	vt = ft.getVarTable(i);
+		// 	System.out.println("var table aaa" + vt.toString());
+		// 	tree.printNodeDot();
+		// 	System.err.printf("}\n");
+		// }
+
+		nr = 0;
+		vt = table;
+		System.err.printf("digraph {\ngraph [ordering=\"out\"];\n");
+		tree.printNodeDot();
+		System.err.printf("}\n");
 	}
 }

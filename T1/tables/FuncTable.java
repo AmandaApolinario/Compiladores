@@ -6,7 +6,7 @@ import java.util.List;
 import typing.Type;
 
 public final class FuncTable {
-    private List<FunctionEntry> table = new ArrayList<>();
+    List<FunctionEntry> table = new ArrayList<>();
 	Type type;
 
     public int containsFunction(String functionName) {
@@ -16,6 +16,14 @@ public final class FuncTable {
 			}
 		}
 		return -1;
+    }
+
+    public VarTable getVarTable(int id) {
+        return table.get(id).varTable;
+    }
+
+    public int getVarTableSize() {
+        return table.size();
     }
 
 	private FunctionEntry getFunction(String functionName) {

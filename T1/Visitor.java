@@ -18,6 +18,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
     FuncTable funcTable = new FuncTable();
     StrTable strTable = new StrTable();
     VarTable varTable;
+    
     String funcName;
     Type type;
     int parametersCount = 0;
@@ -41,7 +42,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
     	String text = token.getText();
     	int line = token.getLine();
    		int idx = varTable.lookupVar(text);
-        if (idx == -1) {
+        if (idx != -1) {
         	System.err.printf("SEMANTIC ERROR (%d): variable '%s' already declared at line %d.\n", line, text, varTable.getLine(idx));
         	System.exit(1);
             return null; // Never reached.
@@ -124,6 +125,75 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return node; 
     }
 
+	@Override public AST visitStatement(golangramParser.StatementContext ctx) { 
+        AST node = new AST(NodeKind.BLOCK_NODE, 0, Type.NO_TYPE);
+
+        // if (visit(ctx.simpleStmt()) != null) {
+        //     AST stmt = visit(ctx.simpleStmt());
+        //     node.addChild(stmt);
+        // }
+        
+        AST stmt = visit(ctx.declaration());
+        if (stmt != null) {
+            node.addChild(stmt);
+        }
+
+        // if (visit(ctx.labeledStmt()) != null) {
+        //     System.out.println("2");
+        // }
+
+        // if (visit(ctx.simpleStmt()) != null) {
+        //     System.out.println("3");
+        // }
+
+        // if (visit(ctx.returnStmt()) != null) {
+        //     System.out.println("4");
+        // }
+
+        // if (visit(ctx.fallthroughStmt()) != null) {
+        //     System.out.println("5");
+        // }
+
+        // if (visit(ctx.block()) != null) {
+        //     System.out.println("6");
+        // }
+
+        // if (visit(ctx.ifStmt()) != null) {
+        //     System.out.println("7");
+        // }
+
+        // if (visit(ctx.switchStmt()) != null) {
+        //     System.out.println("8");
+        // }
+
+        // if (visit(ctx.forStmt()) != null) {
+        //     System.out.println("9");
+        // }
+        return node; 
+    }
+
+    @Override public AST visitDeclaration(golangramParser.DeclarationContext ctx) { 
+        AST node = new AST(NodeKind.BLOCK_NODE, 0, Type.NO_TYPE);
+        AST stmt = visit(ctx.varDecl());
+
+        if ((stmt)!= null) {
+            node.addChild(stmt);
+        }
+
+        return node; 
+     }
+	
+     @Override public AST visitVarDecl(golangramParser.VarDeclContext ctx) { 
+        AST node = new AST(NodeKind.VAR_DECL_NODE, 0, Type.NO_TYPE);
+        AST stmt = visit(ctx.varSpec());
+
+        if ((stmt)!= null) {
+            node.addChild(stmt);
+        }
+
+        return node; 
+      }
+	
 
     @Override public AST visitParameters(golangramParser.ParametersContext ctx) {
         // parametersCount = ctx.parameterDecl().size();
@@ -134,15 +204,11 @@ public class Visitor extends golangramBaseVisitor<AST> {
 	
 
     @Override public AST visitSimpleDeclareAssignment(golangramParser.SimpleDeclareAssignmentContext ctx) { 
-        int isNewVar = varTable.lookupVar(ctx.toString());
-        
-        if (isNewVar == -1) {
-            varTable.addVar(ctx.declareAssignment().ID().getText(), ctx.getStart().getLine(), Type.INT_TYPE);
-        } else {
-            System.out.println("Nao eh possivel declarar duas variaveis com o mesmo nome. Declarando: " + ctx.declareAssignment().ID().getText());
-            System.exit(1);
-        }
-        return null;
+    
+
+        AST node = new AST(NodeKind.VAR_DECL_NODE, 0, type);
+        // node.addChild(newVar(ctx.declareAssignment().ID().getSymbol()));
+        return node;
     }
 
     @Override public AST visitVarSpec(golangramParser.VarSpecContext ctx) { 
@@ -200,18 +266,17 @@ public class Visitor extends golangramBaseVisitor<AST> {
       
         }
 
-        int isNewVar = varTable.lookupVar(ctx.idList().ID(0).getText());
-        if (isNewVar == -1) {
-            varTable.addVar(ctx.idList().ID(0).getText(), ctx.getStart().getLine(), typeFinal);
-        } else {
-            System.out.println("Nao eh possivel declarar duas variaveis com o mesmo nome. Declarando: " + ctx.idList().ID(0).getText());
-            System.exit(1);
-        }
+        String text = ctx.idList().ID(0).getText();
+    	int line = ctx.getStart().getLine();
+   		int idx = varTable.lookupVar(text);
 
-        
-        AST node = new AST(NodeKind.VAR_DECL_NODE, 0, type);
-        node.addChild(newVar(ctx.idList().ID(0).getSymbol()));
-    	return node;       
+        if (idx != -1) {
+        	System.err.printf("SEMANTIC ERROR (%d): variable '%s' already declared at line %d.\n", line, text, varTable.getLine(idx));
+        	System.exit(1);
+            return null; // Never reached.
+        }
+        idx = varTable.addVar(text, line, type);
+        return new AST(NodeKind.VAR_DECL_NODE, idx, typeFinal);
     }
 
     @Override public AST visitSimpleArrayStmt(golangramParser.SimpleArrayStmtContext ctx) { 

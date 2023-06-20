@@ -6,19 +6,23 @@ node2[label="parameters"];
 node1 -> node2;
 node3[label="block"];
 node4[label="block"];
-node5[label="(int) Exception in thread "main" java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
-	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:64)
-	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:70)
-	at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:248)
-	at java.base/java.util.Objects.checkIndex(Objects.java:372)
-	at java.base/java.util.ArrayList.get(ArrayList.java:459)
-	at tables.VarTable.getName(VarTable.java:33)
-	at ast.AST.printNodeDot(AST.java:82)
-	at ast.AST.printNodeDot(AST.java:98)
-	at ast.AST.printNodeDot(AST.java:98)
-	at ast.AST.printNodeDot(AST.java:98)
-	at ast.AST.printNodeDot(AST.java:98)
-	at ast.AST.printDot(AST.java:109)
-	at Visitor.printAST(Visitor.java:447)
-	at Main.main(Main.java:39)
-make: *** [Makefile:37: run] Error 1
+node5[label="block"];
+node6[label="block"];
+node7[label="a@0"];
+node8[label="(int) a@0"];
+node7 -> node8;
+node6 -> node7;
+node5 -> node6;
+node4 -> node5;
+node9[label="block"];
+node10[label="block"];
+node11[label="a@0"];
+node12[label="(string) b@1"];
+node11 -> node12;
+node10 -> node11;
+node9 -> node10;
+node4 -> node9;
+node3 -> node4;
+node1 -> node3;
+node0 -> node1;
+}
