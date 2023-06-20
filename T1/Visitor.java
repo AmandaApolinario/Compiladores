@@ -135,7 +135,8 @@ public class Visitor extends golangramBaseVisitor<AST> {
         
         AST stmt = visit(ctx.declaration());
         if (stmt != null) {
-            node.addChild(stmt);
+            return stmt;
+            //node.addChild(stmt);
         }
 
         // if (visit(ctx.labeledStmt()) != null) {
@@ -169,7 +170,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
         // if (visit(ctx.forStmt()) != null) {
         //     System.out.println("9");
         // }
-        return node; 
+        return null; 
     }
 
     @Override public AST visitDeclaration(golangramParser.DeclarationContext ctx) { 
@@ -177,10 +178,11 @@ public class Visitor extends golangramBaseVisitor<AST> {
         AST stmt = visit(ctx.varDecl());
 
         if ((stmt)!= null) {
-            node.addChild(stmt);
+            // node.addChild(stmt);
+            return stmt;
         }
 
-        return node; 
+        return null; 
      }
 	
      @Override public AST visitVarDecl(golangramParser.VarDeclContext ctx) { 
@@ -509,6 +511,9 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
     // Exibe a AST no formato DOT em stderr.
     public void printAST() {
+
+        //trocar pra aceitar func table, e ai na printDot sao os comentarios la
+        //vai ter q printar as funcs e dps as var tables
     	AST.printDot(root, varTable);
     }
 

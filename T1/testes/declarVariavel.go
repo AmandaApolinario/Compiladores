@@ -6,3 +6,7 @@ func main() {
 	var a int
 	var b string
 };
+
+func funcao() {
+	
+};
