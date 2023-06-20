@@ -41,3 +41,8 @@ debug:
 # Remove os arquivos gerados pelo ANTLR
 clean:
 	@rm -rf $(GEN_PATH) $(BIN_PATH)
+
+
+# COISAS PRA CRIAR O PDF
+# make run FILE=testes/declarVariavel.go 2>out.dot
+# dot -Tpdf out.dot > out.pdf
