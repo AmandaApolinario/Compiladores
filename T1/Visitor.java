@@ -51,10 +51,10 @@ public class Visitor extends golangramBaseVisitor<AST> {
     }
 
     @Override public AST visitBegin(golangramParser.BeginContext ctx) { 
-       
+       this.root = new AST(NodeKind.PROGRAM_NODE, 0, Type.NO_TYPE);
         for (int i = 0; i < ctx.functionDecl().size(); i++) {
             AST func = visit(ctx.functionDecl(i));
-            this.root = AST.newSubtree(NodeKind.PROGRAM_NODE, Type.NO_TYPE, func);
+            root.addChild(func);
         }
         
         return this.root;
@@ -64,9 +64,12 @@ public class Visitor extends golangramBaseVisitor<AST> {
         funcName = ctx.ID().getText();
         varTable = new VarTable();
 
-        //precisa de uma ast pros parametros?
-        visit(ctx.parameters());
+        AST tree = new AST(NodeKind.FUNCDEC_NODE, 0, Type.NO_TYPE);
+
+        AST params = visit(ctx.parameters());
         AST blockAST = visit(ctx.block());
+        tree.addChild(params);
+        tree.addChild(blockAST);
         
         int isNewFunc = funcTable.containsFunction(ctx.ID().getText());
         if (isNewFunc == -1) {
@@ -95,15 +98,39 @@ public class Visitor extends golangramBaseVisitor<AST> {
             System.exit(1);
         }
 
-        //ta certo isso? 
-        return AST.newSubtree(NodeKind.PROGRAM_NODE, Type.NO_TYPE, blockAST); 
+        
+        return tree; 
     }
 
+	@Override public AST visitBlock(golangramParser.BlockContext ctx) { 
+        AST node = new AST(NodeKind.BLOCK_NODE, 0, Type.NO_TYPE);
+        //add resto da funcao
+        if (ctx.statementList() != null) {
+            AST nodeChild = visit(ctx.statementList());
+            node.addChild(nodeChild);
+        }
+
+        return node; 
+    }
+
+	@Override public AST visitStatementList(golangramParser.StatementListContext ctx) { 
+        AST node = new AST(NodeKind.BLOCK_NODE, 0, Type.NO_TYPE);
+
+        for (int i = 0; i < ctx.statement().size(); i++) {
+            AST stmt = visit(ctx.statement(i));
+            node.addChild(stmt);
+        }
+
+        return node; 
+    }
+
+
     @Override public AST visitParameters(golangramParser.ParametersContext ctx) {
-        parametersCount = ctx.parameterDecl().size();
-        //?????????????????
-        return null;    
-     }
+        // parametersCount = ctx.parameterDecl().size();
+        AST params = new AST(NodeKind.PARAMLIST_NODE, 0, Type.NO_TYPE);
+        //add resto da funcao
+        return params;   
+    }
 	
 
     @Override public AST visitSimpleDeclareAssignment(golangramParser.SimpleDeclareAssignmentContext ctx) { 
@@ -180,7 +207,9 @@ public class Visitor extends golangramBaseVisitor<AST> {
             System.out.println("Nao eh possivel declarar duas variaveis com o mesmo nome. Declarando: " + ctx.idList().ID(0).getText());
             System.exit(1);
         }
-        AST node = AST.newSubtree(NodeKind.VAR_LIST_NODE, type);
+
+        
+        AST node = new AST(NodeKind.VAR_DECL_NODE, 0, type);
         node.addChild(newVar(ctx.idList().ID(0).getSymbol()));
     	return node;       
     }

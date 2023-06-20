@@ -25,8 +25,7 @@ public class golangramParser extends Parser {
 		ASSIGN=45, NOT=46, NOTEQUAL=47, LESSEQTHAN=48, MOREEQTHAN=49, DECLARE_ASSIGN=50, 
 		LPAR=51, RPAR=52, LBRACK=53, RBRACK=54, LCURLYBRACES=55, RCURLYBRACES=56, 
 		COMMA=57, DOT=58, SEMI=59, COLON=60, ID=61, REAL_VAL=62, INT_VAL=63, STR_VAL=64, 
-		COMMENT=65, BLOCK_COMMENT=66, WHITESPACE=67, UNKNOWN=68, PLUSparam=69, 
-		EOS=70;
+		COMMENT=65, BLOCK_COMMENT=66, WHITESPACE=67, UNKNOWN=68, EOS=69;
 	public static final int
 		RULE_begin = 0, RULE_functionDecl = 1, RULE_arrayStmt = 2, RULE_declaration = 3, 
 		RULE_typeSpec = 4, RULE_constDecl = 5, RULE_constSpec = 6, RULE_declareAssignment = 7, 
@@ -86,7 +85,7 @@ public class golangramParser extends Parser {
 			"NOTEQUAL", "LESSEQTHAN", "MOREEQTHAN", "DECLARE_ASSIGN", "LPAR", "RPAR", 
 			"LBRACK", "RBRACK", "LCURLYBRACES", "RCURLYBRACES", "COMMA", "DOT", "SEMI", 
 			"COLON", "ID", "REAL_VAL", "INT_VAL", "STR_VAL", "COMMENT", "BLOCK_COMMENT", 
-			"WHITESPACE", "UNKNOWN", "PLUSparam", "EOS"
+			"WHITESPACE", "UNKNOWN", "EOS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -1660,7 +1659,7 @@ public class golangramParser extends Parser {
 	public static class Assign_opContext extends ParserRuleContext {
 		public TerminalNode ASSIGN() { return getToken(golangramParser.ASSIGN, 0); }
 		public TerminalNode DECLARE_ASSIGN() { return getToken(golangramParser.DECLARE_ASSIGN, 0); }
-		public TerminalNode PLUSparam() { return getToken(golangramParser.PLUSparam, 0); }
+		public TerminalNode PLUS() { return getToken(golangramParser.PLUS, 0); }
 		public TerminalNode MINUS() { return getToken(golangramParser.MINUS, 0); }
 		public TerminalNode OR() { return getToken(golangramParser.OR, 0); }
 		public TerminalNode TIMES() { return getToken(golangramParser.TIMES, 0); }
@@ -1687,11 +1686,11 @@ public class golangramParser extends Parser {
 			setState(290);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la - 29)) & ~0x3f) == 0 && ((1L << (_la - 29)) & 1099511628815L) != 0) {
+			if (((_la) & ~0x3f) == 0 && ((1L << _la) & 558077313024L) != 0) {
 				{
 				setState(289);
 				_la = _input.LA(1);
-				if ( !((((_la - 29)) & ~0x3f) == 0 && ((1L << (_la - 29)) & 1099511628815L) != 0) ) {
+				if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 558077313024L) != 0) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
@@ -4380,7 +4379,7 @@ public class golangramParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001F\u0249\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001E\u0249\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
 		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b\u0002"+
@@ -4457,10 +4456,10 @@ public class golangramParser extends Parser {
 		":\u0001:\u0001:\u0003:\u023e\b:\u0001:\u0003:\u0241\b:\u0003:\u0243\b"+
 		":\u0001:\u0001:\u0001;\u0001;\u0001;\u0000\u0002bd<\u0000\u0002\u0004"+
 		"\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018\u001a\u001c\u001e \""+
-		"$&(*,.02468:<>@BDFHJLNPRTVXZ\\^`bdfhjlnprtv\u0000\t\u0001\u0000()\u0003"+
-		"\u0000\u001d \'\'EE\u0002\u0000--22\u0002\u0000\u001c\u001f..\u0001\u0000"+
+		"$&(*,.02468:<>@BDFHJLNPRTVXZ\\^`bdfhjlnprtv\u0000\t\u0001\u0000()\u0002"+
+		"\u0000\u001c \'\'\u0002\u0000--22\u0002\u0000\u001c\u001f..\u0001\u0000"+
 		"\u001e \u0002\u0000\u001c\u001d\'\'\u0002\u0000*,/1\u0001\u0000\t\n\u0002"+
-		"\u0001;;FF\u026e\u0000\u0080\u0001\u0000\u0000\u0000\u0002\u0085\u0001"+
+		"\u0001;;EE\u026e\u0000\u0080\u0001\u0000\u0000\u0000\u0002\u0085\u0001"+
 		"\u0000\u0000\u0000\u0004\u008e\u0001\u0000\u0000\u0000\u0006\u0096\u0001"+
 		"\u0000\u0000\u0000\b\u0098\u0001\u0000\u0000\u0000\n\u009e\u0001\u0000"+
 		"\u0000\u0000\f\u00ac\u0001\u0000\u0000\u0000\u000e\u00b4\u0001\u0000\u0000"+

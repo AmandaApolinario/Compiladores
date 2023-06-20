@@ -70,7 +70,7 @@ incDecStmt: expression (PLUSONE | MINUSONE);
 assignment: expressionList assign_op expressionList;
 
 assign_op: (
-	PLUSparam
+	PLUS
 	| MINUS
 	| OR
 	| TIMES

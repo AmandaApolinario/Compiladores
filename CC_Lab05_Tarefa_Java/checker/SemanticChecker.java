@@ -81,7 +81,7 @@ import typing.Type;
  * as ações semânticas do parser já faziam a construção da AST junto com a análise
  * sintática. Aqui, é o inverso, por isso temos que visitar os filhos primeiro.
  */
-public class SemanticChecker extends EZParserBaseVisitor<AST> {
+public class SemanticAST blockAST = visit(ctx.block());Checker extends EZParserBaseVisitor<AST> {
 
 	private StrTable st = new StrTable();   // Tabela de strings.
     private VarTable vt = new VarTable();   // Tabela de variáveis.
