@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.print.DocFlavor.STRING;
 
 import tables.FuncTable;
@@ -18,7 +21,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
     FuncTable funcTable = new FuncTable();
     StrTable strTable = new StrTable();
     VarTable varTable;
-    
+    List<VarTable> allVarTables = new ArrayList<VarTable>();
     String funcName;
     Type type;
     int parametersCount = 0;
@@ -64,7 +67,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
     @Override public AST visitFunctionDecl(golangramParser.FunctionDeclContext ctx) {
         funcName = ctx.ID().getText();
         varTable = new VarTable();
-
+        allVarTables.add(varTable);
         AST tree = new AST(NodeKind.FUNCDEC_NODE, 0, Type.NO_TYPE);
 
         AST params = visit(ctx.parameters());
@@ -108,10 +111,10 @@ public class Visitor extends golangramBaseVisitor<AST> {
         //add resto da funcao
         if (ctx.statementList() != null) {
             AST nodeChild = visit(ctx.statementList());
-            node.addChild(nodeChild);
+            return nodeChild;
         }
 
-        return node; 
+        return null; 
     }
 
 	@Override public AST visitStatementList(golangramParser.StatementListContext ctx) { 
@@ -174,7 +177,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
     }
 
     @Override public AST visitDeclaration(golangramParser.DeclarationContext ctx) { 
-        AST node = new AST(NodeKind.BLOCK_NODE, 0, Type.NO_TYPE);
         AST stmt = visit(ctx.varDecl());
 
         if ((stmt)!= null) {
@@ -186,21 +188,23 @@ public class Visitor extends golangramBaseVisitor<AST> {
      }
 	
      @Override public AST visitVarDecl(golangramParser.VarDeclContext ctx) { 
-        AST node = new AST(NodeKind.VAR_DECL_NODE, 0, Type.NO_TYPE);
         AST stmt = visit(ctx.varSpec());
 
         if ((stmt)!= null) {
-            node.addChild(stmt);
+            return(stmt);
         }
 
-        return node; 
+        return null; 
       }
 	
 
     @Override public AST visitParameters(golangramParser.ParametersContext ctx) {
         // parametersCount = ctx.parameterDecl().size();
         AST params = new AST(NodeKind.PARAMLIST_NODE, 0, Type.NO_TYPE);
-        //add resto da funcao
+        for (int i =0; i < ctx.parameterDecl().size(); i++) {
+            AST param = visit(ctx.parameterDecl(i));
+            params.addChild(param);
+        }
         return params;   
     }
 	
@@ -300,15 +304,30 @@ public class Visitor extends golangramBaseVisitor<AST> {
 	
 
     @Override public AST visitParameterDecl(golangramParser.ParameterDeclContext ctx) { 
-
-        int isNewVar = varTable.lookupVar(ctx.ID().getText());
-        if (isNewVar == -1) {
-            varTable.addVar(ctx.ID().getText(), ctx.getStart().getLine(), type);
-        } else {
-            System.out.println("Nao eh possivel declarar duas variaveis com o mesmo nome. Declarando: " + ctx.ID().getText());
-            System.exit(1);
+        String text = ctx.ID().getText();
+    	int line = ctx.getStart().getLine();
+   		int idx = varTable.lookupVar(text);
+        if (idx != -1) {
+        	System.err.printf("SEMANTIC ERROR (%d): variable '%s' already declared at line %d.\n", line, text, varTable.getLine(idx));
+        	System.exit(1);
+            return null; // Never reached.
         }
-        return null;
+
+        String t = ctx.type_().ID().getText();
+        Type realType = Type.NO_TYPE;
+        if(t.equals("string")) {
+            realType = Type.STR_TYPE;
+        } else if (t.equals("int")){
+            realType = Type.INT_TYPE;
+        } else if (t.equals("float32")){
+            realType = Type.REAL_TYPE;
+        } else if (t.equals("bool")){
+            realType = Type.BOOL_TYPE;
+        } 
+
+        //deveria ser uma var decl?
+        idx = varTable.addVar(text, line, realType);
+        return new AST(NodeKind.VAR_DECL_NODE, idx, realType);
     }
 
 	@Override public AST visitAdd_opExpression(golangramParser.Add_opExpressionContext ctx) { 
@@ -514,7 +533,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
         //trocar pra aceitar func table, e ai na printDot sao os comentarios la
         //vai ter q printar as funcs e dps as var tables
-    	AST.printDot(root, varTable);
+    	AST.printDot(root, allVarTables, funcTable);
     }
 
 	

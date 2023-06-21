@@ -61,6 +61,11 @@ public final class FuncTable {
 		return table.get(i).paramCount;
 	}
 
+    public String getName(int i) {
+        System.out.println(table.get(i).name);
+        return table.get(i).name;
+    }
+
     private static class FunctionEntry {
         private final String name;
 	   	VarTable varTable;
