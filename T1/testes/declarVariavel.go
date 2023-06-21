@@ -3,11 +3,11 @@ package main
 import "fmt"
 
 func main(d int, e int, c int) {
-	var a int
-	var b string
+
+	//b = 5 / 2
 };
 
 func funcao() {
-	var c int
-	var d bool
+	var b int
+	var teste = 5 * 2
 };

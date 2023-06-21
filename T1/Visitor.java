@@ -72,8 +72,12 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
         AST params = visit(ctx.parameters());
         AST blockAST = visit(ctx.block());
-        tree.addChild(params);
-        tree.addChild(blockAST);
+        if (params != null) {
+            tree.addChild(params);
+        }
+        if (blockAST != null) {
+            tree.addChild(blockAST);
+        }
         
         int isNewFunc = funcTable.containsFunction(ctx.ID().getText());
         if (isNewFunc == -1) {
@@ -131,10 +135,11 @@ public class Visitor extends golangramBaseVisitor<AST> {
 	@Override public AST visitStatement(golangramParser.StatementContext ctx) { 
         AST node = new AST(NodeKind.BLOCK_NODE, 0, Type.NO_TYPE);
 
-        // if (visit(ctx.simpleStmt()) != null) {
-        //     AST stmt = visit(ctx.simpleStmt());
-        //     node.addChild(stmt);
-        // }
+        /*AST simple = visit(ctx.simpleStmt());
+        if (simple != null) {
+            System.out.println("show");
+            node.addChild(simple);
+        }*/
         
         AST stmt = visit(ctx.declaration());
         if (stmt != null) {
@@ -175,6 +180,11 @@ public class Visitor extends golangramBaseVisitor<AST> {
         // }
         return null; 
     }
+
+    @Override public AST visitSimpleAssignment(golangramParser.SimpleAssignmentContext ctx) { 
+        return visit(ctx.assignment());
+     }
+	
 
     @Override public AST visitDeclaration(golangramParser.DeclarationContext ctx) { 
         AST stmt = visit(ctx.varDecl());
@@ -218,6 +228,8 @@ public class Visitor extends golangramBaseVisitor<AST> {
     }
 
     @Override public AST visitVarSpec(golangramParser.VarSpecContext ctx) { 
+        AST returnAST;
+
         AST astExp = null;
         Type typeFinal = Type.NO_TYPE;
         
@@ -228,6 +240,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
         String t;
 
         if(ctx.type_() != null){
+            
             visit(ctx.type_());
             t = ctx.type_().ID().getText();
 
@@ -281,8 +294,25 @@ public class Visitor extends golangramBaseVisitor<AST> {
         	System.exit(1);
             return null; // Never reached.
         }
-        idx = varTable.addVar(text, line, type);
-        return new AST(NodeKind.VAR_DECL_NODE, idx, typeFinal);
+
+        idx = varTable.addVar(text, line, typeFinal);
+
+        if (ctx.ASSIGN() != null) {
+            returnAST = new AST(NodeKind.ASSIGN_NODE, 0, Type.NO_TYPE);
+            AST varDeclAST = new AST(NodeKind.VAR_DECL_NODE, idx, typeFinal);
+            returnAST.addChild(varDeclAST);
+
+        } else {
+            returnAST = new AST(NodeKind.VAR_DECL_NODE, idx, typeFinal);
+        }
+        
+        
+        if (astExp != null) {
+            returnAST.addChild(astExp);
+        }
+
+
+        return returnAST;
     }
 
     @Override public AST visitSimpleArrayStmt(golangramParser.SimpleArrayStmtContext ctx) { 
@@ -330,6 +360,21 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return new AST(NodeKind.VAR_DECL_NODE, idx, realType);
     }
 
+    @Override public AST visitAssignment(golangramParser.AssignmentContext ctx) { 
+        AST assignment = new AST(NodeKind.ASSIGN_NODE, 0, Type.NO_TYPE);
+
+        System.out.println("assignment");
+        AST esq = visit(ctx.expressionList(0));
+        AST dir = visit(ctx.expressionList(1));
+
+
+        assignment.addChild(esq);
+        assignment.addChild(dir);
+        return assignment;
+
+    }
+	
+
 	@Override public AST visitAdd_opExpression(golangramParser.Add_opExpressionContext ctx) { 
         AST esq = visit(ctx.expression(0));
         AST dir = visit(ctx.expression(1));
@@ -341,6 +386,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
         if (ctx.PLUS() != null) {
            unif = lt.unifyPlus(rt);
         } else if (ctx.MINUS() != null) {
+            System.out.println("minus");
 			unif = lt.unifyOtherArith(rt);
         } else {
             unif = lt.unifyPlus(rt);
@@ -349,12 +395,19 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
         esq = Conv.createConvNode(unif.lc,esq);
 		dir = Conv.createConvNode(unif.rc, dir);
+        AST returnAST = null;
 
         if (ctx.add_op.getType() == golangramLexer.PLUS) {
-			return AST.newSubtree(NodeKind.PLUS_NODE, unif.type, esq,dir);
-		} else { // MINUS
-			return AST.newSubtree(NodeKind.MINUS_NODE, unif.type, esq,dir);
+			returnAST = new AST(NodeKind.PLUS_NODE, 0, unif.type);
+            returnAST.addChild(esq);
+            returnAST.addChild(dir);
+		} else if (ctx.add_op.getType() == golangramLexer.MINUS) { // MINUS
+			returnAST = new AST(NodeKind.MINUS_NODE, 0, unif.type);
+            returnAST.addChild(esq);
+            returnAST.addChild(dir);
 		}
+
+        return returnAST;
 
     }
 	
@@ -372,12 +425,19 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
         esq = Conv.createConvNode(unif.lc, esq);
         dir = Conv.createConvNode(unif.rc, dir);
+        AST returnAST = null;
 
-        if (ctx.TIMES() != null || ctx.OVER() != null) {
-			return AST.newSubtree(NodeKind.TIMES_NODE, unif.type, esq, dir);
-        } else {
-			return AST.newSubtree(NodeKind.OVER_NODE, unif.type, esq, dir);
-        }
+        if (ctx.mul_op.getType() == golangramLexer.TIMES) {
+			returnAST = new AST(NodeKind.TIMES_NODE, 0, unif.type);
+            returnAST.addChild(esq);
+            returnAST.addChild(dir);
+		} else if (ctx.mul_op.getType() == golangramLexer.OVER) { // MINUS
+			returnAST = new AST(NodeKind.OVER_NODE, 0, unif.type);
+            returnAST.addChild(esq);
+            returnAST.addChild(dir);
+		}
+
+        return returnAST;
     }
 
     @Override public AST visitRel_opExpression(golangramParser.Rel_opExpressionContext ctx) { 
@@ -499,7 +559,9 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
     @Override public AST visitIntVal(golangramParser.IntValContext ctx) { 
         type = Type.INT_TYPE;
-        return null;
+        int value = Integer.parseInt(ctx.INT_VAL().getText());
+        AST ast = new AST(NodeKind.INT_VAL_NODE, value, Type.INT_TYPE);
+        return ast;
     }
 
 	@Override public AST visitRealVal(golangramParser.RealValContext ctx) { 
@@ -511,8 +573,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
         type = Type.BOOL_TYPE;
         return null;
     }
-	
-
 
     private static void typeError(int lineNo, String op, Type t1, Type t2) {
     	System.out.printf("SEMANTIC ERROR (%d): incompatible types for operator '%s', LHS is '%s' and RHS is '%s'.\n",
@@ -530,9 +590,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
     // Exibe a AST no formato DOT em stderr.
     public void printAST() {
-
-        //trocar pra aceitar func table, e ai na printDot sao os comentarios la
-        //vai ter q printar as funcs e dps as var tables
     	AST.printDot(root, allVarTables, funcTable);
     }
 
