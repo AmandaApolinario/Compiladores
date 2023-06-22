@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tables.VarTable;
-import tables.FuncTable;
 import typing.Type;
 
 // Implementação dos nós da AST.
@@ -19,9 +18,9 @@ public class AST {
 	public  final NodeKind kind;
 	public  final int intData;
 	public  final float floatData;
-	public  Type type;
-	public final List<AST> children; // Privado para que a manipulação da lista seja controlável.
-
+	public  final Type type;
+	public  final List<AST> children; // Privado para que a manipulação da lista seja controlável.
+	
 	// Construtor completo para poder tornar todos os campos finais.
 	// Privado porque não queremos os dois campos 'data' preenchidos ao mesmo tempo.
 	private AST(NodeKind kind, int intData, float floatData, Type type) {
@@ -31,23 +30,23 @@ public class AST {
 		this.type = type;
 		this.children = new ArrayList<AST>();
 	}
-
+	
 	// Cria o nó com um dado inteiro.
 	public AST(NodeKind kind, int intData, Type type) {
 		this(kind, intData, 0.0f, type);
 	}
-
+	
 	// Cria o nó com um dado float.
 	public AST(NodeKind kind, float floatData, Type type) {
 		this(kind, 0, floatData, type);
 	}
-
+	
 	// Adiciona um novo filho ao nó.
 	public void addChild(AST child) {
 		// A lista cresce automaticamente, então nunca vai dar erro ao adicionar.
 		this.children.add(child);
 	}
-
+	
 	// Retorna o filho no índice passado.
 	// Não há nenhuma verificação de erros!
 	public AST getChild(int idx) {
@@ -55,7 +54,12 @@ public class AST {
 		// evitar uma exceção.
 	    return this.children.get(idx);
 	}
-
+	
+	// Retorna o número de filhos do nó.
+	public int getChildCount() {
+		return this.children.size();
+	}
+	
 	// Cria um nó e pendura todos os filhos passados como argumento.
 	public static AST newSubtree(NodeKind kind, Type type, AST... children) {
 		AST node = new AST(kind, 0, type);
@@ -64,30 +68,23 @@ public class AST {
 	    }
 	    return node;
 	}
-
+	
 	// Variáveis internas usadas para geração da saída em DOT.
 	// Estáticas porque só precisamos de uma instância.
 	private static int nr;
-	private static List<VarTable> allVt;
 	private static VarTable vt;
-	private static FuncTable ft;
-
+	
 	// Imprime recursivamente a codificação em DOT da subárvore começando no nó atual.
 	// Usa stderr como saída para facilitar o redirecionamento, mas isso é só um hack.
 	private int printNodeDot() {
 		int myNr = nr++;
-		
+
 	    System.err.printf("node%d[label=\"", myNr);
 	    if (this.type != NO_TYPE) {
 	    	System.err.printf("(%s) ", this.type.toString());
 	    }
-		if (this.kind == NodeKind.FUNCDEC_NODE) {
-			vt = allVt.get(this.intData);
-			System.err.printf("%s@", ft.getName(this.intData));
-
-		}
 	    if (this.kind == NodeKind.VAR_DECL_NODE || this.kind == NodeKind.VAR_USE_NODE) {
-			System.err.printf("%s@", vt.getName(this.intData));
+	    	System.err.printf("%s@", vt.getName(this.intData));
 	    } else {
 	    	System.err.printf("%s", this.kind.toString());
 	    }
@@ -108,25 +105,13 @@ public class AST {
 	    }
 	    return myNr;
 	}
-
+	
 	// Imprime a árvore toda em stderr.
-	public static void printDot(AST tree, List<VarTable> table, FuncTable funcTable) {
-	    // nr = 0;
-		// ft = table;
-		// System.err.printf("digraph {\ngraph [ordering=\"out\"];\n");
-
-		// for(int i=0; i < ft.getVarTableSize(); i++) {
-		// 	vt = ft.getVarTable(i);
-		// 	System.out.println("var table aaa" + vt.toString());
-		// 	tree.printNodeDot();
-		// 	System.err.printf("}\n");
-		// }
-
-		nr = 0;
-		allVt = table;
-		ft = funcTable;
-		System.err.printf("digraph {\ngraph [ordering=\"out\"];\n");
-		tree.printNodeDot();
-		System.err.printf("}\n");
+	public static void printDot(AST tree, VarTable table) {
+	    nr = 0;
+	    vt = table;
+	    System.err.printf("digraph {\ngraph [ordering=\"out\"];\n");
+	    tree.printNodeDot();
+	    System.err.printf("}\n");
 	}
 }

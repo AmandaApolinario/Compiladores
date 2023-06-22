@@ -1,0 +1,18 @@
+{ Sample program in EZ language -
+  adds one to the input
+}
+
+program addone;
+var
+  int x;
+
+
+begin
+    { assign stmt }
+    x := 2 + 1;
+
+    write x;
+
+
+    
+end
