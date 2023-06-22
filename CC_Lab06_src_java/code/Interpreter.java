@@ -213,16 +213,38 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	// TODO
 	@Override
 	protected Void visitVarUse(AST node) {
-		int adrr = node.intData;
-		int varValue = memory.loadi(adrr);
+		Type type = node.type;
+		int addr = node.intData;
+		int varValue;
 
-		stack.pushi(varValue);
+		switch (type) {
+			case INT_TYPE:
+				varValue = memory.loadi(addr);
+				stack.pushi(varValue);
+				break;
+			case REAL_TYPE:
+				float floatValue = memory.loadf(addr);
+				stack.pushf(floatValue);
+				break;
+			case BOOL_TYPE:
+				varValue = memory.loadi(addr);
+				stack.pushi(varValue);
+				break;
+			case STR_TYPE:
+				varValue = memory.loadi(addr);
+				stack.pushi(varValue);
+				break;
+			default:
+				break;
+		}
+
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
 	// TODO
 	@Override
 	protected Void visitWrite(AST node) {
+		visit(node.getChild(0));
 		Type type = node.type;
 		
 		switch (type) {
@@ -241,8 +263,6 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			default:
 				break;
 		}
-		visit(node.getChild(0));
-		writeInt();
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
