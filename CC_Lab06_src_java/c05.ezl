@@ -9,7 +9,7 @@ var
 
 begin
     { assign stmt }
-    x := 2 + 1;
+    x := 4 - 3;
 
     write x;
 

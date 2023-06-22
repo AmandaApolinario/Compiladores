@@ -6,5 +6,5 @@ program hello;
 var { No variables needed }
 
 begin
-    write "Hello, world!\n";
+    write 5;
 end
