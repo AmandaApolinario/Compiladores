@@ -33,6 +33,7 @@ public enum NodeKind {
     VAR_LIST_NODE,
     VAR_USE_NODE,
     WRITE_NODE,
+    FUNCTION_CALL_NODE,
     // Type conversion nodes
     B2I_NODE,
     B2R_NODE,
@@ -75,6 +76,7 @@ public enum NodeKind {
             case I2R_NODE:          return "I2R";
             case I2S_NODE:          return "I2S";
             case R2S_NODE:          return "R2S";
+            case FUNCTION_CALL_NODE:return "functionCall";
 			default:
 				System.err.println("ERROR: Fall through in NodeKind enumeration!");
 				System.exit(1);
