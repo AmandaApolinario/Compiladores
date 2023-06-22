@@ -1,7 +1,10 @@
 Exception in thread "main" java.lang.NullPointerException
 	at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(AbstractParseTreeVisitor.java:18)
-	at Visitor.visitStatement(Visitor.java:182)
-	at Visitor.visitStatement(Visitor.java:19)
+	at Visitor.visitIfStmt(Visitor.java:228)
+	at Visitor.visitIfStmt(Visitor.java:19)
+	at golangramParser$IfStmtContext.accept(golangramParser.java:2050)
+	at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visitChildren(AbstractParseTreeVisitor.java:46)
+	at golangramBaseVisitor.visitStatement(golangramBaseVisitor.java:132)
 	at golangramParser$StatementContext.accept(golangramParser.java:1219)
 	at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(AbstractParseTreeVisitor.java:18)
 	at Visitor.visitStatementList(Visitor.java:128)
@@ -21,4 +24,4 @@ Exception in thread "main" java.lang.NullPointerException
 	at golangramParser$BeginContext.accept(golangramParser.java:169)
 	at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(AbstractParseTreeVisitor.java:18)
 	at Main.main(Main.java:35)
-make: *** [Makefile:37: run] Erro 1
+make: *** [Makefile:37: run] Error 1

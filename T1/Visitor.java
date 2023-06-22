@@ -132,62 +132,67 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return node; 
     }
 
-	@Override public AST visitStatement(golangramParser.StatementContext ctx) { 
-        AST node = new AST(NodeKind.BLOCK_NODE, 0, Type.NO_TYPE);
-    
-        /*System.out.println("show");
-        AST simple = visit(ctx.simpleStmt());
-        if (visit(ctx.simpleStmt()) != null) {
-            System.out.println("show");
-            node.addChild(simple);
-            return node;
-        }*/
+	// @Override public AST visitStatement(golangramParser.StatementContext ctx) { 
         
-        /*AST stmt = visit(ctx.declaration());
-        if (stmt != null) {
-            return stmt;
-            //node.addChild(stmt);
-        }*/
+    
+    //     /*System.out.println("show");
+    //     AST simple = visit(ctx.simpleStmt());
+    //     if (visit(ctx.simpleStmt()) != null) {
+    //         System.out.println("show");
+    //         node.addChild(simple);
+    //         return node;
+    //     }*/
+        
+    //     /*AST stmt = visit(ctx.declaration());
+    //     if (stmt != null) {
+    //         return stmt;
+    //         //node.addChild(stmt);
+    //     }*/
 
-        // if (visit(ctx.labeledStmt()) != null) {
-        //     System.out.println("2");
-        // }
+    //     // if (visit(ctx.labeledStmt()) != null) {
+    //     //     System.out.println("2");
+    //     // }
 
-        // if (visit(ctx.simpleStmt()) != null) {
-        //     System.out.println("3");
-        // }
+    //     // if (visit(ctx.simpleStmt()) != null) {
+    //     //     System.out.println("3");
+    //     // }
 
-        // if (visit(ctx.returnStmt()) != null) {
-        //     System.out.println("4");
-        // }
+    //     // if (visit(ctx.returnStmt()) != null) {
+    //     //     System.out.println("4");
+    //     // }
 
-        // if (visit(ctx.fallthroughStmt()) != null) {
-        //     System.out.println("5");
-        // }
+    //     // if (visit(ctx.fallthroughStmt()) != null) {
+    //     //     System.out.println("5");
+    //     // }
 
-        // if (visit(ctx.block()) != null) {
-        //     System.out.println("6");
-        // }
+    //     // if (visit(ctx.block()) != null) {
+    //     //     System.out.println("6");
+    //     // }
 
-       /*  if (visit(ctx.ifStmt()) != null) {
+    //    /*  if (visit(ctx.ifStmt()) != null) {
             
-            System.out.println("7");
-            return visit(ctx.ifStmt());
-        }*/
+    //         System.out.println("7");
+    //         return visit(ctx.ifStmt());
+    //     }*/
 
-        // if (visit(ctx.switchStmt()) != null) {
-        //     System.out.println("8");
-        // }
-        System.out.println("AAA");
-        if (visit(ctx.forStmt()) != null) {
-            System.out.println("9");
-        }
-        return null; 
-    }
+    //     // if (visit(ctx.switchStmt()) != null) {
+    //     //     System.out.println("8");
+    //     // }
+    //     System.out.println("AAA");
+    //     if (visit(ctx.forStmt()) != null) {
+    //         System.out.println("9");
+    //     }
+    //     return null; 
+    // }
 
+    //VAI SER WHILE EM VEZ DE FOR
     @Override public AST visitForStmt(golangramParser.ForStmtContext ctx) { 
-        System.out.println("9");
-        return new AST(NodeKind.REPEAT_NODE, 0, Type.NO_TYPE);
+        AST whileAST = new AST(NodeKind.WHILE_NODE, 0, Type.NO_TYPE);
+
+        whileAST.addChild(visit(ctx.expression()));
+        whileAST.addChild(visit(ctx.block()));
+
+        return whileAST;
      }
 	
 
@@ -218,7 +223,16 @@ public class Visitor extends golangramBaseVisitor<AST> {
             ifNode.addChild(visit(ctx.block(0)));
         }
         if (ctx.ELSE() != null) {
-            
+            AST elseAST = new AST(NodeKind.ELSE_NODE, 0, Type.NO_TYPE);
+
+            if (visit(ctx.ifStmt()) != null) {
+                elseAST.addChild(visit(ctx.ifStmt()));
+            }
+            if (visit(ctx.block(1)) != null) {
+                elseAST.addChild(visit(ctx.block(1)));
+            }
+
+            ifNode.addChild(elseAST);
         }
         
         return ifNode;
@@ -482,6 +496,8 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
         Type lt = esq.type;
 		Type rt = dir.type;
+        System.out.println(lt.ordinal());
+        System.out.println(rt.ordinal());
 		Unif unif = lt.unifyComp(rt);
 
         if (unif.type == Type.NO_TYPE) {
