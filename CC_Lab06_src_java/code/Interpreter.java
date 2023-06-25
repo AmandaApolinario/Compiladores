@@ -115,12 +115,23 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	// TODO
 	@Override
 	protected Void visitBoolVal(AST node) {
+		stack.pushi(node.intData);
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
 	// TODO
 	@Override
 	protected Void visitIf(AST node) {
+		visit(node.getChild(0));
+
+		if (stack.popi() == 1) {
+			visit(node.getChild(1));
+		} else {
+			for (int i=2; i < node.children.size(); i++) {
+				visit(node.getChild(i));
+			}
+		}
+
         return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
@@ -145,7 +156,6 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			int rightInt = stack.popi();
 		
 			boolean resp = rightInt < leftInt;
-
 			if (resp == true) {
 				stack.pushi(1);
 			} else {
@@ -240,11 +250,12 @@ public class Interpreter extends ASTBaseVisitor<Void> {
         
 		visit(node.getChild(1));
 		Type type = node.type;
-
+		
 		switch (type) {
 		case INT_TYPE:
 			int leftInt = stack.popi();
 			int rightInt = stack.popi();
+
 			int somaInt = leftInt + rightInt;
 
 			stack.pushi(somaInt);
@@ -257,6 +268,8 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			stack.pushf(somaReal);
 			break;
 		case STR_TYPE:
+			System.out.println("plus str");
+
 			break;
 		default:
 			break;
@@ -355,7 +368,6 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 	@Override
 	protected Void visitStrVal(AST node) {
-		System.out.println(node.intData);
 		stack.pushi(node.intData);
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
@@ -515,12 +527,27 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	// TODO
 	@Override
 	protected Void visitB2I(AST node) {
+		visit(node.getChild(0));
+
+		if (stack.popi() == 0) {
+			stack.pushi(0);
+		} else {
+			stack.pushi(1);
+		}
+
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
 	// TODO
 	@Override
 	protected Void visitB2R(AST node) {
+		visit(node.getChild(0));
+
+		if (stack.popf() == 0.0) {
+			stack.pushf(0);
+		} else {
+			stack.pushf(1);
+		}
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
@@ -540,6 +567,10 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	// TODO
 	@Override
 	protected Void visitI2R(AST node) {
+		visit(node.getChild(0));
+
+		stack.pushf(stack.popi());
+
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
