@@ -8,6 +8,8 @@ import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.Scanner;
 
+import javax.swing.plaf.synth.SynthStyle;
+
 import ast.AST;
 import ast.ASTBaseVisitor;
 import tables.StrTable;
@@ -56,7 +58,16 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			float val = stack.popf();
 			int addr = node.getChild(0).intData;
 			memory.storef(addr, val);
-		} else {
+		} /*else if (node.getChild(0).type.equals(Type.STR_TYPE)){
+			System.out.println("pop it " + stack.popi());
+			/*int val = stack.popi();
+			int addr = node.getChild(0).intData;	
+			st.set(addr, st.get(val));
+			System.out.println("val " + val);
+			System.out.println("addr " + addr);
+			memory.storei(addr, val); 
+		}*/
+		else {
 			int val = stack.popi();
 			int addr = node.getChild(0).intData;
 			memory.storei(addr, val);
@@ -268,7 +279,17 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			stack.pushf(somaReal);
 			break;
 		case STR_TYPE:
-			System.out.println("plus str");
+			int pos = stack.popi();
+			int pos2 = stack.popi();
+
+			String s1 = st.get(pos2);
+			String s2 = st.get(pos);
+
+			String s = s1.substring(0, s2.length() - 1) + s2.substring(1, s2.length());
+			int strIdx = st.addStr(s);
+			System.out.println("idx: " + strIdx + "str: " + s);
+
+			stack.pushi(strIdx);
 
 			break;
 		default:
