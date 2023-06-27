@@ -5,10 +5,8 @@ import "fmt"
 func main(d int, e int, c int) {
 
     if d > 10 {
-		var a int
-		a = 2 + 5
-
-
+		var a int = 5
+		a = lala()
 		
 	} else {
 		var b float32
@@ -24,3 +22,7 @@ func funcao() {
         var b float32
     }
 };
+
+func lala() int {
+	var c int
+}

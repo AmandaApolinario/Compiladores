@@ -239,10 +239,11 @@ public class Visitor extends golangramBaseVisitor<AST> {
 	
 
      @Override public AST visitFuncCallExpression(golangramParser.FuncCallExpressionContext ctx) { 
-        AST returnAST = new AST(NodeKind.FUNCTION_CALL_NODE, 0, Type.NO_TYPE);    
-        //e o nome da função kk
+        AST returnAST = new AST(NodeKind.FUNCTION_CALL_NODE, 0, Type.NO_TYPE);
+
+
         return returnAST;
-      }
+    }
 	
 	
      @Override public AST visitVarDecl(golangramParser.VarDeclContext ctx) { 
@@ -283,7 +284,9 @@ public class Visitor extends golangramBaseVisitor<AST> {
         Type typeFinal = Type.NO_TYPE;
         
         if (ctx.expressionList() != null){
+            System.out.println("opa");
             astExp = visit(ctx.expressionList());
+            typeFinal = astExp.type;
         }
         
         String t;
@@ -305,10 +308,12 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
 
             if (astExp != null){
+                System.out.println(type);
+                System.out.println(typeFinal);
                 if (type.equals(typeFinal)){
                     typeFinal = type;
                 
-                } else if (typeFinal.equals(Type.INT_TYPE) && type.equals(Type.REAL_TYPE)) {
+                } else if (type.equals(Type.INT_TYPE) && type.equals(Type.REAL_TYPE)) {
                     typeFinal = Type.REAL_TYPE;
               
                 } else {
@@ -591,31 +596,28 @@ public class Visitor extends golangramBaseVisitor<AST> {
 	@Override public AST visitFuncCall(golangramParser.FuncCallContext ctx) { 
 
         // NAO SEI TEM Q FAZER 
+        AST funcCall = new AST(NodeKind.FUNCTION_CALL_NODE, 0, Type.NO_TYPE);
+        AST id = checkVar(ctx.ID().getSymbol());
+        AST arg = visit(ctx.arguments());
         
-        // funcName = ctx.ID().getText();
+        int isDeclaredFunc = funcTable.containsFunction(ctx.ID().getText());
+        if (isDeclaredFunc != -1) {
+            int parameters = funcTable.getQtdParams(isDeclaredFunc);
+            if (parameters == ctx.arguments().expressionList().size()) {
 
-        // argumentsCount = 0;
-        // visit(ctx.arguments());
-        
-        // int isDeclaredFunc = funcTable.containsFunction(ctx.ID().getText());
-        // if (isDeclaredFunc != -1) {
-        //     int parameters = funcTable.getQtdParams(isDeclaredFunc);
-        //     if (parameters == argumentsCount) {
-        //         System.out.println("quantidade certa de parametros");
-        //         Type typeReturn = funcTable.getReturn(isDeclaredFunc);
-        //         if(typeReturn != null) {
-        //             //System.out.println(typeReturn);
-        //             return typeReturn;
-        //         }
-        //     } else {
-        //         System.out.printf("A quantidade correta de parametros da função %s é %d, você digitou %d!",ctx.ID().getText(), parameters, argumentsCount);
-        //         System.exit(1);
-        //     }
+                funcCall.addChild(id);
+                funcCall.addChild(arg);
 
-        // } else {
-        //     System.out.println("Nao eh possivel chamar uma função não declarada. Erro em: " + ctx.ID().getText());
-        //     System.exit(1);
-        // }
+                return funcCall;
+            } else {
+                System.out.printf("A quantidade correta de parametros da função %s é %d, você digitou %d!",ctx.ID().getText(), parameters, argumentsCount);
+                System.exit(1);
+            }
+
+        } else {
+            System.out.println("Nao eh possivel chamar uma função não declarada. Erro em: " + ctx.ID().getText());
+            System.exit(1);
+        }
 
         return null;
     }
