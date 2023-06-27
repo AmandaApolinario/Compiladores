@@ -49,13 +49,13 @@ public class Main {
 		// fazer a análise.
 		SemanticChecker checker = new SemanticChecker();
 		checker.visit(tree);
-		checker.printAST();
+		// checker.printAST();
 
 		// Saída final. Se chegou até aqui é porque não houve erro.
 		// Executa o interpretador de código.
 		
 		Interpreter interpreter = new Interpreter(checker.st, checker.vt);
-		//interpreter.execute(checker.getAST());
+		interpreter.execute(checker.getAST());
 
 		//checker.printTables();
 	}

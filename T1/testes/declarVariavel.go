@@ -5,12 +5,15 @@ import "fmt"
 func main(d int, e int, c int) {
 
     if d > 10 {
+		var a int
+		a = 2 + 5
+		
 		
 	} else {
-		
+		var b float
 	}
-	//b = 5 / 2
 	
+	var f string	
 };
 
 func funcao() {

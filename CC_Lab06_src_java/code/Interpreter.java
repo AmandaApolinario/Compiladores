@@ -283,11 +283,10 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			int pos2 = stack.popi();
 
 			String s1 = st.get(pos2);
-			String s2 = st.get(pos);
+			String s2 = st.get(pos);	
 
-			String s = s1.substring(0, s2.length() - 1) + s2.substring(1, s2.length());
+			String s = s1.substring(0, s1.length() - 1) + s2.substring(1, s2.length());
 			int strIdx = st.addStr(s);
-			System.out.println("idx: " + strIdx + "str: " + s);
 
 			stack.pushi(strIdx);
 
