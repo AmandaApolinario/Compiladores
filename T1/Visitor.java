@@ -65,7 +65,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
     }
 
     @Override public AST visitFunctionDecl(golangramParser.FunctionDeclContext ctx) {
-        funcName = ctx.ID().getText();
         varTable = new VarTable();
         allVarTables.add(varTable);
         AST tree = new AST(NodeKind.FUNCDEC_NODE, 0, Type.NO_TYPE);
@@ -221,7 +220,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
         }
         
         if ((ctx.block(0)) != null) {
-            System.out.println("b");
             ifNode.addChild(visit(ctx.block(0)));
         }
         if (ctx.ELSE() != null) {
@@ -263,7 +261,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
         AST params = new AST(NodeKind.PARAMLIST_NODE, 0, Type.NO_TYPE);
         for (int i =0; i < ctx.parameterDecl().size(); i++) {
             AST param = visit(ctx.parameterDecl(i));
-            System.out.println("parametros");
             params.addChild(param);
         }
         return params;   
@@ -590,11 +587,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return visitChildren(ctx);
     }
 
-    @Override public AST visitSimpleExpressionStmt(golangramParser.SimpleExpressionStmtContext ctx) { 
-        System.out.println("aaaaaaa");
-        return null;
-     }
-	
 	
 	@Override public AST visitFuncCall(golangramParser.FuncCallContext ctx) { 
 
@@ -645,12 +637,15 @@ public class Visitor extends golangramBaseVisitor<AST> {
         type = Type.REAL_TYPE;
         float value = Float.parseFloat(ctx.REAL_VAL().getText());
         AST ast = new AST(NodeKind.REAL_VAL_NODE, value, type);
-        return null;
+        return ast;
     }
 
     @Override public AST visitBoolVal(golangramParser.BoolValContext ctx) { 
         type = Type.BOOL_TYPE;
-        return null;
+        int value = Integer.parseInt(ctx.bool().getText());
+        AST ast = new AST(NodeKind.BOOL_VAL_NODE, value, type);
+
+        return ast;
     }
 
     private static void typeError(int lineNo, String op, Type t1, Type t2) {
