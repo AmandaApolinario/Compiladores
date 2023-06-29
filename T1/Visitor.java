@@ -29,6 +29,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
     AST root;
 
+    //cria as funcoes de stdin e stdout
     Void createStdInOut() {
         System.out.println("");
         VarTable varTableGen = new VarTable();
@@ -63,6 +64,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return new AST(NodeKind.VAR_DECL_NODE, idx, type);
     }
 
+    //primeira regra
     @Override public AST visitBegin(golangramParser.BeginContext ctx) {
         this.createStdInOut();
         this.root = new AST(NodeKind.PROGRAM_NODE, 0, Type.NO_TYPE);
