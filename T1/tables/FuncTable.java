@@ -26,7 +26,7 @@ public final class FuncTable {
         return table.size();
     }
 
-	private FunctionEntry getFunction(String functionName) {
+	FunctionEntry getFunction(String functionName) {
 		for (FunctionEntry entry : table) {
 			if (entry.name.equals(functionName)) {
 				return entry;

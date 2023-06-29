@@ -29,6 +29,15 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
     AST root;
 
+    Void createStdInOut() {
+        System.out.println("");
+        VarTable varTableGen = new VarTable();
+        funcTable.addFunction("fmt.Scanln", varTableGen, null, 1);
+        funcTable.addFunction("fmt.Printf", varTableGen, null, 2);
+
+        return null;
+    }
+
     AST checkVar(Token token) {
     	String text = token.getText();
     	int line = token.getLine();
@@ -55,13 +64,14 @@ public class Visitor extends golangramBaseVisitor<AST> {
     }
 
     @Override public AST visitBegin(golangramParser.BeginContext ctx) {
-       this.root = new AST(NodeKind.PROGRAM_NODE, 0, Type.NO_TYPE);
-        for (int i = 0; i < ctx.functionDecl().size(); i++) {
-            AST func = visit(ctx.functionDecl(i));
-            root.addChild(func);
-        }
+        this.createStdInOut();
+        this.root = new AST(NodeKind.PROGRAM_NODE, 0, Type.NO_TYPE);
+            for (int i = 0; i < ctx.functionDecl().size(); i++) {
+                AST func = visit(ctx.functionDecl(i));
+                root.addChild(func);
+            }
 
-        return this.root;
+            return this.root;
     }
 
     @Override public AST visitFunctionDecl(golangramParser.FunctionDeclContext ctx) {
@@ -131,59 +141,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return node;
     }
 
-	// @Override public AST visitStatement(golangramParser.StatementContext ctx) {
-
-
-    //     /*System.out.println("show");
-    //     AST simple = visit(ctx.simpleStmt());
-    //     if (visit(ctx.simpleStmt()) != null) {
-    //         System.out.println("show");
-    //         node.addChild(simple);
-    //         return node;
-    //     }*/
-
-    //     /*AST stmt = visit(ctx.declaration());
-    //     if (stmt != null) {
-    //         return stmt;
-    //         //node.addChild(stmt);
-    //     }*/
-
-    //     // if (visit(ctx.labeledStmt()) != null) {
-    //     //     System.out.println("2");
-    //     // }
-
-    //     // if (visit(ctx.simpleStmt()) != null) {
-    //     //     System.out.println("3");
-    //     // }
-
-    //     // if (visit(ctx.returnStmt()) != null) {
-    //     //     System.out.println("4");
-    //     // }
-
-    //     // if (visit(ctx.fallthroughStmt()) != null) {
-    //     //     System.out.println("5");
-    //     // }
-
-    //     // if (visit(ctx.block()) != null) {
-    //     //     System.out.println("6");
-    //     // }
-
-    //    /*  if (visit(ctx.ifStmt()) != null) {
-
-    //         System.out.println("7");
-    //         return visit(ctx.ifStmt());
-    //     }*/
-
-    //     // if (visit(ctx.switchStmt()) != null) {
-    //     //     System.out.println("8");
-    //     // }
-    //     System.out.println("AAA");
-    //     if (visit(ctx.forStmt()) != null) {
-    //         System.out.println("9");
-    //     }
-    //     return null;
-    // }
-
     //VAI SER WHILE EM VEZ DE FOR
     @Override public AST visitForStmt(golangramParser.ForStmtContext ctx) {
         AST whileAST = new AST(NodeKind.WHILE_NODE, 0, Type.NO_TYPE);
@@ -239,8 +196,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
 
      @Override public AST visitFuncCallExpression(golangramParser.FuncCallExpressionContext ctx) {
-        // Deixar para fazer tudo no filho porque lá dá para fazer as verificações semânticas.
-        System.out.println("*** visitFuncCallExpression");
         return visit(ctx.funcCall());
     }
 
@@ -419,13 +374,10 @@ public class Visitor extends golangramBaseVisitor<AST> {
         AST esq = visit(ctx.expressionList(0));
         AST dir = visit(ctx.expressionList(1));
 
-
         assignment.addChild(esq);
         assignment.addChild(dir);
         return assignment;
-
     }
-
 
 	@Override public AST visitAdd_opExpression(golangramParser.Add_opExpressionContext ctx) {
         AST esq = visit(ctx.expression(0));
@@ -460,7 +412,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
 		}
 
         return returnAST;
-
     }
 
     @Override public AST visitMul_opExpression(golangramParser.Mul_opExpressionContext ctx) {
@@ -544,9 +495,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
             tree.addChild(dir);
             return tree;
         }
-
-
-        // COMENTADO PQ A LINGUAGEM DO LAB SÓ TEM EQ E LT, TEM QUE ALTERAR NA TABELA
     }
 
 	@Override public AST visitIncDecStmt(golangramParser.IncDecStmtContext ctx) {
@@ -593,7 +541,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
 
 	@Override public AST visitFuncCall(golangramParser.FuncCallContext ctx) {
-        System.out.println("*** visitFuncCall");
 
         AST funcCall = null;
 
@@ -607,8 +554,9 @@ public class Visitor extends golangramBaseVisitor<AST> {
         int funcIndex = funcTable.containsFunction(ctx.ID().getText());
         if (funcIndex != -1) {
             int parameters = funcTable.getQtdParams(funcIndex);
-            if (parameters == ctx.arguments().expressionList().size()) {
-                System.out.println("lala parameters");
+            visit(ctx.arguments());
+            if (parameters == argumentsCount) {
+         
                 funcCall = new AST(NodeKind.FUNCTION_CALL_NODE, funcIndex, Type.NO_TYPE);
                 
                 if (parameters != 0) {
@@ -630,9 +578,11 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
     @Override public AST visitArguments(golangramParser.ArgumentsContext ctx) { 
         AST arguments = new AST(NodeKind.PARAMLIST_NODE, 0, Type.NO_TYPE);
+    
         for(int i =0; i < ctx.expressionList().size(); i++) {
             arguments.addChild(visit(ctx.expressionList(i)));
         }
+
 
         return arguments;
      }

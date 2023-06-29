@@ -83,7 +83,7 @@ public class AST {
 	    	System.err.printf("(%s) ", this.type.toString());
 	    }
 		if (this.kind == NodeKind.FUNCDEC_NODE) {
-			vt = allVt.get(nf);
+			vt = allVt.get(nf-2);
 			System.err.printf("%s@", ft.getName(nf));
 			nf++;
 
@@ -124,7 +124,7 @@ public class AST {
 		// 	System.err.printf("}\n");
 		// }
 		
-		nf = 0;
+		nf = 2;
 		nr = 0;
 		allVt = table;
 		ft = funcTable;

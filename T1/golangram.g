@@ -47,7 +47,6 @@ statement:
 	| fallthroughStmt
 	| block
 	| ifStmt
-	| switchStmt
 	| forStmt;
 
 simpleStmt: 
@@ -97,29 +96,6 @@ ifStmt:
 			) block (
 		ELSE (ifStmt | block)
 	)?;
-
-switchStmt: exprSwitchStmt | typeSwitchStmt;
-
-exprSwitchStmt:
-	SWITCH (expression?
-					| simpleStmt? eos expression?
-					) LCURLYBRACES exprCaseClause* RCURLYBRACES;
-
-exprCaseClause: exprSwitchCase COLON statementList?;
-
-exprSwitchCase: CASE expressionList | DEFAULT;
-
-typeSwitchStmt:
-	SWITCH ( typeSwitchGuard
-					| eos typeSwitchGuard
-					| simpleStmt eos typeSwitchGuard)
-					 LCURLYBRACES typeCaseClause* RCURLYBRACES;
-
-typeSwitchGuard: (ID ASSIGN)? operand DOT LPAR TYPE RPAR;
-
-typeCaseClause: typeSwitchCase COLON statementList?;
-
-typeSwitchCase: CASE typeList | DEFAULT;
 
 typeList: (type_) (COMMA (type_))*;
 
@@ -179,8 +155,7 @@ expression:
 primaryExpr:
 	operand|
  primaryExpr (
-		(DOT ID)
-		| index
+		index
 		| arguments
 	);
 
@@ -280,11 +255,10 @@ RBRACK           : ']'                  ;
 LCURLYBRACES     : '{'                  ;
 RCURLYBRACES     : '}'                  ;
 COMMA            : ','                  ;
-DOT              : '.'                  ;
 SEMI             : ';'                  ;
 COLON            : ':'                  ;
 
-ID               : [a-zA-Z][a-zA-Z0-9_]* ;
+ID               : [a-zA-Z][a-zA-Z0-9_.]* ;
 REAL_VAL         : [0-9]*[.][0-9]*      ;
 INT_VAL          : [0-9]+               ;
 STR_VAL          : '"' ~["]* '"'        ;

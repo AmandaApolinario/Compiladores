@@ -225,54 +225,6 @@ public interface golangramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIfStmt(golangramParser.IfStmtContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link golangramParser#switchStmt}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSwitchStmt(golangramParser.SwitchStmtContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link golangramParser#exprSwitchStmt}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprSwitchStmt(golangramParser.ExprSwitchStmtContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link golangramParser#exprCaseClause}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprCaseClause(golangramParser.ExprCaseClauseContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link golangramParser#exprSwitchCase}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprSwitchCase(golangramParser.ExprSwitchCaseContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link golangramParser#typeSwitchStmt}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTypeSwitchStmt(golangramParser.TypeSwitchStmtContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link golangramParser#typeSwitchGuard}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTypeSwitchGuard(golangramParser.TypeSwitchGuardContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link golangramParser#typeCaseClause}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTypeCaseClause(golangramParser.TypeCaseClauseContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link golangramParser#typeSwitchCase}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTypeSwitchCase(golangramParser.TypeSwitchCaseContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link golangramParser#typeList}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

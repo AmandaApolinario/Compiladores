@@ -2,8 +2,8 @@ package main
 
 import "fmt"
 
-func lala(a int) int {
-	var c int
+func lala(b int) int {
+
 };
 
 func main(d int, e int, c int) {
@@ -11,7 +11,7 @@ func main(d int, e int, c int) {
 	teste = 20
     if teste > 10 {
 		var a int = 5
-		a = lala(a)
+		d = lala(a)
 		
 	} else {
 		var b float32
