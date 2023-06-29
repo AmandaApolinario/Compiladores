@@ -71,6 +71,7 @@ public class AST {
 	private static List<VarTable> allVt;
 	private static VarTable vt;
 	private static FuncTable ft;
+	private static int nf;
 
 	// Imprime recursivamente a codificação em DOT da subárvore começando no nó atual.
 	// Usa stderr como saída para facilitar o redirecionamento, mas isso é só um hack.
@@ -82,8 +83,9 @@ public class AST {
 	    	System.err.printf("(%s) ", this.type.toString());
 	    }
 		if (this.kind == NodeKind.FUNCDEC_NODE) {
-			vt = allVt.get(this.intData);
-			System.err.printf("%s@", ft.getName(this.intData));
+			vt = allVt.get(nf);
+			System.err.printf("%s@", ft.getName(nf));
+			nf++;
 
 		}
 	    if (this.kind == NodeKind.VAR_DECL_NODE || this.kind == NodeKind.VAR_USE_NODE) {
@@ -121,7 +123,8 @@ public class AST {
 		// 	tree.printNodeDot();
 		// 	System.err.printf("}\n");
 		// }
-
+		
+		nf = 0;
 		nr = 0;
 		allVt = table;
 		ft = funcTable;
