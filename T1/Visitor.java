@@ -61,6 +61,10 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return new AST(NodeKind.VAR_DECL_NODE, idx, type);
     }
 
+    public AST getAST() {
+    	return this.root;
+    }
+
     //primeira regra
     @Override public AST visitBegin(golangramParser.BeginContext ctx) {
         this.createStdInOut();

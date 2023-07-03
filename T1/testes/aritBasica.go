@@ -18,4 +18,9 @@ func main() {
     multiplicacao = a * b
     divisao = a / b
 
+    fmt.Println(soma)
+    fmt.Println(subtracao)
+    fmt.Println(multiplicacao)
+    fmt.Println(divisao) // da errado so a divisao?????
+
 }

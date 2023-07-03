@@ -41,6 +41,10 @@ public final class VarTable {
 		return table.get(i).type;
 	}
 
+	public int size() {
+		return table.size();
+	}
+
 	public String toString(String funcName) {
 		StringBuilder sb = new StringBuilder();
 		Formatter f = new Formatter(sb);

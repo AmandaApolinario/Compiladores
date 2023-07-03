@@ -1,26 +1,13 @@
-digraph {
-graph [ordering="out"];
-node0[label="program"];
-node1[label="main@functionDecl"];
-node2[label="parameters"];
-node1 -> node2;
-node3[label="block"];
-node4[label="(string) name@0"];
-node3 -> node4;
-node5[label="functionCall"];
-node6[label="args"];
-node7[label="(string) @0"];
-node6 -> node7;
-node8[label="(string) name@0"];
-node6 -> node8;
-node5 -> node6;
-node3 -> node5;
-node9[label="functionCall"];
-node10[label="args"];
-node11[label="(string) name@0"];
-node10 -> node11;
-node9 -> node10;
-node3 -> node9;
-node1 -> node3;
-node0 -> node1;
-}
+Exception in thread "main" java.lang.IndexOutOfBoundsException: Index 1 out of bounds for length 1
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:64)
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:70)
+	at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:248)
+	at java.base/java.util.Objects.checkIndex(Objects.java:372)
+	at java.base/java.util.ArrayList.get(ArrayList.java:459)
+	at ast.AST.getChild(AST.java:56)
+	at code.Interpreter.visitProgram(Interpreter.java:296)
+	at code.Interpreter.visitProgram(Interpreter.java:28)
+	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:37)
+	at ast.ASTBaseVisitor.execute(ASTBaseVisitor.java:15)
+	at Main.main(Main.java:41)
+make: *** [Makefile:36: run] Erro 1

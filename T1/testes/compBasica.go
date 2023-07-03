@@ -13,10 +13,16 @@ func main() {
     var result bool 
 
 	result = a < b 
+	fmt.Println(result)
 	result = a > b 
+	fmt.Println(result)
 	result = a == b
+	fmt.Println(result)
 	result = a != b
+	fmt.Println(result)
 	result = a >= b
+	fmt.Println(result)
 	result = a <= b
+	fmt.Println(result)
     
 }

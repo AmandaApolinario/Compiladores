@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-
+import code.Interpreter;
 
 public class Main {
 
@@ -34,13 +34,16 @@ public class Main {
 		Visitor visitor = new Visitor();
 		visitor.visit(tree);
 
-		System.out.println("PARSE SUCCESSFUL!");
-		visitor.printTables();
-		visitor.printAST();
+		//visitor.printTables();
+		//visitor.printAST();
+
+		Interpreter interpreter = new Interpreter(visitor.strTable, visitor.varTable);
+		interpreter.execute(visitor.getAST());
+
 
 		// Saída final.
 		//System.out.println(visitor.funcTable.toString());
 		//System.out.println(visitor.strTable.toString());
-}
+	}
 
 }

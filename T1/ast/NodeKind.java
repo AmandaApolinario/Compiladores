@@ -35,7 +35,6 @@ public enum NodeKind {
     WRITE_NODE,
     FUNCTION_CALL_NODE,
     WHILE_NODE,
-    //ELSE_NODE,
     ARGS_NODE,
     // Type conversion nodes
     B2I_NODE,
