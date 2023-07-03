@@ -369,11 +369,11 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	// TODO
 	@Override
 	protected Void visitRepeat(AST node) {
-		visit(node.getChild(1));
+		visit(node.getChild(0));
 
-		while (stack.popi() != 1) {
-			visit(node.getChild(0));
+		while (stack.popi() != 0) {
 			visit(node.getChild(1));
+			visit(node.getChild(0));
 		} 
 
 	    return null; // Java exige um valor de retorno mesmo para Void... :/
@@ -707,7 +707,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 		int strIdx = stack.popi(); // String pointer
 		String originalStr = st.get(strIdx);
 		String unescapedStr = unescapeStr(originalStr);
-		System.out.print(unescapedStr);
+		System.out.print(unescapedStr + "\n");
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 

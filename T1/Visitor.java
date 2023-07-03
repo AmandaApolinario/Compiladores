@@ -143,7 +143,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
     //VAI SER WHILE EM VEZ DE FOR
     @Override public AST visitForStmt(golangramParser.ForStmtContext ctx) {
-        AST whileAST = new AST(NodeKind.WHILE_NODE, 0, Type.NO_TYPE);
+        AST whileAST = new AST(NodeKind.REPEAT_NODE, 0, Type.NO_TYPE);
 
         whileAST.addChild(visit(ctx.expression()));
         whileAST.addChild(visit(ctx.block()));
@@ -244,7 +244,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
         Type typeFinal = Type.NO_TYPE;
 
         if (ctx.expressionList() != null){
-            System.out.println("opa");
             astExp = visit(ctx.expressionList());
             typeFinal = astExp.type;
         }
@@ -268,8 +267,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
 
             if (astExp != null){
-                System.out.println(type);
-                System.out.println(typeFinal);
                 if (type.equals(typeFinal)){
                     typeFinal = type;
 

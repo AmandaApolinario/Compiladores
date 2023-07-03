@@ -68,7 +68,6 @@ public enum NodeKind {
             case PARAMLIST_NODE:    return "parameters";
             case REPEAT_NODE:       return "repeat";
             case STR_VAL_NODE:      return "";
-            //case ELSE_NODE:         return "else";
             case TIMES_NODE:        return "*";
             case VAR_DECL_NODE:     return "var_decl";
             case VAR_LIST_NODE:     return "var_list";

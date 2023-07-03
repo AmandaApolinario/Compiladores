@@ -7,6 +7,10 @@ func main() {
 	var a int
 	var b int
 
+	d = 5
+	a = 3
+	b = 2
+
 	// Execução de blocos sequenciais de código
 	if d > 10 {
 		fmt.Println("d é maior que 10")
@@ -24,9 +28,10 @@ func main() {
 	}
 
 	// Estrutura de repetição (for)
-	var i int = 1;
+	var i int
+	i = 1
 	for i <= 5 {
-		fmt.Println("Número:", i)
-		i = i + 1;
+		fmt.Println(i)
+		i = i + 1
 	}
 }
