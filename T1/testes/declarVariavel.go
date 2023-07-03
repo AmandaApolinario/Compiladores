@@ -12,18 +12,18 @@ func main(d int, e int, c int) {
     if teste > 10 {
 		var a int = 5
 		d = lala(a)
-		
+
 	} else {
 		var b float32
 	}
-	
-	var f bool	
+
+	var f bool
 };
 
 func funcao() {
 	var i int
     for i < 5 {
-       
+
         var b float32
     }
 };

@@ -7,14 +7,20 @@ import java.util.Formatter;
 public final class StrTable extends ArrayList<String>{
     // No mundo real isto certamente deveria ser um hash...
 
-    @Override
-    public boolean add(String s) {
-		for (int i = 0; i < this.size(); i++) {
+	// Claro que aqui não é adequado uma busca serial.
+	// Como já dito em sala estamos interessado no uso da tabela, não na sua implementação.
+	// Retorna a posição aonde a string foi inserida.
+	// Não dá mais para fazer @Override do método 'add' porque agora a gente precisa retornar
+	// um int e não um boolean.
+    public int addStr(String s) {
+    	int i;
+		for (i = 0; i < this.size(); i++) {
 			if (this.get(i).equals(s)) {
-				return false;
+				return i;
 			}
 		}
-		return super.add(s);
+		super.add(s);
+		return i;
 	}
 
 	public String toString() {

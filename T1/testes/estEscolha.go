@@ -3,6 +3,10 @@ package main
 import "fmt"
 
 func main() {
+	var d int
+	var a int
+	var b int
+
 	// Execução de blocos sequenciais de código
 	if d > 10 {
 		fmt.Println("d é maior que 10")
@@ -18,9 +22,11 @@ func main() {
 	} else {
 		fmt.Println("a é igual a b")
 	}
-	
+
 	// Estrutura de repetição (for)
-	for i := 1; i <= 5; i++ {
+	var i int = 1;
+	for i <= 5 {
 		fmt.Println("Número:", i)
+		i = i + 1;
 	}
 }

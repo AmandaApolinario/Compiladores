@@ -35,7 +35,8 @@ public enum NodeKind {
     WRITE_NODE,
     FUNCTION_CALL_NODE,
     WHILE_NODE,
-    ELSE_NODE,
+    //ELSE_NODE,
+    ARGS_NODE,
     // Type conversion nodes
     B2I_NODE,
     B2R_NODE,
@@ -46,6 +47,7 @@ public enum NodeKind {
 
 	public String toString() {
 		switch(this) {
+            case ARGS_NODE:         return "args";
             case ASSIGN_NODE:       return ":=";
             case EQ_NODE:           return "=";
             case NOTEQ_NODE:        return "!=";
@@ -67,7 +69,7 @@ public enum NodeKind {
             case PARAMLIST_NODE:    return "parameters";
             case REPEAT_NODE:       return "repeat";
             case STR_VAL_NODE:      return "";
-            case ELSE_NODE:         return "else";
+            //case ELSE_NODE:         return "else";
             case TIMES_NODE:        return "*";
             case VAR_DECL_NODE:     return "var_decl";
             case VAR_LIST_NODE:     return "var_list";

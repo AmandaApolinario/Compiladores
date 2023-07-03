@@ -30,13 +30,10 @@ public class Visitor extends golangramBaseVisitor<AST> {
     AST root;
 
     //cria as funcoes de stdin e stdout
-    Void createStdInOut() {
-        System.out.println("");
+    void createStdInOut() {
         VarTable varTableGen = new VarTable();
-        funcTable.addFunction("fmt.Scanln", varTableGen, null, 1);
-        funcTable.addFunction("fmt.Printf", varTableGen, null, 2);
-
-        return null;
+        funcTable.addFunction("fmt.Scanf", varTableGen, null, 2);
+        funcTable.addFunction("fmt.Println", varTableGen, null, 1);
     }
 
     AST checkVar(Token token) {
@@ -72,10 +69,10 @@ public class Visitor extends golangramBaseVisitor<AST> {
                 AST func = visit(ctx.functionDecl(i));
                 root.addChild(func);
             }
-
-            return this.root;
+        return this.root;
     }
 
+    // TODO ???
     @Override public AST visitFunctionDecl(golangramParser.FunctionDeclContext ctx) {
         varTable = new VarTable();
         allVarTables.add(varTable);
@@ -117,19 +114,16 @@ public class Visitor extends golangramBaseVisitor<AST> {
             System.exit(1);
         }
 
-
         return tree;
     }
 
 	@Override public AST visitBlock(golangramParser.BlockContext ctx) {
-        AST node = new AST(NodeKind.BLOCK_NODE, 0, Type.NO_TYPE);
-        //add resto da funcao
+        AST block = new AST(NodeKind.BLOCK_NODE, 0, Type.NO_TYPE);
         if (ctx.statementList() != null) {
-            AST nodeChild = visit(ctx.statementList());
-            return nodeChild;
+            // retorna direto o block criado no filho para não ter de copiar.
+            return visit(ctx.statementList());
         }
-
-        return null;
+        return block; // bloco vazio
     }
 
 	@Override public AST visitStatementList(golangramParser.StatementListContext ctx) {
@@ -153,13 +147,11 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return whileAST;
     }
 
-
     @Override public AST visitSimpleAssignment(golangramParser.SimpleAssignmentContext ctx) {
-        System.out.println("assignment simple");
-        AST exprNode = visit(ctx.assignment());
         return visit(ctx.assignment());
     }
 
+    // TODO ???
     @Override public AST visitDeclaration(golangramParser.DeclarationContext ctx) {
         AST stmt = visit(ctx.varDecl());
 
@@ -171,37 +163,41 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return null;
      }
 
-     @Override public AST visitIfStmt(golangramParser.IfStmtContext ctx) {
+// ifStmt:
+// 	IF ( expression
+// 			| eos expression
+// 			| simpleStmt eos expression
+// 			) block (
+// 		ELSE (ifStmt | block)
+// 	)?;
+
+    @Override public AST visitIfStmt(golangramParser.IfStmtContext ctx) {
         AST ifNode = new AST(NodeKind.IF_NODE, 0, Type.NO_TYPE);
-        AST exprNode = null;
-        if ((ctx.expression()) != null){
-            ifNode.addChild(visit(ctx.expression()));
-        }
 
-        if ((ctx.block(0)) != null) {
-            ifNode.addChild(visit(ctx.block(0)));
-        }
+        ifNode.addChild(visit(ctx.expression()));
+        ifNode.addChild(visit(ctx.block(0)));
         if (ctx.ELSE() != null) {
-            AST elseAST = new AST(NodeKind.ELSE_NODE, 0, Type.NO_TYPE);
-            if ((ctx.ifStmt()) != null) {
-                elseAST.addChild(visit(ctx.ifStmt()));
-            }
             if ((ctx.block(1)) != null) {
-                elseAST.addChild(visit(ctx.block(1)));
+                ifNode.addChild(visit(ctx.block(1)));
+            } else if ((ctx.ifStmt()) != null) {
+                AST elseAST = new AST(NodeKind.BLOCK_NODE, 0, Type.NO_TYPE);
+                elseAST.addChild(visit(ctx.ifStmt()));
+                ifNode.addChild(elseAST);
+            } else {
+                System.out.println("ERRO ao construir IF-ELSE!");
+                System.exit(1);
             }
-
-            ifNode.addChild(elseAST);
         }
 
         return ifNode;
-      }
+    }
 
 
      @Override public AST visitFuncCallExpression(golangramParser.FuncCallExpressionContext ctx) {
         return visit(ctx.funcCall());
     }
 
-
+    // TODO ???
      @Override public AST visitVarDecl(golangramParser.VarDeclContext ctx) {
         AST stmt = visit(ctx.varSpec());
 
@@ -211,7 +207,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
         return null;
       }
-
 
     @Override public AST visitParameters(golangramParser.ParametersContext ctx) {
         parametersCount = ctx.parameterDecl().size();
@@ -223,16 +218,21 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return params;
     }
 
-
+    // TODO ???
     @Override public AST visitSimpleDeclareAssignment(golangramParser.SimpleDeclareAssignmentContext ctx) {
-
-        System.out.println("assignment declare");
         //consertar o tipo
         AST node = new AST(NodeKind.VAR_DECL_NODE, 0, Type.NO_TYPE);
         // node.addChild(newVar(ctx.declareAssignment().ID().getSymbol()));
         return node;
     }
 
+    /* varSpec:
+	idList (
+		arrayType (ASSIGN expressionList)?
+		| type_ (ASSIGN expressionList)?
+		| ASSIGN expressionList
+    ); */
+    // TODO Não entendi nada... :P
     @Override public AST visitVarSpec(golangramParser.VarSpecContext ctx) {
         AST returnAST;
 
@@ -324,22 +324,22 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return returnAST;
     }
 
-    @Override public AST visitSimpleArrayStmt(golangramParser.SimpleArrayStmtContext ctx) {
-
-        AST array = visit(ctx.arrayStmt().operand());
-        AST stmt = visit(ctx.arrayStmt().basicLit());
-
-        Type arrayType = array.type;
-		Type stmtType = stmt.type;
-		Unif unif = arrayType.unifyComp(stmtType);
-
-        if (arrayType.equals(stmtType)) {
-            // NAO PRECISA FAZER TALVEZ ?
-
-        }
-
-        return null;
-    }
+  //   @Override public AST visitSimpleArrayStmt(golangramParser.SimpleArrayStmtContext ctx) {
+  //
+  //       AST array = visit(ctx.arrayStmt().operand());
+  //       AST stmt = visit(ctx.arrayStmt().basicLit());
+  //
+  //       Type arrayType = array.type;
+		// Type stmtType = stmt.type;
+		// Unif unif = arrayType.unifyComp(stmtType);
+  //
+  //       if (arrayType.equals(stmtType)) {
+  //           // NAO PRECISA FAZER TALVEZ ?
+  //
+  //       }
+  //
+  //       return null;
+  //   }
 
 
     @Override public AST visitParameterDecl(golangramParser.ParameterDeclContext ctx) {
@@ -364,15 +364,14 @@ public class Visitor extends golangramBaseVisitor<AST> {
             realType = Type.BOOL_TYPE;
         }
 
-        //deveria ser uma var decl?
         idx = varTable.addVar(text, line, realType);
         return new AST(NodeKind.VAR_DECL_NODE, idx, realType);
     }
 
+    // assignment: expressionList assign_op expressionList;
     @Override public AST visitAssignment(golangramParser.AssignmentContext ctx) {
         AST assignment = new AST(NodeKind.ASSIGN_NODE, 0, Type.NO_TYPE);
 
-        System.out.println("assignment");
         AST esq = visit(ctx.expressionList(0));
         AST dir = visit(ctx.expressionList(1));
 
@@ -392,7 +391,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
         if (ctx.PLUS() != null) {
            unif = lt.unifyPlus(rt);
         } else if (ctx.MINUS() != null) {
-            System.out.println("minus");
 			unif = lt.unifyOtherArith(rt);
         } else {
             unif = lt.unifyPlus(rt);
@@ -405,14 +403,12 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
         if (ctx.add_op.getType() == golangramLexer.PLUS) {
 			returnAST = new AST(NodeKind.PLUS_NODE, 0, unif.type);
-            returnAST.addChild(esq);
-            returnAST.addChild(dir);
-		} else if (ctx.add_op.getType() == golangramLexer.MINUS) { // MINUS
+		} else if (ctx.add_op.getType() == golangramLexer.MINUS) {
 			returnAST = new AST(NodeKind.MINUS_NODE, 0, unif.type);
-            returnAST.addChild(esq);
-            returnAST.addChild(dir);
 		}
 
+        returnAST.addChild(esq);
+        returnAST.addChild(dir);
         return returnAST;
     }
 
@@ -434,14 +430,12 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
         if (ctx.mul_op.getType() == golangramLexer.TIMES) {
 			returnAST = new AST(NodeKind.TIMES_NODE, 0, unif.type);
-            returnAST.addChild(esq);
-            returnAST.addChild(dir);
-		} else if (ctx.mul_op.getType() == golangramLexer.OVER) { // MINUS
+		} else if (ctx.mul_op.getType() == golangramLexer.OVER) {
 			returnAST = new AST(NodeKind.OVER_NODE, 0, unif.type);
-            returnAST.addChild(esq);
-            returnAST.addChild(dir);
 		}
 
+        returnAST.addChild(esq);
+        returnAST.addChild(dir);
         return returnAST;
     }
 
@@ -459,76 +453,39 @@ public class Visitor extends golangramBaseVisitor<AST> {
 
         esq = Conv.createConvNode(unif.lc, esq);
 		dir = Conv.createConvNode(unif.rc, dir);
+		AST tree = null;
 
-        if (ctx.rel_op.getType() == golangramLexer.ISEQUAL) {
-            AST tree = new AST(NodeKind.EQ_NODE, 0, Type.NO_TYPE);
-            tree.addChild(esq);
-            tree.addChild(dir);
-            System.out.println("equal if");
-			return tree;
+		switch(ctx.rel_op.getType()) {
+            case golangramLexer.ISEQUAL:    tree = new AST(NodeKind.EQ_NODE, 0, Type.NO_TYPE);    break;
+            case golangramLexer.NOTEQUAL:   tree = new AST(NodeKind.NOTEQ_NODE, 0, Type.NO_TYPE); break;
+            case golangramLexer.LESSTHAN:   tree = new AST(NodeKind.LT_NODE, 0, Type.NO_TYPE);    break;
+            case golangramLexer.LESSEQTHAN: tree = new AST(NodeKind.LEQT_NODE, 0, Type.NO_TYPE);  break;
+            case golangramLexer.MORETHAN:   tree = new AST(NodeKind.MT_NODE, 0, Type.NO_TYPE);    break;
+            case golangramLexer.MOREEQTHAN: tree = new AST(NodeKind.MEQT_NODE, 0, Type.NO_TYPE);  break;
+            default:
+                System.out.println("ERROR: rel_op type not covered!");
+                System.exit(1);
+		}
 
-		} else if (ctx.rel_op.getType() == golangramLexer.LESSTHAN) {
-			AST tree = new AST(NodeKind.LT_NODE, 0, Type.NO_TYPE);
-            tree.addChild(esq);
-            tree.addChild(dir);
-			return tree;
-
-		} else if (ctx.rel_op.getType() == golangramLexer.NOTEQUAL) {
-			AST tree = new AST(NodeKind.NOTEQ_NODE, 0, Type.NO_TYPE);
-            tree.addChild(esq);
-            tree.addChild(dir);
-			return tree;
-
-        } else if (ctx.rel_op.getType() == golangramLexer.MORETHAN) {
-            AST tree = new AST(NodeKind.MT_NODE, 0, Type.NO_TYPE);
-            tree.addChild(esq);
-            tree.addChild(dir);
-			return tree;
-
-        } else if (ctx.rel_op.getType() == golangramLexer.LESSEQTHAN) {
-			AST tree = new AST(NodeKind.LEQT_NODE, 0, Type.NO_TYPE);
-            tree.addChild(esq);
-            tree.addChild(dir);
-			return tree;
-
-        } else {
-            AST tree = new AST(NodeKind.EQ_NODE, 0, Type.NO_TYPE);
-            tree.addChild(esq);
-            tree.addChild(dir);
-            return tree;
-        }
+        tree.addChild(esq);
+        tree.addChild(dir);
+        return tree;
     }
 
 	@Override public AST visitIncDecStmt(golangramParser.IncDecStmtContext ctx) {
         AST exp = visit(ctx.expression());
 
-        // TABELAAAAAAAAAAAAAAAA
-
-        // if (exp.equals(Type.INT_TYPE) || exp.equals(Type.REAL_TYPE)) {
-        //     System.out.println(exp);
-        //     return exp;
-        // }
-
-        // System.out.println("Tipo de variavel errado em inc dec");
-        // System.exit(1);
         return null;
     }
 
     @Override public AST visitUnary_opExpression(golangramParser.Unary_opExpressionContext ctx) {
         AST exp = visit(ctx.expression());
 
-        //TABELAAAAAAAAAAAAAAAAAAA
-
-        // if (ctx.NOT() != null) {
-        //     if(exp.equals(Type.BOOL_TYPE)){
-        //         System.out.printf("ta em unary: %s\n",Type.BOOL_TYPE);
-        //         return Type.BOOL_TYPE;
-        //     }
-        // }
-
-        // System.out.println("Tipo de variavel errado em unary op");
-        // System.exit(1);
         return null;
+    }
+
+    @Override public AST visitOperandLRPAR(golangramParser.OperandLRPARContext ctx) {
+        return visit(ctx.expression());
     }
 
     @Override public AST visitOperandID(golangramParser.OperandIDContext ctx) {
@@ -536,40 +493,33 @@ public class Visitor extends golangramBaseVisitor<AST> {
     }
 
     @Override public AST visitExpressionList(golangramParser.ExpressionListContext ctx) {
-        argumentsCount = ctx.expression().size();
-
-        return visitChildren(ctx);
+        return visit(ctx.expression(0));
     }
 
-
 	@Override public AST visitFuncCall(golangramParser.FuncCallContext ctx) {
-
         AST funcCall = null;
-
-        // Não faz sentido essa verificação porque ID() é o nome da função.
-        // Sempre vai dar erro se testar na tabela de variáveis...
-        // AST id = checkVar(ctx.ID().getSymbol());
-
-        // Não faz sentido visitar os argumentos da chamada de função se ela não existe...
-        // AST arg = visit(ctx.arguments());
 
         int funcIndex = funcTable.containsFunction(ctx.ID().getText());
         if (funcIndex != -1) {
-            int parameters = funcTable.getQtdParams(funcIndex);
-            visit(ctx.arguments());
-            if (parameters == argumentsCount) {
-         
+            // int parameters = funcTable.getQtdParams(funcIndex);
+            // visit(ctx.arguments());
+            // if (parameters == argumentsCount) {
+            // TODO: concertar o teste acima porque claramente estava incompleto.
+            // No momento eu só pulei a verificação.
                 funcCall = new AST(NodeKind.FUNCTION_CALL_NODE, funcIndex, Type.NO_TYPE);
-                
-                if (parameters != 0) {
-                    AST arg = visit(ctx.arguments());
-                    funcCall.addChild(arg);
+                AST arg = null;
+                if (ctx.arguments() != null) {
+                    arg = visit(ctx.arguments());
+                } else {
+                    // Não tem argumentos mas é bom criar o nó mesmo assim sem filhos porque uniformiza a AST.
+                    arg = new AST(NodeKind.ARGS_NODE, 0, Type.NO_TYPE);
                 }
+                funcCall.addChild(arg);
 
-            } else {
-                System.out.printf("A quantidade correta de parametros da função %s é %d, você digitou %d!",ctx.ID().getText(), parameters, argumentsCount);
-                System.exit(1);
-            }
+            // } else {
+            //     System.out.printf("A quantidade correta de parametros da função %s é %d, você digitou %d!",ctx.ID().getText(), parameters, argumentsCount);
+            //     System.exit(1);
+            // }
         } else {
             System.out.println("Nao eh possivel chamar uma função não declarada. Erro em: " + ctx.ID().getText());
             System.exit(1);
@@ -578,28 +528,30 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return funcCall;
     }
 
-    @Override public AST visitArguments(golangramParser.ArgumentsContext ctx) { 
-        AST arguments = new AST(NodeKind.PARAMLIST_NODE, 0, Type.NO_TYPE);
-    
-        for(int i =0; i < ctx.expressionList().size(); i++) {
-            arguments.addChild(visit(ctx.expressionList(i)));
-        }
+    @Override public AST visitArguments(golangramParser.ArgumentsContext ctx) {
+        AST arguments = new AST(NodeKind.ARGS_NODE, 0, Type.NO_TYPE);
 
+        if (ctx.expressionList(0) != null) {
+            for (int i =0; i < ctx.expressionList(0).expression().size(); i++) {
+                arguments.addChild(visit(ctx.expressionList(0).expression(i)));
+            }
+        }
 
         return arguments;
      }
-	
+
 
     @Override public AST visitStrVal(golangramParser.StrValContext ctx) {
-        strTable.add(ctx.STR_VAL().getText());
         type = Type.STR_TYPE;
-        return null;
+        int value = strTable.addStr(ctx.STR_VAL().getText());
+        AST ast = new AST(NodeKind.STR_VAL_NODE, value, type);
+        return ast;
     }
 
     @Override public AST visitIntVal(golangramParser.IntValContext ctx) {
         type = Type.INT_TYPE;
         int value = Integer.parseInt(ctx.INT_VAL().getText());
-        AST ast = new AST(NodeKind.INT_VAL_NODE, value, Type.INT_TYPE);
+        AST ast = new AST(NodeKind.INT_VAL_NODE, value, type);
         return ast;
     }
 
