@@ -325,24 +325,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return returnAST;
     }
 
-  //   @Override public AST visitSimpleArrayStmt(golangramParser.SimpleArrayStmtContext ctx) {
-  //
-  //       AST array = visit(ctx.arrayStmt().operand());
-  //       AST stmt = visit(ctx.arrayStmt().basicLit());
-  //
-  //       Type arrayType = array.type;
-		// Type stmtType = stmt.type;
-		// Unif unif = arrayType.unifyComp(stmtType);
-  //
-  //       if (arrayType.equals(stmtType)) {
-  //           // NAO PRECISA FAZER TALVEZ ?
-  //
-  //       }
-  //
-  //       return null;
-  //   }
-
-
     @Override public AST visitParameterDecl(golangramParser.ParameterDeclContext ctx) {
         String text = ctx.ID().getText();
     	int line = ctx.getStart().getLine();
@@ -589,6 +571,5 @@ public class Visitor extends golangramBaseVisitor<AST> {
     public void printAST() {
     	AST.printDot(root, allVarTables, funcTable);
     }
-
 
 }

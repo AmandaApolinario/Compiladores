@@ -7,15 +7,16 @@ func f0() {
 };
 
 func f1(a int) {
-	fmt.Println("f1: " + a);
+	fmt.Println("f1: ");
+    fmt.Println(a);
 };
 
 func f2(a int, b int) {
-	fmt.Println("f2: " + a + " " + b);
+	fmt.Println(a + b);
 };
 
 func f3(a int, b int, c float32) {
-	fmt.Println("f3: " + a + " " + b + " " + c);
+	fmt.Println(a + b);
 };
 
 func main() {
