@@ -611,28 +611,9 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 	@Override
 	protected Void visitArgs(AST node) {
-		//verificar se eh uma das funcoes in out
-
-		
 		if (currentFuncCall == 0) {			
 			visitRead(node);
 		} else if (currentFuncCall == 1) {
-	
-			if (node.getChild(0).type == REAL_TYPE) {
-				int addr = node.getChild(0).intData;
-				float varValue;
-
-				varValue = memory.loadf(addr);
-				stack.pushf(varValue);
-
-				
-			} else {
-				int addr = node.getChild(0).intData;
-				int varValue;
-
-				varValue = memory.loadi(addr);
-				stack.pushi(varValue);
-			}
 			visitWrite(node);
 		} else {
 			
@@ -680,7 +661,6 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 		switch (type) {
 			case STR_TYPE:
-				
 				writeStr();
 				break;
 			case INT_TYPE:
@@ -723,7 +703,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 		int strIdx = stack.popi(); // String pointer
 		String originalStr = st.get(strIdx);
 		String unescapedStr = unescapeStr(originalStr);
-		System.out.print(unescapedStr + "\n");
+		System.out.println(unescapedStr);
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
