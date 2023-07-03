@@ -275,7 +275,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
                     typeFinal = Type.REAL_TYPE;
 
                 } else {
-                    System.out.println("null var spec");
+                    //System.out.println("null var spec");
                     return null;
                 }
             } else {

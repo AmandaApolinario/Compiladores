@@ -10,5 +10,9 @@ func main() {
 	var somaParenteses int = (a + b) * 2
 	var operacaoMultipla int = a + b * 2 - 3 / 4
 
+	fmt.Println(soma)
+	fmt.Println(somaParenteses)
+	fmt.Println(operacaoMultipla)
+
 }
 

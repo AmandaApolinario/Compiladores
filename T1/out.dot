@@ -1,134 +1,238 @@
 digraph {
 graph [ordering="out"];
 node0[label="program"];
-node1[label="f0@functionDecl"];
+node1[label="main@functionDecl"];
 node2[label="parameters"];
 node1 -> node2;
 node3[label="block"];
+node4[label=":="];
+node5[label="(int) a@0"];
+node4 -> node5;
+node6[label="(int) +"];
+node7[label="(int) 1"];
+node6 -> node7;
+node8[label="(int) 2"];
+node6 -> node8;
+node4 -> node6;
+node3 -> node4;
+node9[label=":="];
+node10[label="(real) b@1"];
+node9 -> node10;
+node11[label="(real) +"];
+node12[label="(real) 3,10"];
+node11 -> node12;
+node13[label="(real) 1,10"];
+node11 -> node13;
+node9 -> node11;
+node3 -> node9;
+node14[label=":="];
+node15[label="(real) c@2"];
+node14 -> node15;
+node16[label="(real) +"];
+node17[label="(real) 3,10"];
+node16 -> node17;
+node18[label="(real) 1,10"];
+node16 -> node18;
+node14 -> node16;
+node3 -> node14;
+node19[label=":="];
+node20[label="(string) d@3"];
+node19 -> node20;
+node21[label="(string) +"];
+node22[label="(string) @0"];
+node21 -> node22;
+node23[label="(string) @1"];
+node21 -> node23;
+node19 -> node21;
+node3 -> node19;
+node24[label=":="];
+node25[label="(int) f@4"];
+node24 -> node25;
+node26[label="(int) *"];
+node27[label="(int) 1"];
+node26 -> node27;
+node28[label="(int) 2"];
+node26 -> node28;
+node24 -> node26;
+node3 -> node24;
+node29[label="(real) g@5"];
+node3 -> node29;
+node30[label=":="];
+node31[label="(real) g@5"];
+node30 -> node31;
+node32[label="(real) -"];
+node33[label="(real) 3,20"];
+node32 -> node33;
+node34[label="(real) I2R"];
+node35[label="(int) 1"];
+node34 -> node35;
+node32 -> node34;
+node30 -> node32;
+node3 -> node30;
+node36[label="(real) h@6"];
+node3 -> node36;
+node37[label=":="];
+node38[label="(real) h@6"];
+node37 -> node38;
+node39[label="(real) /"];
+node40[label="(real) 3,10"];
+node39 -> node40;
+node41[label="(real) 1,10"];
+node39 -> node41;
+node37 -> node39;
+node3 -> node37;
+node42[label="(bool) j@7"];
+node3 -> node42;
+node43[label=":="];
+node44[label="(bool) j@7"];
+node43 -> node44;
+node45[label="="];
+node46[label="(int) 1"];
+node45 -> node46;
+node47[label="(int) 2"];
+node45 -> node47;
+node43 -> node45;
+node3 -> node43;
+node48[label="(bool) k@8"];
+node3 -> node48;
+node49[label=":="];
+node50[label="(bool) k@8"];
+node49 -> node50;
+node51[label="!="];
+node52[label="(real) 1,10"];
+node51 -> node52;
+node53[label="(real) 2,20"];
+node51 -> node53;
+node49 -> node51;
+node3 -> node49;
+node54[label="(bool) l@9"];
+node3 -> node54;
+node55[label=":="];
+node56[label="(bool) l@9"];
+node55 -> node56;
+node57[label=">="];
+node58[label="(real) I2R"];
+node59[label="(int) 1"];
+node58 -> node59;
+node57 -> node58;
+node60[label="(real) 3,20"];
+node57 -> node60;
+node55 -> node57;
+node3 -> node55;
+node61[label="(bool) m@10"];
+node3 -> node61;
+node62[label=":="];
+node63[label="(bool) m@10"];
+node62 -> node63;
+node64[label=">"];
+node65[label="(string) @2"];
+node64 -> node65;
+node66[label="(string) @3"];
+node64 -> node66;
+node62 -> node64;
+node3 -> node62;
+node67[label=":="];
+node68[label="(int) s@11"];
+node67 -> node68;
+node69[label="(int) 2"];
+node67 -> node69;
+node3 -> node67;
+node70[label=":="];
+node71[label="(real) t@12"];
+node70 -> node71;
+node72[label="(real) 3,20"];
+node70 -> node72;
+node3 -> node70;
+node73[label=":="];
+node74[label="(string) v@13"];
+node73 -> node74;
+node75[label="(string) @4"];
+node73 -> node75;
+node3 -> node73;
+node76[label="functionCall"];
+node77[label="args"];
+node78[label="(int) a@0"];
+node77 -> node78;
+node76 -> node77;
+node3 -> node76;
+node79[label="functionCall"];
+node80[label="args"];
+node81[label="(real) b@1"];
+node80 -> node81;
+node79 -> node80;
+node3 -> node79;
+node82[label="functionCall"];
+node83[label="args"];
+node84[label="(real) c@2"];
+node83 -> node84;
+node82 -> node83;
+node3 -> node82;
+node85[label="functionCall"];
+node86[label="args"];
+node87[label="(string) d@3"];
+node86 -> node87;
+node85 -> node86;
+node3 -> node85;
+node88[label="functionCall"];
+node89[label="args"];
+node90[label="(int) f@4"];
+node89 -> node90;
+node88 -> node89;
+node3 -> node88;
+node91[label="functionCall"];
+node92[label="args"];
+node93[label="(real) g@5"];
+node92 -> node93;
+node91 -> node92;
+node3 -> node91;
+node94[label="functionCall"];
+node95[label="args"];
+node96[label="(real) h@6"];
+node95 -> node96;
+node94 -> node95;
+node3 -> node94;
+node97[label="functionCall"];
+node98[label="args"];
+node99[label="(bool) j@7"];
+node98 -> node99;
+node97 -> node98;
+node3 -> node97;
+node100[label="functionCall"];
+node101[label="args"];
+node102[label="(bool) k@8"];
+node101 -> node102;
+node100 -> node101;
+node3 -> node100;
+node103[label="functionCall"];
+node104[label="args"];
+node105[label="(bool) l@9"];
+node104 -> node105;
+node103 -> node104;
+node3 -> node103;
+node106[label="functionCall"];
+node107[label="args"];
+node108[label="(bool) m@10"];
+node107 -> node108;
+node106 -> node107;
+node3 -> node106;
+node109[label="functionCall"];
+node110[label="args"];
+node111[label="(int) s@11"];
+node110 -> node111;
+node109 -> node110;
+node3 -> node109;
+node112[label="functionCall"];
+node113[label="args"];
+node114[label="(real) t@12"];
+node113 -> node114;
+node112 -> node113;
+node3 -> node112;
+node115[label="functionCall"];
+node116[label="args"];
+node117[label="(string) v@13"];
+node116 -> node117;
+node115 -> node116;
+node3 -> node115;
 node1 -> node3;
 node0 -> node1;
-node4[label="f1@functionDecl"];
-node5[label="parameters"];
-node6[label="(int) a@0"];
-node5 -> node6;
-node4 -> node5;
-node7[label="block"];
-node8[label="functionCall"];
-node9[label="args"];
-node10[label="(int) a@0"];
-node9 -> node10;
-node8 -> node9;
-node7 -> node8;
-node4 -> node7;
-node0 -> node4;
-node11[label="f2@functionDecl"];
-node12[label="parameters"];
-node13[label="(int) a@0"];
-node12 -> node13;
-node14[label="(int) b@1"];
-node12 -> node14;
-node11 -> node12;
-node15[label="block"];
-node16[label="(int) c@2"];
-node15 -> node16;
-node17[label=":="];
-node18[label="(int) c@2"];
-node17 -> node18;
-node19[label="(int) +"];
-node20[label="(int) a@0"];
-node19 -> node20;
-node21[label="(int) b@1"];
-node19 -> node21;
-node17 -> node19;
-node15 -> node17;
-node22[label="functionCall"];
-node23[label="args"];
-node24[label="(int) c@2"];
-node23 -> node24;
-node22 -> node23;
-node15 -> node22;
-node11 -> node15;
-node0 -> node11;
-node25[label="f3@functionDecl"];
-node26[label="parameters"];
-node27[label="(int) a@0"];
-node26 -> node27;
-node28[label="(int) b@1"];
-node26 -> node28;
-node25 -> node26;
-node29[label="block"];
-node30[label="functionCall"];
-node31[label="args"];
-node32[label="(int) a@0"];
-node31 -> node32;
-node30 -> node31;
-node29 -> node30;
-node25 -> node29;
-node0 -> node25;
-node33[label="main@functionDecl"];
-node34[label="parameters"];
-node33 -> node34;
-node35[label="block"];
-node36[label="functionCall"];
-node37[label="args"];
-node36 -> node37;
-node35 -> node36;
-node38[label="functionCall"];
-node39[label="args"];
-node40[label="(int) 4"];
-node39 -> node40;
-node38 -> node39;
-node35 -> node38;
-node41[label="functionCall"];
-node42[label="args"];
-node43[label="(int) 3"];
-node42 -> node43;
-node44[label="(int) 5"];
-node42 -> node44;
-node41 -> node42;
-node35 -> node41;
-node45[label="functionCall"];
-node46[label="args"];
-node47[label="(int) 4"];
-node46 -> node47;
-node48[label="(int) 2"];
-node46 -> node48;
-node45 -> node46;
-node35 -> node45;
-node33 -> node35;
-node0 -> node33;
 }
-Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Array index out of range: 0
-	at java.base/java.util.Vector.get(Vector.java:781)
-	at code.Memory.loadi(Memory.java:30)
-	at code.Interpreter.visitVarUse(Interpreter.java:644)
-	at code.Interpreter.visitVarUse(Interpreter.java:29)
-	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:45)
-	at code.Interpreter.visitWrite(Interpreter.java:669)
-	at code.Interpreter.visitArgs(Interpreter.java:621)
-	at code.Interpreter.visitArgs(Interpreter.java:29)
-	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:55)
-	at code.Interpreter.visitFuncCall(Interpreter.java:602)
-	at code.Interpreter.visitFuncCall(Interpreter.java:29)
-	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:53)
-	at code.Interpreter.visitBlock(Interpreter.java:118)
-	at code.Interpreter.visitBlock(Interpreter.java:29)
-	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:29)
-	at code.Interpreter.visitFuncDecl(Interpreter.java:442)
-	at code.Interpreter.visitFuncDecl(Interpreter.java:29)
-	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:47)
-	at code.Interpreter.visitFuncCall(Interpreter.java:605)
-	at code.Interpreter.visitFuncCall(Interpreter.java:29)
-	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:53)
-	at code.Interpreter.visitBlock(Interpreter.java:118)
-	at code.Interpreter.visitBlock(Interpreter.java:29)
-	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:29)
-	at code.Interpreter.visitFuncDecl(Interpreter.java:442)
-	at code.Interpreter.visitFuncDecl(Interpreter.java:29)
-	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:47)
-	at code.Interpreter.visitProgram(Interpreter.java:302)
-	at code.Interpreter.visitProgram(Interpreter.java:29)
-	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:37)
-	at ast.ASTBaseVisitor.execute(ASTBaseVisitor.java:15)
-	at Main.main(Main.java:38)
-make: *** [Makefile:36: run] Erro 1
