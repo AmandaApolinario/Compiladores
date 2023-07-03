@@ -32,8 +32,9 @@ public class Visitor extends golangramBaseVisitor<AST> {
     //cria as funcoes de stdin e stdout
     void createStdInOut() {
         VarTable varTableGen = new VarTable();
-        funcTable.addFunction("fmt.Scanf", varTableGen, null, 2);
-        funcTable.addFunction("fmt.Println", varTableGen, null, 1);
+        AST astGen = new AST(null, 0, Type.BOOL_TYPE);
+        funcTable.addFunction("fmt.Scanf", varTableGen, null, 2, astGen);
+        funcTable.addFunction("fmt.Println", varTableGen, null, 1, astGen);
     }
 
     AST checkVar(Token token) {
@@ -81,7 +82,7 @@ public class Visitor extends golangramBaseVisitor<AST> {
         varTable = new VarTable();
         allVarTables.add(varTable);
         AST tree = new AST(NodeKind.FUNCDEC_NODE, 0, Type.NO_TYPE);
-
+        
         AST params = visit(ctx.parameters());
         AST blockAST = visit(ctx.block());
         if (params != null) {
@@ -108,9 +109,9 @@ public class Visitor extends golangramBaseVisitor<AST> {
                     t2 = Type.BOOL_TYPE;
                 }
 
-                funcTable.addFunction(ctx.ID().getText(), varTable, t2, parametersCount);
+                funcTable.addFunction(ctx.ID().getText(), varTable, t2, parametersCount, tree);
             } else {
-                funcTable.addFunction(ctx.ID().getText(), varTable, null, parametersCount);
+                funcTable.addFunction(ctx.ID().getText(), varTable, null, parametersCount, tree);
             }
 
         } else {

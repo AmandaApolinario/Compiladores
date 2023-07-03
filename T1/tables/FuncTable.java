@@ -3,6 +3,8 @@ package tables;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
+
+import ast.AST;
 import typing.Type;
 
 public final class FuncTable {
@@ -35,8 +37,8 @@ public final class FuncTable {
 		return null;
 	}
 
-    public void addFunction(String functionName, VarTable varTable, Type returnType, int paramCount) {
-        FunctionEntry entry = new FunctionEntry(functionName, varTable, returnType, paramCount);
+    public void addFunction(String functionName, VarTable varTable, Type returnType, int paramCount, AST addr) {
+        FunctionEntry entry = new FunctionEntry(functionName, varTable, returnType, paramCount, addr );
         table.add(entry);
     }
 	
@@ -65,17 +67,23 @@ public final class FuncTable {
         return table.get(i).name;
     }
 
+    public AST getAddr(int i) {
+        return table.get(i).addr;
+    }
+
     private static class FunctionEntry {
         private final String name;
 	   	VarTable varTable;
         Type returnType;
         int paramCount;
+        AST addr;
 
-        FunctionEntry(String name, VarTable varTable, Type returnType, int paramCount) {
+        FunctionEntry(String name, VarTable varTable, Type returnType, int paramCount, AST addr) {
             this.name = name;
 			this.varTable = varTable;
             this.returnType = returnType;
             this.paramCount = paramCount;
+            this.addr = addr;
         }
     }
 }

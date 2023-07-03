@@ -300,7 +300,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 		for (int i =0;i < node.children.size(); i++) {
 			if (ft.getName(i+2).equals("main")) {
 				visit(node.getChild(i));
-			}
+			} 
 		
 		}
 		in.close(); // Fim do programa, não precisa mais de ler de stdin.
@@ -601,6 +601,10 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 		currentFuncCall = node.intData;
 		visit(node.getChild(0));
 
+		if (currentFuncCall > 1) {
+			visit(ft.getAddr(currentFuncCall));
+		}
+		
 		return null;
 	}
 
@@ -616,7 +620,13 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 		} else if (currentFuncCall == 1) {
 			visitWrite(node);
 		} else {
-			
+			for (int i=0; i<node.children.size(); i++) {
+				if (node.getChild(i).type == REAL_TYPE) {
+					stack.pushf(node.getChild(i).floatData);
+				} else {
+					stack.pushi(node.getChild(i).intData);
+				}
+			}
 		}
 		
 		return null;

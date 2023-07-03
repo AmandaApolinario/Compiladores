@@ -1,42 +1,134 @@
-Exception in thread "main" java.lang.NullPointerException
-	at Visitor.visitMul_opExpression(Visitor.java:420)
-	at Visitor.visitMul_opExpression(Visitor.java:19)
-	at golangramParser$Mul_opExpressionContext.accept(golangramParser.java:2783)
-	at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(AbstractParseTreeVisitor.java:18)
-	at Visitor.visitExpressionList(Visitor.java:479)
-	at Visitor.visitExpressionList(Visitor.java:19)
-	at golangramParser$ExpressionListContext.accept(golangramParser.java:738)
-	at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(AbstractParseTreeVisitor.java:18)
-	at Visitor.visitVarSpec(Visitor.java:247)
-	at Visitor.visitVarSpec(Visitor.java:19)
-	at golangramParser$VarSpecContext.accept(golangramParser.java:970)
-	at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(AbstractParseTreeVisitor.java:18)
-	at Visitor.visitVarDecl(Visitor.java:206)
-	at Visitor.visitVarDecl(Visitor.java:19)
-	at golangramParser$VarDeclContext.accept(golangramParser.java:921)
-	at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(AbstractParseTreeVisitor.java:18)
-	at Visitor.visitDeclaration(Visitor.java:160)
-	at Visitor.visitDeclaration(Visitor.java:19)
-	at golangramParser$DeclarationContext.accept(golangramParser.java:365)
-	at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visitChildren(AbstractParseTreeVisitor.java:46)
-	at golangramBaseVisitor.visitStatement(golangramBaseVisitor.java:132)
-	at golangramParser$StatementContext.accept(golangramParser.java:1212)
-	at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(AbstractParseTreeVisitor.java:18)
-	at Visitor.visitStatementList(Visitor.java:137)
-	at Visitor.visitStatementList(Visitor.java:19)
-	at golangramParser$StatementListContext.accept(golangramParser.java:1115)
-	at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(AbstractParseTreeVisitor.java:18)
-	at Visitor.visitBlock(Visitor.java:128)
-	at Visitor.visitBlock(Visitor.java:19)
-	at golangramParser$BlockContext.accept(golangramParser.java:1058)
-	at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(AbstractParseTreeVisitor.java:18)
-	at Visitor.visitFunctionDecl(Visitor.java:86)
-	at Visitor.visitFunctionDecl(Visitor.java:19)
-	at golangramParser$FunctionDeclContext.accept(golangramParser.java:245)
-	at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(AbstractParseTreeVisitor.java:18)
-	at Visitor.visitBegin(Visitor.java:73)
-	at Visitor.visitBegin(Visitor.java:19)
-	at golangramParser$BeginContext.accept(golangramParser.java:165)
-	at org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(AbstractParseTreeVisitor.java:18)
-	at Main.main(Main.java:35)
+digraph {
+graph [ordering="out"];
+node0[label="program"];
+node1[label="f0@functionDecl"];
+node2[label="parameters"];
+node1 -> node2;
+node3[label="block"];
+node1 -> node3;
+node0 -> node1;
+node4[label="f1@functionDecl"];
+node5[label="parameters"];
+node6[label="(int) a@0"];
+node5 -> node6;
+node4 -> node5;
+node7[label="block"];
+node8[label="functionCall"];
+node9[label="args"];
+node10[label="(int) a@0"];
+node9 -> node10;
+node8 -> node9;
+node7 -> node8;
+node4 -> node7;
+node0 -> node4;
+node11[label="f2@functionDecl"];
+node12[label="parameters"];
+node13[label="(int) a@0"];
+node12 -> node13;
+node14[label="(int) b@1"];
+node12 -> node14;
+node11 -> node12;
+node15[label="block"];
+node16[label="(int) c@2"];
+node15 -> node16;
+node17[label=":="];
+node18[label="(int) c@2"];
+node17 -> node18;
+node19[label="(int) +"];
+node20[label="(int) a@0"];
+node19 -> node20;
+node21[label="(int) b@1"];
+node19 -> node21;
+node17 -> node19;
+node15 -> node17;
+node22[label="functionCall"];
+node23[label="args"];
+node24[label="(int) c@2"];
+node23 -> node24;
+node22 -> node23;
+node15 -> node22;
+node11 -> node15;
+node0 -> node11;
+node25[label="f3@functionDecl"];
+node26[label="parameters"];
+node27[label="(int) a@0"];
+node26 -> node27;
+node28[label="(int) b@1"];
+node26 -> node28;
+node25 -> node26;
+node29[label="block"];
+node30[label="functionCall"];
+node31[label="args"];
+node32[label="(int) a@0"];
+node31 -> node32;
+node30 -> node31;
+node29 -> node30;
+node25 -> node29;
+node0 -> node25;
+node33[label="main@functionDecl"];
+node34[label="parameters"];
+node33 -> node34;
+node35[label="block"];
+node36[label="functionCall"];
+node37[label="args"];
+node36 -> node37;
+node35 -> node36;
+node38[label="functionCall"];
+node39[label="args"];
+node40[label="(int) 4"];
+node39 -> node40;
+node38 -> node39;
+node35 -> node38;
+node41[label="functionCall"];
+node42[label="args"];
+node43[label="(int) 3"];
+node42 -> node43;
+node44[label="(int) 5"];
+node42 -> node44;
+node41 -> node42;
+node35 -> node41;
+node45[label="functionCall"];
+node46[label="args"];
+node47[label="(int) 4"];
+node46 -> node47;
+node48[label="(int) 2"];
+node46 -> node48;
+node45 -> node46;
+node35 -> node45;
+node33 -> node35;
+node0 -> node33;
+}
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Array index out of range: 0
+	at java.base/java.util.Vector.get(Vector.java:781)
+	at code.Memory.loadi(Memory.java:30)
+	at code.Interpreter.visitVarUse(Interpreter.java:644)
+	at code.Interpreter.visitVarUse(Interpreter.java:29)
+	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:45)
+	at code.Interpreter.visitWrite(Interpreter.java:669)
+	at code.Interpreter.visitArgs(Interpreter.java:621)
+	at code.Interpreter.visitArgs(Interpreter.java:29)
+	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:55)
+	at code.Interpreter.visitFuncCall(Interpreter.java:602)
+	at code.Interpreter.visitFuncCall(Interpreter.java:29)
+	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:53)
+	at code.Interpreter.visitBlock(Interpreter.java:118)
+	at code.Interpreter.visitBlock(Interpreter.java:29)
+	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:29)
+	at code.Interpreter.visitFuncDecl(Interpreter.java:442)
+	at code.Interpreter.visitFuncDecl(Interpreter.java:29)
+	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:47)
+	at code.Interpreter.visitFuncCall(Interpreter.java:605)
+	at code.Interpreter.visitFuncCall(Interpreter.java:29)
+	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:53)
+	at code.Interpreter.visitBlock(Interpreter.java:118)
+	at code.Interpreter.visitBlock(Interpreter.java:29)
+	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:29)
+	at code.Interpreter.visitFuncDecl(Interpreter.java:442)
+	at code.Interpreter.visitFuncDecl(Interpreter.java:29)
+	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:47)
+	at code.Interpreter.visitProgram(Interpreter.java:302)
+	at code.Interpreter.visitProgram(Interpreter.java:29)
+	at ast.ASTBaseVisitor.visit(ASTBaseVisitor.java:37)
+	at ast.ASTBaseVisitor.execute(ASTBaseVisitor.java:15)
+	at Main.main(Main.java:38)
 make: *** [Makefile:36: run] Erro 1

@@ -12,18 +12,20 @@ func f1(a int) {
 };
 
 func f2(a int, b int) {
-	fmt.Println(a + b)
+	var c int
+	c = a + b
+	fmt.Println(c)
 };
 
-func f3(a int, b int, c float32) {
-	fmt.Println(a + b)
+func f3(a int, b int) {
+	fmt.Println(a)
 };
 
 func main() {
 	var a int = 5
 	fmt.Println(a)
 	f0()
-	f2(4.2)
 	f1(4)
-	f3(4, 2, 4.2)
+	f2(3, 5)
+	f3(4, 2)
 };
