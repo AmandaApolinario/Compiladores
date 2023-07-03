@@ -62,7 +62,6 @@ public final class FuncTable {
 	}
 
     public String getName(int i) {
-        System.out.println(table.get(i).name);
         return table.get(i).name;
     }
 

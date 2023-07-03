@@ -12,6 +12,7 @@ import javax.swing.plaf.synth.SynthStyle;
 
 import ast.AST;
 import ast.ASTBaseVisitor;
+import tables.FuncTable;
 import tables.StrTable;
 import tables.VarTable;
 import typing.Type;
@@ -31,13 +32,17 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	private final DataStack stack;
 	private final Memory memory;
 	private final StrTable st;
+	private final FuncTable ft;
 	private final VarTable vt;
 	private final Scanner in; // Para leitura de stdin
 
+	int currentFuncCall;
+
 	// Construtor basicão.
-	public Interpreter(StrTable st, VarTable vt) {
+	public Interpreter(StrTable st, VarTable vt, FuncTable ft) {
 		this.stack = new DataStack();
 		this.memory = new Memory(vt);
+		this.ft = ft;
 		this.st = st;
 		this.vt = vt;
 		this.in = new Scanner(System.in);
@@ -292,8 +297,12 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 	@Override
 	protected Void visitProgram(AST node) {
-		visit(node.getChild(0)); // run var_list
-		visit(node.getChild(1)); // run block
+		for (int i =0;i < node.children.size(); i++) {
+			if (ft.getName(i+2).equals("main")) {
+				visit(node.getChild(i));
+			}
+		
+		}
 		in.close(); // Fim do programa, não precisa mais de ler de stdin.
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
@@ -589,6 +598,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 	@Override
 	protected Void visitFuncCall(AST node) {
+		currentFuncCall = node.intData;
 		visit(node.getChild(0));
 
 		return null;
@@ -603,9 +613,10 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	protected Void visitArgs(AST node) {
 		//verificar se eh uma das funcoes in out
 
-		if (node.children.size() == 2) {			
+		
+		if (currentFuncCall == 0) {			
 			visitRead(node);
-		} else {
+		} else if (currentFuncCall == 1) {
 	
 			if (node.getChild(0).type == REAL_TYPE) {
 				int addr = node.getChild(0).intData;
@@ -613,6 +624,8 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 				varValue = memory.loadf(addr);
 				stack.pushf(varValue);
+
+				
 			} else {
 				int addr = node.getChild(0).intData;
 				int varValue;
@@ -621,6 +634,8 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 				stack.pushi(varValue);
 			}
 			visitWrite(node);
+		} else {
+			
 		}
 		
 		return null;
@@ -665,6 +680,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 		switch (type) {
 			case STR_TYPE:
+				
 				writeStr();
 				break;
 			case INT_TYPE:

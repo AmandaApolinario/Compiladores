@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	var name float32
+	var name int
 	fmt.Scanf("%f", name)
 	fmt.Println(name)
 

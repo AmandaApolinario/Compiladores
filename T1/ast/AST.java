@@ -112,18 +112,7 @@ public class AST {
 	}
 
 	// Imprime a árvore toda em stderr.
-	public static void printDot(AST tree, List<VarTable> table, FuncTable funcTable) {
-	    // nr = 0;
-		// ft = table;
-		// System.err.printf("digraph {\ngraph [ordering=\"out\"];\n");
-
-		// for(int i=0; i < ft.getVarTableSize(); i++) {
-		// 	vt = ft.getVarTable(i);
-		// 	System.out.println("var table aaa" + vt.toString());
-		// 	tree.printNodeDot();
-		// 	System.err.printf("}\n");
-		// }
-		
+	public static void printDot(AST tree, List<VarTable> table, FuncTable funcTable) {		
 		nf = 2;
 		nr = 0;
 		allVt = table;
