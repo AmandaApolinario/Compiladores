@@ -12,13 +12,12 @@ func f1(a int) {
 };
 
 func f2(a int, b int) {
-	var c int
-	c = a + b
-	fmt.Println(c)
+
+	fmt.Println("f2")
 };
 
 func f3(a int, b int) {
-	fmt.Println(a)
+	fmt.Println("f3")
 };
 
 func main() {

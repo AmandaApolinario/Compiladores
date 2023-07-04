@@ -234,7 +234,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			int leftInt = stack.popi();
 
 			int overInt =  leftInt / rightInt;
-			System.out.println("over" + overInt);
+		
 			stack.pushi(overInt);
 			break;
 		case REAL_TYPE:

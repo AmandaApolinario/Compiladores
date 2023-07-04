@@ -58,15 +58,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			float val = stack.popf();
 			int addr = node.getChild(0).intData;
 			memory.storef(addr, val);
-		} /*else if (node.getChild(0).type.equals(Type.STR_TYPE)){
-			System.out.println("pop it " + stack.popi());
-			/*int val = stack.popi();
-			int addr = node.getChild(0).intData;	
-			st.set(addr, st.get(val));
-			System.out.println("val " + val);
-			System.out.println("addr " + addr);
-			memory.storei(addr, val); 
-		}*/
+		}
 		else {
 			int val = stack.popi();
 			int addr = node.getChild(0).intData;
