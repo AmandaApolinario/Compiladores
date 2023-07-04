@@ -29,18 +29,24 @@ import typing.Type;
 public class Interpreter extends ASTBaseVisitor<Void> {
 
 	// Tudo privado e final para simplificar.
-	private final DataStack stack;
+	// private final DataStack stack;
 	private final Memory memory;
 	private final StrTable st;
 	private final FuncTable ft;
 	private final VarTable vt;
 	private final Scanner in; // Para leitura de stdin
 
+	FrameStack stackFrame;
+	DataStack currentFrame;
+
 	int currentFuncCall;
+	boolean isOnMain = true;
 
 	// Construtor basicão.
 	public Interpreter(StrTable st, VarTable vt, FuncTable ft) {
-		this.stack = new DataStack();
+		this.stackFrame = new FrameStack();
+		this.currentFrame = new DataStack();
+		stackFrame.push(currentFrame);
 		this.memory = new Memory(vt);
 		this.ft = ft;
 		this.st = st;
@@ -60,12 +66,12 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 		visit(node.getChild(1));
 
 		if (node.getChild(0).type.equals(Type.REAL_TYPE)) {
-			float val = stack.popf();
+			float val = currentFrame.popf();
 			int addr = node.getChild(0).intData;
 			memory.storef(addr, val);
 		} 
 		else {
-			int val = stack.popi();
+			int val = currentFrame.popi();
 			int addr = node.getChild(0).intData;
 			memory.storei(addr, val);
 		}
@@ -83,26 +89,26 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 		switch (type) {
 		case INT_TYPE:
-			int leftInt = stack.popi();
-			int rightInt = stack.popi();
+			int leftInt = currentFrame.popi();
+			int rightInt = currentFrame.popi();
 		
 			boolean resp = rightInt == leftInt;
 
 			if (resp == true) {
-				stack.pushi(1);
+				currentFrame.pushi(1);
 			} else {
-				stack.pushi(0);
+				currentFrame.pushi(0);
 			}
 			break;
 		case REAL_TYPE:
-			float leftReal = stack.popf();
-			float rightReal = stack.popf();
+			float leftReal = currentFrame.popf();
+			float rightReal = currentFrame.popf();
 			boolean respFloat = rightReal == leftReal;
 
 			if (respFloat == true) {
-				stack.pushf(1);
+				currentFrame.pushf(1);
 			} else {
-				stack.pushf(0);
+				currentFrame.pushf(0);
 			}
 			break;
 		default:
@@ -123,7 +129,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	// TODO
 	@Override
 	protected Void visitBoolVal(AST node) {
-		stack.pushi(node.intData);
+		currentFrame.pushi(node.intData);
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
@@ -132,7 +138,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	protected Void visitIf(AST node) {
 		visit(node.getChild(0));
 
-		if (stack.popi() == 1) {
+		if (currentFrame.popi() == 1) {
 			visit(node.getChild(1));
 		} else {
 			for (int i=2; i < node.children.size(); i++) {
@@ -146,7 +152,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	// DONE
 	@Override
 	protected Void visitIntVal(AST node) {
-		stack.pushi(node.intData);
+		currentFrame.pushi(node.intData);
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
@@ -160,25 +166,25 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 		switch (type) {
 		case INT_TYPE:
-			int leftInt = stack.popi();
-			int rightInt = stack.popi();
+			int leftInt = currentFrame.popi();
+			int rightInt = currentFrame.popi();
 		
 			boolean resp = rightInt < leftInt;
 			if (resp == true) {
-				stack.pushi(1);
+				currentFrame.pushi(1);
 			} else {
-				stack.pushi(0);
+				currentFrame.pushi(0);
 			}
 			break;
 		case REAL_TYPE:
-			float leftReal = stack.popf();
-			float rightReal = stack.popf();
+			float leftReal = currentFrame.popf();
+			float rightReal = currentFrame.popf();
 			boolean respFloat = rightReal < leftReal;
 
 			if (respFloat == true) {
-				stack.pushf(1);
+				currentFrame.pushf(1);
 			} else {
-				stack.pushf(0);
+				currentFrame.pushf(0);
 			}
 			break;
 		default:
@@ -198,19 +204,19 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 		switch (type) {
 		case INT_TYPE:
 
-			int leftInt = stack.popi();
-			int rightInt = stack.popi();
+			int leftInt = currentFrame.popi();
+			int rightInt = currentFrame.popi();
 		
 			int somaInt = rightInt - leftInt;
 
-			stack.pushi(somaInt);
+			currentFrame.pushi(somaInt);
 			break;
 		case REAL_TYPE:
-			float leftReal = stack.popf();
-			float rightReal = stack.popf();
+			float leftReal = currentFrame.popf();
+			float rightReal = currentFrame.popf();
 			float somaReal = rightReal - leftReal;
 
-			stack.pushf(somaReal);
+			currentFrame.pushf(somaReal);
 			break;
 		case STR_TYPE:
 			break;
@@ -230,19 +236,18 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 		switch (type) {
 		case INT_TYPE:
-			int rightInt = stack.popi();
-			int leftInt = stack.popi();
+			int rightInt = currentFrame.popi();
+			int leftInt = currentFrame.popi();
 
 			int overInt =  leftInt / rightInt;
-		
-			stack.pushi(overInt);
+			currentFrame.pushi(overInt);
 			break;
 		case REAL_TYPE:
-			float rightReal = stack.popf();
-			float leftReal = stack.popf();
+			float rightReal = currentFrame.popf();
+			float leftReal = currentFrame.popf();
 			float overReal = leftReal / rightReal;
 
-			stack.pushf(overReal);
+			currentFrame.pushf(overReal);
 			break;
 		case STR_TYPE:
 			break;
@@ -262,23 +267,23 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 		
 		switch (type) {
 		case INT_TYPE:
-			int leftInt = stack.popi();
-			int rightInt = stack.popi();
+			int leftInt = currentFrame.popi();
+			int rightInt = currentFrame.popi();
 
 			int somaInt = leftInt + rightInt;
 
-			stack.pushi(somaInt);
+			currentFrame.pushi(somaInt);
 			break;
 		case REAL_TYPE:
-			float leftReal = stack.popf();
-			float rightReal = stack.popf();
+			float leftReal = currentFrame.popf();
+			float rightReal = currentFrame.popf();
 			float somaReal = leftReal + rightReal;
 
-			stack.pushf(somaReal);
+			currentFrame.pushf(somaReal);
 			break;
 		case STR_TYPE:
-			int pos = stack.popi();
-			int pos2 = stack.popi();
+			int pos = currentFrame.popi();
+			int pos2 = currentFrame.popi();
 
 			String s1 = st.get(pos2);
 			String s2 = st.get(pos);	
@@ -286,7 +291,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			String s = s1.substring(0, s1.length() - 1) + s2.substring(1, s2.length());
 			int strIdx = st.addStr(s);
 
-			stack.pushi(strIdx);
+			currentFrame.pushi(strIdx);
 
 			break;
 		default:
@@ -371,7 +376,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	// DONE
 	@Override
 	protected Void visitRealVal(AST node) {
-		stack.pushf(node.floatData);
+		currentFrame.pushf(node.floatData);
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
@@ -380,7 +385,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	protected Void visitRepeat(AST node) {
 		visit(node.getChild(0));
 
-		while (stack.popi() != 0) {
+		while (currentFrame.popi() != 0) {
 			visit(node.getChild(1));
 			visit(node.getChild(0));
 		} 
@@ -390,7 +395,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 	@Override
 	protected Void visitStrVal(AST node) {
-		stack.pushi(node.intData);
+		currentFrame.pushi(node.intData);
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
@@ -403,18 +408,18 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 		switch (type) {
 		case INT_TYPE:
-			int leftInt = stack.popi();
-			int rightInt = stack.popi();
+			int leftInt = currentFrame.popi();
+			int rightInt = currentFrame.popi();
 			int multInt = leftInt * rightInt;
 
-			stack.pushi(multInt);
+			currentFrame.pushi(multInt);
 			break;
 		case REAL_TYPE:
-			float leftReal = stack.popf();
-			float rightReal = stack.popf();
+			float leftReal = currentFrame.popf();
+			float rightReal = currentFrame.popf();
 			float multReal = leftReal * rightReal;
 
-			stack.pushf(multReal);
+			currentFrame.pushf(multReal);
 			break;
 		case STR_TYPE:
 			break;
@@ -452,26 +457,26 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 		switch (type) {
 		case INT_TYPE:
-			int leftInt = stack.popi();
-			int rightInt = stack.popi();
+			int leftInt = currentFrame.popi();
+			int rightInt = currentFrame.popi();
 		
 			boolean resp = rightInt > leftInt;
 
 			if (resp == true) {
-				stack.pushi(1);
+				currentFrame.pushi(1);
 			} else {
-				stack.pushi(0);
+				currentFrame.pushi(0);
 			}
 			break;
 		case REAL_TYPE:
-			float leftReal = stack.popf();
-			float rightReal = stack.popf();
+			float leftReal = currentFrame.popf();
+			float rightReal = currentFrame.popf();
 			boolean respFloat = rightReal > leftReal;
 
 			if (respFloat == true) {
-				stack.pushf(1);
+				currentFrame.pushf(1);
 			} else {
-				stack.pushf(0);
+				currentFrame.pushf(0);
 			}
 			break;
 		default:
@@ -489,26 +494,26 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 		switch (type) {
 		case INT_TYPE:
-			int leftInt = stack.popi();
-			int rightInt = stack.popi();
+			int leftInt = currentFrame.popi();
+			int rightInt = currentFrame.popi();
 		
 			boolean resp = rightInt != leftInt;
 
 			if (resp == true) {
-				stack.pushi(1);
+				currentFrame.pushi(1);
 			} else {
-				stack.pushi(0);
+				currentFrame.pushi(0);
 			}
 			break;
 		case REAL_TYPE:
-			float leftReal = stack.popf();
-			float rightReal = stack.popf();
+			float leftReal = currentFrame.popf();
+			float rightReal = currentFrame.popf();
 			boolean respFloat = rightReal != leftReal;
 
 			if (respFloat == true) {
-				stack.pushf(1);
+				currentFrame.pushf(1);
 			} else {
-				stack.pushf(0);
+				currentFrame.pushf(0);
 			}
 			break;
 		default:
@@ -526,26 +531,26 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 		switch (type) {
 		case INT_TYPE:
-			int leftInt = stack.popi();
-			int rightInt = stack.popi();
+			int leftInt = currentFrame.popi();
+			int rightInt = currentFrame.popi();
 		
 			boolean resp = rightInt <= leftInt;
 
 			if (resp == true) {
-				stack.pushi(1);
+				currentFrame.pushi(1);
 			} else {
-				stack.pushi(0);
+				currentFrame.pushi(0);
 			}
 			break;
 		case REAL_TYPE:
-			float leftReal = stack.popf();
-			float rightReal = stack.popf();
+			float leftReal = currentFrame.popf();
+			float rightReal = currentFrame.popf();
 			boolean respFloat = rightReal <= leftReal;
 
 			if (respFloat == true) {
-				stack.pushf(1);
+				currentFrame.pushf(1);
 			} else {
-				stack.pushf(0);
+				currentFrame.pushf(0);
 			}
 			break;
 		default:
@@ -563,26 +568,26 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 		switch (type) {
 		case INT_TYPE:
-			int leftInt = stack.popi();
-			int rightInt = stack.popi();
+			int leftInt = currentFrame.popi();
+			int rightInt = currentFrame.popi();
 		
 			boolean resp = rightInt >= leftInt;
 
 			if (resp == true) {
-				stack.pushi(1);
+				currentFrame.pushi(1);
 			} else {
-				stack.pushi(0);
+				currentFrame.pushi(0);
 			}
 			break;
 		case REAL_TYPE:
-			float leftReal = stack.popf();
-			float rightReal = stack.popf();
+			float leftReal = currentFrame.popf();
+			float rightReal = currentFrame.popf();
 			boolean respFloat = rightReal >= leftReal;
 
 			if (respFloat == true) {
-				stack.pushf(1);
+				currentFrame.pushf(1);
 			} else {
-				stack.pushf(0);
+				currentFrame.pushf(0);
 			}
 			break;
 		default:
@@ -593,6 +598,17 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 	@Override
 	protected Void visitParamList(AST node) {
+		
+		if (!stackFrame.isEmpty()) {
+			// stackFrame.pop();
+			// DataStack lastFunc = stackFrame.peek();
+			// stackFrame.push(currentFrame);
+			// for(int i =0; i < node.children.size(); i++) {
+			// 	//EXISTEM FLOATS LEMBRESE DISSO AINDA HOJE
+			// 	currentFrame.pushi(lastFunc.popi());
+			// 	visit(node.getChild(i));
+			// }
+		}
 		return null;
 	}
 
@@ -602,7 +618,12 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 		visit(node.getChild(0));
 
 		if (currentFuncCall > 1) {
+			DataStack newframe = new DataStack();
+			stackFrame.push(newframe);
+			currentFrame = newframe;
 			visit(ft.getAddr(currentFuncCall));
+			stackFrame.pop();
+			currentFrame = stackFrame.peek();
 		}
 		
 		return null;
@@ -621,11 +642,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			visitWrite(node);
 		} else {
 			for (int i=0; i<node.children.size(); i++) {
-				if (node.getChild(i).type == REAL_TYPE) {
-					stack.pushf(node.getChild(i).floatData);
-				} else {
-					stack.pushi(node.getChild(i).intData);
-				}
+				visit(node.getChild(i));
 			}
 		}
 		
@@ -642,19 +659,19 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 		switch (type) {
 			case INT_TYPE:
 				varValue = memory.loadi(addr);
-				stack.pushi(varValue);
+				currentFrame.pushi(varValue);
 				break;
 			case REAL_TYPE:
 				float floatValue = memory.loadf(addr);
-				stack.pushf(floatValue);
+				currentFrame.pushf(floatValue);
 				break;
 			case BOOL_TYPE:
 				varValue = memory.loadi(addr);
-				stack.pushi(varValue);
+				currentFrame.pushi(varValue);
 				break;
 			case STR_TYPE:
 				varValue = memory.loadi(addr);
-				stack.pushi(varValue);
+				currentFrame.pushi(varValue);
 				break;
 			default:
 				break;
@@ -691,17 +708,17 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	// Funções auxiliares para implementar 'visitWrite'.
 
 	private Void writeInt() {
-		System.out.println(stack.popi());
+		System.out.println(currentFrame.popi());
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
 	private Void writeReal() {
-		System.out.println(stack.popf());
+		System.out.println(currentFrame.popf());
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
 	private Void writeBool() {
-		if (stack.popi() == 0) {
+		if (currentFrame.popi() == 0) {
 			System.out.println("false");
 		} else {
 			System.out.println("true");
@@ -710,7 +727,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	}
 
 	private Void writeStr() {
-		int strIdx = stack.popi(); // String pointer
+		int strIdx = currentFrame.popi(); // String pointer
 		String originalStr = st.get(strIdx);
 		String unescapedStr = unescapeStr(originalStr);
 		System.out.println(unescapedStr);
@@ -747,10 +764,10 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	protected Void visitB2I(AST node) {
 		visit(node.getChild(0));
 
-		if (stack.popi() == 0) {
-			stack.pushi(0);
+		if (currentFrame.popi() == 0) {
+			currentFrame.pushi(0);
 		} else {
-			stack.pushi(1);
+			currentFrame.pushi(1);
 		}
 
 		return null; // Java exige um valor de retorno mesmo para Void... :/
@@ -761,10 +778,10 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	protected Void visitB2R(AST node) {
 		visit(node.getChild(0));
 
-		if (stack.popf() == 0.0) {
-			stack.pushf(0);
+		if (currentFrame.popf() == 0.0) {
+			currentFrame.pushf(0);
 		} else {
-			stack.pushf(1);
+			currentFrame.pushf(1);
 		}
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
@@ -773,12 +790,12 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	protected Void visitB2S(AST node) {
 		visit(node.getChild(0));
 		String s;
-		if (stack.popi() == 0) {
+		if (currentFrame.popi() == 0) {
 			s = '"' + Boolean.toString(false) + '"';
 		} else {
 			s = '"' + Boolean.toString(true) + '"';
 		}
-		stack.pushi(st.addStr(s));
+		currentFrame.pushi(st.addStr(s));
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
@@ -787,7 +804,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	protected Void visitI2R(AST node) {
 		visit(node.getChild(0));
 
-		stack.pushf(stack.popi());
+		currentFrame.pushf(currentFrame.popi());
 
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
@@ -795,16 +812,16 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	@Override
 	protected Void visitI2S(AST node) {
 		visit(node.getChild(0));
-		String s = '"' + Integer.toString(stack.popi()) + '"';
-		stack.pushi(st.addStr(s));
+		String s = '"' + Integer.toString(currentFrame.popi()) + '"';
+		currentFrame.pushi(st.addStr(s));
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 
 	@Override
 	protected Void visitR2S(AST node) {
 		visit(node.getChild(0));
-		String s = '"' + Float.toString(stack.popf()) + '"';
-		stack.pushi(st.addStr(s));
+		String s = '"' + Float.toString(currentFrame.popf()) + '"';
+		currentFrame.pushi(st.addStr(s));
 		return null; // Java exige um valor de retorno mesmo para Void... :/
 	}
 

@@ -9,7 +9,7 @@ func main() {
     var soma int
     var subtracao int 
     var multiplicacao int
-    var divisao float32
+    var divisao int
 
     a = 10
     b = 5
