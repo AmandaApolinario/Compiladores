@@ -524,6 +524,15 @@ public class Visitor extends golangramBaseVisitor<AST> {
         return arguments;
      }
 
+    @Override public AST visitReturnStmt(golangramParser.ReturnStmtContext ctx) {
+        AST returnNode = new AST(NodeKind.RETURN_NODE, 0, Type.NO_TYPE);
+        
+        returnNode.addChild(visit(ctx.expressionList()));
+
+        return returnNode;
+    }
+	
+
 
     @Override public AST visitStrVal(golangramParser.StrValContext ctx) {
         type = Type.STR_TYPE;

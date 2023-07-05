@@ -41,6 +41,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	DataStack currentFrame;
 
 	int currentFuncCall;
+	int qFuncaoEuTo = 0;
 
 	// Construtor basicão.
 	public Interpreter(StrTable st, List<VarTable> vt, FuncTable ft) {
@@ -599,18 +600,34 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 	@Override
 	protected Void visitParamList(AST node) {
+		DataStack lastFunc = null;
+		if (qFuncaoEuTo > 0) {
+			lastFunc = stackFrame.get(qFuncaoEuTo-1).stack;
 		
-		DataStack lastFunc = stackFrame.get(0).stack;//sei la ja to tentando qualquer coisa
-		for(int i =node.children.size()-1; i >= 0; i--) {
-			//EXISTEM FLOATS LEMBRESE DISSO AINDA HOJE
-			int teste = lastFunc.popi();
+			for(int i = node.children.size()-1; i >= 0; i--) {
+				//EXISTEM FLOATS LEMBRESE DISSO AINDA HOJE
+				if (node.getChild(i).type == REAL_TYPE) {
+					float paramF = lastFunc.popf();
 			
-			currentFrame.pushi(teste);
-			
-			visit(node.getChild(i));
+					currentFrame.pushf(paramF);
+					
+					visit(node.getChild(i));
 
-			int addr = node.getChild(i).intData;
-			memory.storei(addr, teste);
+					int addr = node.getChild(i).intData;
+					memory.storef(addr, paramF);
+
+				} else {
+					int paramI = lastFunc.popi();
+			
+					currentFrame.pushi(paramI);
+					
+					visit(node.getChild(i));
+
+					int addr = node.getChild(i).intData;
+					memory.storei(addr, paramI);
+				}
+			
+			}
 		}
 		
 		return null;
@@ -622,7 +639,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 		visit(node.getChild(0));
 
 		if (currentFuncCall > 1) {
-
+			qFuncaoEuTo += 1;
 			DataStack newframe = new DataStack();
 			Memory mem = new Memory(vt.get(currentFuncCall-2));
 			this.memory = mem;
@@ -635,6 +652,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			currentFrame = stackFrame.peek().stack;
 
 			memory = stackFrame.peek().memory;
+			qFuncaoEuTo -= 1;
 		}
 		
 		return null;
