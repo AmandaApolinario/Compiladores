@@ -53,6 +53,7 @@ public abstract class ASTBaseVisitor<T> {
 			case FUNCTION_CALL_NODE:  return visitFuncCall(node);
 			case WHILE_NODE:  return visitWhile(node);
 			case ARGS_NODE:  return visitArgs(node);
+			case RETURN_NODE: return visitReturn(node);
 	
 	        case B2I_NODE:      return visitB2I(node);
 	        case B2R_NODE:      return visitB2R(node);
@@ -127,6 +128,8 @@ public abstract class ASTBaseVisitor<T> {
 	protected abstract T visitWhile(AST node);
 
 	protected abstract T visitArgs(AST node);
+
+	protected abstract T visitReturn(AST node);
 
 	protected abstract T visitB2I(AST node);
 

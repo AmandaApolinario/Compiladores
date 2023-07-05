@@ -637,6 +637,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	protected Void visitFuncCall(AST node) {
 		currentFuncCall = node.intData;
 		visit(node.getChild(0));
+		int currentFuncCallReserva = currentFuncCall;
 
 		if (currentFuncCall > 1) {
 			qFuncaoEuTo += 1;
@@ -645,13 +646,32 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			this.memory = mem;
 			stackFrame.push(new Frame(newframe, mem));
 			currentFrame = newframe;
-			
 			visit(ft.getAddr(currentFuncCall));
-
+			
+			int typeOfReturn; //0 se for int, 1 se for real, 2 se for nulo
+		    int popi = 0;
+			float popf = 0;
+			if (ft.getReturn(currentFuncCallReserva) == REAL_TYPE) {
+				popf = currentFrame.popf();
+				typeOfReturn = 1;
+			} else if (ft.getReturn(currentFuncCallReserva) == null){
+				typeOfReturn = 3;
+			} else {
+				popi = currentFrame.popi();
+				typeOfReturn = 0;
+			}
+			
 			stackFrame.pop();
-			currentFrame = stackFrame.peek().stack;
 
+			currentFrame = stackFrame.peek().stack;
 			memory = stackFrame.peek().memory;
+
+			if(typeOfReturn == 0) {
+				currentFrame.pushi(popi);
+			} else if(typeOfReturn == 1) {
+				currentFrame.pushf(popf);
+			}
+
 			qFuncaoEuTo -= 1;
 		}
 		
@@ -734,6 +754,12 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			default:
 				break;
 		}
+		return null;
+	}
+
+	@Override
+	protected Void visitReturn(AST node) {
+		visit(node.getChild(0));		
 		return null;
 	}
 

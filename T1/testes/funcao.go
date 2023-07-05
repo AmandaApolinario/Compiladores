@@ -6,19 +6,19 @@ func f0() {
 	fmt.Println("f0")
 };
 
-func f1(a float32) {
+func f1(d float32) {
 	fmt.Println("f1: ")
-    fmt.Println(a)
+    fmt.Println(d)
 };
 
-func f2(a int, b int) int {
+func f2(a int, b int) float32 {
 	fmt.Println(a+b)
 
-	return 4
+	return 13.1
 };
 
-func f3(a int, b int) {
-	fmt.Println(a-b)
+func f3(c int, e int) {
+	fmt.Println(c-e)
 };
 
 func main() {
@@ -26,6 +26,10 @@ func main() {
 	fmt.Println(a)
 	f0()
 	f1(4.2)
-	f2(3, 5)
+
+	var b float32
+	b = f2(3, 5)
+	fmt.Println(b)
+
 	f3(4, 2)
 };

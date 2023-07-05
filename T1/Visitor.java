@@ -108,7 +108,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
                 } else if (t.equals("bool")){
                     t2 = Type.BOOL_TYPE;
                 }
-
                 funcTable.addFunction(ctx.ID().getText(), varTable, t2, parametersCount, tree);
             } else {
                 funcTable.addFunction(ctx.ID().getText(), varTable, null, parametersCount, tree);
