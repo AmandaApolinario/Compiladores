@@ -28,6 +28,15 @@ public final class FuncTable {
         return table.size();
     }
 
+    public VarTable getVarTableOfMain() {
+        for (int i=0; i<table.size(); i++) {
+            if (table.get(i).name.equals("main")) {
+                return table.get(i).varTable;
+            }
+        }
+        return null;
+    }
+
 	FunctionEntry getFunction(String functionName) {
 		for (FunctionEntry entry : table) {
 			if (entry.name.equals(functionName)) {

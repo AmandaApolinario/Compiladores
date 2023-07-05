@@ -34,7 +34,8 @@ public class Main {
 		Visitor visitor = new Visitor();
 		visitor.visit(tree);
 		visitor.printAST();
-		Interpreter interpreter = new Interpreter(visitor.strTable, visitor.varTable, visitor.funcTable);
+		
+		Interpreter interpreter = new Interpreter(visitor.strTable, visitor.allVarTables, visitor.funcTable);
 		interpreter.execute(visitor.getAST());
 
 	}

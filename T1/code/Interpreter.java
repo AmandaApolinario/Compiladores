@@ -6,6 +6,7 @@ import static typing.Type.REAL_TYPE;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.swing.plaf.synth.SynthStyle;
@@ -30,24 +31,24 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 
 	// Tudo privado e final para simplificar.
 	// private final DataStack stack;
-	private final Memory memory;
+	Memory memory;
 	private final StrTable st;
 	private final FuncTable ft;
-	private final VarTable vt;
+	private final List<VarTable> vt;
 	private final Scanner in; // Para leitura de stdin
 
 	FrameStack stackFrame;
 	DataStack currentFrame;
 
 	int currentFuncCall;
-	boolean isOnMain = true;
 
 	// Construtor basicão.
-	public Interpreter(StrTable st, VarTable vt, FuncTable ft) {
+	public Interpreter(StrTable st, List<VarTable> vt, FuncTable ft) {
 		this.stackFrame = new FrameStack();
 		this.currentFrame = new DataStack();
-		stackFrame.push(currentFrame);
-		this.memory = new Memory(vt);
+		VarTable vtMain = ft.getVarTableOfMain();
+		this.memory = new Memory(vtMain);
+		stackFrame.push(new Frame(currentFrame, memory));
 		this.ft = ft;
 		this.st = st;
 		this.vt = vt;
@@ -599,16 +600,19 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	@Override
 	protected Void visitParamList(AST node) {
 		
-		if (!stackFrame.isEmpty()) {
-			// stackFrame.pop();
-			// DataStack lastFunc = stackFrame.peek();
-			// stackFrame.push(currentFrame);
-			// for(int i =0; i < node.children.size(); i++) {
-			// 	//EXISTEM FLOATS LEMBRESE DISSO AINDA HOJE
-			// 	currentFrame.pushi(lastFunc.popi());
-			// 	visit(node.getChild(i));
-			// }
+		DataStack lastFunc = stackFrame.get(0).stack;//sei la ja to tentando qualquer coisa
+		for(int i =node.children.size()-1; i >= 0; i--) {
+			//EXISTEM FLOATS LEMBRESE DISSO AINDA HOJE
+			int teste = lastFunc.popi();
+			
+			currentFrame.pushi(teste);
+			
+			visit(node.getChild(i));
+
+			int addr = node.getChild(i).intData;
+			memory.storei(addr, teste);
 		}
+		
 		return null;
 	}
 
@@ -618,12 +622,19 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 		visit(node.getChild(0));
 
 		if (currentFuncCall > 1) {
+
 			DataStack newframe = new DataStack();
-			stackFrame.push(newframe);
+			Memory mem = new Memory(vt.get(currentFuncCall-2));
+			this.memory = mem;
+			stackFrame.push(new Frame(newframe, mem));
 			currentFrame = newframe;
+			
 			visit(ft.getAddr(currentFuncCall));
+
 			stackFrame.pop();
-			currentFrame = stackFrame.peek();
+			currentFrame = stackFrame.peek().stack;
+
+			memory = stackFrame.peek().memory;
 		}
 		
 		return null;
@@ -640,6 +651,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			visitRead(node);
 		} else if (currentFuncCall == 1) {
 			visitWrite(node);
+			
 		} else {
 			for (int i=0; i<node.children.size(); i++) {
 				visit(node.getChild(i));
@@ -683,7 +695,9 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	// DONE
 	@Override
 	protected Void visitWrite(AST node) {
+
 		visit(node.getChild(0));
+	
 		Type type = node.getChild(0).type;
 
 		switch (type) {

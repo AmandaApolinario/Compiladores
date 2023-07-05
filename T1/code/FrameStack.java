@@ -10,20 +10,20 @@ import ast.AST;
  * que facilitam empilhar ou desempilhar um frame
  */
 @SuppressWarnings("serial")
-public final class FrameStack extends Stack<DataStack> {
+public final class FrameStack extends Stack<Frame> {
 	// No mundo real esses métodos precisam de verificações de erros.
 	
-	public DataStack pushFrame(DataStack ds) {
-        DataStack frame = new DataStack();
-		super.push(frame);
-        return frame;
+	public Frame pushFrame(DataStack ds, Memory mem) {
+		Frame fr = new Frame(ds, mem);
+		super.push(fr);
+        return fr;
 	}
 
-	public DataStack popFrame() {
+	public Frame popFrame() {
 		return super.pop();
 	}
 	
-	public DataStack getTopFrame() {
+	public Frame getTopFrame() {
 		return super.peek();
 	}
 
