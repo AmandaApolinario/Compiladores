@@ -4,7 +4,7 @@ import "fmt"
 
 func f0() {
 	fmt.Println("f0")
-	f0()
+
 };
 
 func f1(d float32) {

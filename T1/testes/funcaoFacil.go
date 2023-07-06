@@ -6,7 +6,7 @@ import "fmt"
 func f1(a int) {
 	var b int
 	b = a + 3
-    fmt.Println(b)
+    fmt.Println(a)
 };
 
 func main() {

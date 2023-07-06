@@ -3,7 +3,8 @@ JAVAC=javac
 # Comando da JVM
 JAVA=java
 # ROOT é a raiz dos diretórios com todos os roteiros de laboratórios
-ROOT=/home/abapolinario/Compiladores/T1
+YEAR=$(shell pwd | grep -o '20..-.')
+ROOT=/home/abapolinario/Compiladores/CC_Lab07_src_java
 # Caminho para o JAR do ANTLR em labs/tools
 ANTLR_PATH=$(ROOT)/antlr-4.11.1-complete.jar
 # Opção de configuração do CLASSPATH para o ambiente Java
@@ -13,18 +14,20 @@ ANTLR4=$(JAVA) -jar $(ANTLR_PATH)
 # Configuração do ambiente de teste do ANTLR
 GRUN=$(JAVA) $(CLASS_PATH_OPTION) org.antlr.v4.gui.TestRig
 # Nome da gramática
-GRAMMAR_NAME=golangram
+GRAMMAR_NAME=EZ
+LEXER_FILE=$(GRAMMAR_NAME)Lexer.g
+PARSER_FILE=$(GRAMMAR_NAME)Parser.g
 # Diretório para aonde vão os arquivos gerados
 GEN_PATH=parser
-
+# Diretório para os arquivos .class
 BIN_PATH=bin
 
 # Executa o ANTLR e o compilador Java
 all: antlr javac
 	@echo "Done."
 # Executa o ANTLR para compilar a gramática
-antlr: $(GRAMMAR_NAME).g
-	$(ANTLR4) -no-listener -visitor -o $(GEN_PATH) $(GRAMMAR_NAME).g
+antlr: $(LEXER_FILE) $(PARSER_FILE)
+	$(ANTLR4) -no-listener -visitor -o $(GEN_PATH) $(LEXER_FILE) $(PARSER_FILE)
 # Compila todos os subdiretórios e joga todos os .class em BIN_PATH pra organizar
 javac:
 	rm -rf $(BIN_PATH)
@@ -36,12 +39,10 @@ run:
 	$(JAVA) $(CLASS_PATH_OPTION):$(BIN_PATH) Main $(FILE)
 # Executa o TestRig para exibir a parse tree
 debug:
-	cd $(BIN_PATH) && $(GRUN) $(GRAMMAR_NAME) begin -gui $(FILE)
+	cd $(BIN_PATH) && $(GRUN) $(GRAMMAR_NAME) program -gui $(FILE)
+# Compila o simulador da Tiny Machine.
+tm:
+	cd tmcode && gcc -Wall -Wconversion -o ../tmsim tm.c tables.c types.c
 # Remove os arquivos gerados pelo ANTLR
 clean:
-	@rm -rf $(GEN_PATH) $(BIN_PATH)
-
-
-# COISAS PRA CRIAR O PDF
-# make run FILE=testes/declarVariavel.go 2>out.dot
-# dot -Tpdf out.dot > out.pdf
+	@rm -rf $(GEN_PATH) $(BIN_PATH) tmsim

@@ -604,8 +604,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 		if (qFuncaoEuTo > 0) {
 			lastFunc = stackFrame.get(qFuncaoEuTo-1).stack;
 		
-			for(int i = node.children.size()-1; i >= 0; i--) {
-				//EXISTEM FLOATS LEMBRESE DISSO AINDA HOJE
+			for(int i = node.children.size()-1; i >= 0; i--) { 
 				if (node.getChild(i).type == REAL_TYPE) {
 					float paramF = lastFunc.popf();
 			

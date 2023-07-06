@@ -6,7 +6,7 @@ program addone;
 var
     int x;
 begin
-    read x;
-    x := x + 1;
-    write x;
+    x := 83;
+    x := x + 42;
+
 end
