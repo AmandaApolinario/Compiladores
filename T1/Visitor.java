@@ -84,12 +84,9 @@ public class Visitor extends golangramBaseVisitor<AST> {
         AST tree = new AST(NodeKind.FUNCDEC_NODE, 0, Type.NO_TYPE);
         
         AST params = visit(ctx.parameters());
-        AST blockAST = visit(ctx.block());
+
         if (params != null) {
             tree.addChild(params);
-        }
-        if (blockAST != null) {
-            tree.addChild(blockAST);
         }
 
         int isNewFunc = funcTable.containsFunction(ctx.ID().getText());
@@ -116,6 +113,11 @@ public class Visitor extends golangramBaseVisitor<AST> {
         } else {
             System.out.println("Nao eh possivel declarar duas funcoes com o mesmo nome. Declarando: " + ctx.ID().getText());
             System.exit(1);
+        }
+
+        AST blockAST = visit(ctx.block());
+        if (blockAST != null) {
+            tree.addChild(blockAST);
         }
 
         return tree;
@@ -494,7 +496,6 @@ public class Visitor extends golangramBaseVisitor<AST> {
                 if (ctx.arguments() != null) {
                     arg = visit(ctx.arguments());
                 } else {
-                    // Não tem argumentos mas é bom criar o nó mesmo assim sem filhos porque uniformiza a AST.
                     arg = new AST(NodeKind.ARGS_NODE, 0, Type.NO_TYPE);
                 }
                 funcCall.addChild(arg);

@@ -21,6 +21,6 @@ func main() {
     fmt.Println(soma)
     fmt.Println(subtracao)
     fmt.Println(multiplicacao)
-    fmt.Println(divisao) // da errado so a divisao?????
+    fmt.Println(divisao)
 
 }

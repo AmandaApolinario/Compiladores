@@ -646,6 +646,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 			this.memory = mem;
 			stackFrame.push(new Frame(newframe, mem));
 			currentFrame = newframe;
+			
 			visit(ft.getAddr(currentFuncCall));
 			
 			int typeOfReturn; //0 se for int, 1 se for real, 2 se for nulo
@@ -760,6 +761,7 @@ public class Interpreter extends ASTBaseVisitor<Void> {
 	@Override
 	protected Void visitReturn(AST node) {
 		visit(node.getChild(0));		
+
 		return null;
 	}
 

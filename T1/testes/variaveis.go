@@ -10,11 +10,11 @@ func main() {
 
 	a = 4.5
 	b = 5
-	// c = false
+	c = 3 < 4
 	d = "teste"
 
 	fmt.Println(a)
 	fmt.Println(b)
-	// fmt.Println(c)
+	fmt.Println(c)
 	fmt.Println(d)
 }
