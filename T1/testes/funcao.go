@@ -21,6 +21,13 @@ func f3(c int, e int) {
 	fmt.Println(c-e)
 };
 
+func f4(x int, y int) bool {
+	var result bool
+	result = x < y
+	
+	return result
+};
+
 func main() {
 	var a int = 5
 	fmt.Println(a)
@@ -32,4 +39,9 @@ func main() {
 	fmt.Println(b)
 
 	f3(4, 2)
+
+	var c bool
+	c = f4(4, 2)
+	fmt.Println(c)
+
 };
