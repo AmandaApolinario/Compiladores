@@ -169,7 +169,7 @@ typeLit:
 ;
 
 operand: basicLit #operandBasicLit
-		| ID #operandID
+		| AMPERSAND* ID #operandID
 		| LPAR expression RPAR #operandLRPAR
 		;
 
@@ -224,7 +224,6 @@ STRUCT           : 'struct'             ;
 SWITCH           : 'switch'             ;
 TYPE             : 'type'               ;
 VAR              : 'var'                ;
-
 PLUS             : '+'                  ;
 MINUS            : '-'                  ;
 TIMES            : '*'                  ;
@@ -236,10 +235,11 @@ TIMESEQ          : '*='                 ;
 OVEREQ           : '/='                 ;
 MODEQ            : '%='                 ;
 AND              : '&&'                 ;  
+AMPERSAND        : '&'                  ;
 OR               : '||'                 ;
 PLUSONE          : '++'                 ;
 MINUSONE         : '--'                 ;
-ISEQUAL           : '=='                 ;
+ISEQUAL          : '=='                 ;
 LESSTHAN         : '<'                  ;
 MORETHAN         : '>'                  ;
 ASSIGN           : '='                  ;
