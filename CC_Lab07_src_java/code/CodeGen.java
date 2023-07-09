@@ -148,17 +148,16 @@ public final class CodeGen extends ASTBaseVisitor<Integer> {
 	@Override
 	protected Integer visitAssign(AST node) {
 
-		AST rexpr = node.getChild(1);
 		int dir;
-		dir = visit(rexpr);
+		dir = visit(node.getChild(1));
 
 		int varIdx = node.getChild(0).intData;
 		
-		Type varType = vt.getType(varIdx);
-		
-		if (varType == REAL_TYPE) {
+
+		if (node.getChild(0).type.equals(Type.REAL_TYPE)) {
 			emit(STWf, varIdx, dir);
-		} else {
+		}
+		else {
 			emit(STWi, varIdx, dir);
 		}
 
@@ -217,31 +216,78 @@ public final class CodeGen extends ASTBaseVisitor<Integer> {
 	// TODO
 	@Override
 	protected Integer visitMinus(AST node) {
-		return -1; // FIXME Return a proper value here.
+		Type type = node.type;
+		int esq;
+		int dir;
+		int x;
+		esq = visit(node.getChild(0));
+		dir = visit(node.getChild(1));
+
+		switch(type) {
+			case INT_TYPE:
+				x = newIntReg();
+				emit(SUBi, x, esq, dir);
+				break;
+			case REAL_TYPE:
+				x = newFloatReg();
+				emit(SUBf, x, esq, dir);
+				break;
+			default:
+				x = newIntReg();
+				break;
+		}
+
+		return x; // FIXME Return a proper value here.
 	}
 
 	// TODO
 	@Override
 	protected Integer visitOver(AST node) {
-		return -1; // FIXME Return a proper value here.
+		Type type = node.type;
+		int esq;
+		int dir;
+		int x;
+		esq = visit(node.getChild(0));
+		dir = visit(node.getChild(1));
+
+		switch(type) {
+			case INT_TYPE:
+				x = newIntReg();
+				emit(DIVi, x, esq, dir);
+				break;
+			case REAL_TYPE:
+				x = newFloatReg();
+				emit(DIVf, x, esq, dir);
+				break;
+			default:
+				x = newIntReg();
+				break;
+		}
+		return x; // FIXME Return a proper value here.
 	}
 
 	// TODO
 	@Override
 	protected Integer visitPlus(AST node) {
-		int x = newIntReg();
-		int esq;
-		esq = visit(node.getChild(0));
-
-		int dir;
-		dir = visit(node.getChild(1));
 
 		Type type = node.type;
+		int esq;
+		int dir;
+		int x;
+		esq = visit(node.getChild(0));
+		dir = visit(node.getChild(1));
 
 		switch(type) {
 			case INT_TYPE:
+				x = newIntReg();
 				emit(ADDi, x, esq, dir);
+				break;
+			case REAL_TYPE:
+				x = newFloatReg();
+				emit(ADDf, x, esq, dir);
+				break;
 			default:
+				x = newIntReg();
 				break;
 		}
 
@@ -290,7 +336,28 @@ public final class CodeGen extends ASTBaseVisitor<Integer> {
 	// TODO
 	@Override
 	protected Integer visitTimes(AST node) {
-		return -1; // FIXME Return a proper value here.
+		Type type = node.type;
+		int esq;
+		int dir;
+		int x;
+		esq = visit(node.getChild(0));
+		dir = visit(node.getChild(1));
+
+		switch(type) {
+			case INT_TYPE:
+				x = newIntReg();
+				emit(MULi, x, esq, dir);
+				break;
+			case REAL_TYPE:
+				x = newFloatReg();
+				emit(MULf, x, esq, dir);
+				break;
+			default:
+				x = newIntReg();
+				break;
+		}
+
+		return x; // FIXME Return a proper value here.
 	}
 
 	@Override
@@ -308,15 +375,55 @@ public final class CodeGen extends ASTBaseVisitor<Integer> {
 	// TODO
 	@Override
 	protected Integer visitVarUse(AST node) {
+		Type type = node.type;
+		int addr = node.intData;
+		int x;
 
+		switch(type) {
+			case INT_TYPE:
+				x = newIntReg();
+				emit(LDWi, x, addr);
+				break;
+			case REAL_TYPE:
+				x = newFloatReg();
+				emit(LDWf, x, addr);
+				break;
+			case STR_TYPE:
+				x = newIntReg();
+				emit(LDWi, x, addr);
+				break;
+			default:
+				x = newIntReg();
+				break;
+		}
 		// CONSERTAR ESSE AQ PROXIMO
+
 		
-		return -1; // FIXME Return a proper value here.
+		return x; // FIXME Return a proper value here.
 	}
 
 	// TODO
 	@Override
 	protected Integer visitWrite(AST node) {
+		Type type = node.getChild(0).type;		
+		int x = visit(node.getChild(0));
+
+		switch(type) {
+			case INT_TYPE:
+				emit(CALL, 4, x);
+				break;
+			case REAL_TYPE:
+				emit(CALL, 5, x);
+				break;
+			case BOOL_TYPE:
+				emit(CALL, 6, x);
+				break;
+			case STR_TYPE:
+				emit(CALL, 7, x);
+				break;
+			default:
+				break;
+		}
 	    return -1;  // This is not an expression, hence no value to return.
 	}
 
