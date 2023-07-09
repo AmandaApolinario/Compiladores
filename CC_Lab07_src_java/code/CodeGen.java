@@ -167,7 +167,30 @@ public final class CodeGen extends ASTBaseVisitor<Integer> {
 	// TODO
 	@Override
 	protected Integer visitEq(AST node) {
-        return -1; // FIXME Return a proper value here.
+		Type type = node.type;
+		int esq;
+		int dir;
+		int x;
+		esq = visit(node.getChild(0));
+		dir = visit(node.getChild(1));
+
+		switch(type) {
+			case INT_TYPE:
+				x = newIntReg();
+				emit(EQUi, x, esq, dir);
+				break;
+			case REAL_TYPE:
+				x = newFloatReg();
+				emit(EQUf, x, esq, dir);
+				break;
+			default:
+				// FAZER ALGO PRA STRING AQUI?????
+				x = newIntReg();
+				emit(EQUs, x, esq, dir);
+				break;
+		}
+
+		return x; 
 	}
 
 	// TODO
@@ -210,7 +233,30 @@ public final class CodeGen extends ASTBaseVisitor<Integer> {
 	// TODO
 	@Override
 	protected Integer visitLt(AST node) {
-		return -1; // FIXME Return a proper value here.
+		Type type = node.type;
+		int esq;
+		int dir;
+		int x;
+		esq = visit(node.getChild(0));
+		dir = visit(node.getChild(1));
+
+		switch(type) {
+			case INT_TYPE:
+				x = newIntReg();
+				emit(LTHi, x, esq, dir);
+				break;
+			case REAL_TYPE:
+				x = newFloatReg();
+				emit(LTHf, x, esq, dir);
+				break;
+			default:
+				// FAZER ALGO PRA STRING AQUI?????
+				x = newIntReg();
+				emit(LTHs, x, esq, dir);
+				break;
+		}
+
+		return x; 
 	}
 
 	// TODO
@@ -304,7 +350,32 @@ public final class CodeGen extends ASTBaseVisitor<Integer> {
 	// TODO
 	@Override
 	protected Integer visitRead(AST node) {
-	    return -1;  // This is not an expression, hence no value to return.
+		Type type = node.getChild(0).type;
+		int addr = node.getChild(0).intData;
+		int x = newIntReg();
+
+		switch(type) {
+			case INT_TYPE:
+				emit(CALL, 0, addr);
+				emit(STWi, addr, x); 
+				break;
+			case REAL_TYPE:
+				emit(CALL, 1, addr);
+				emit(STWf, addr, x);
+				break;
+			case BOOL_TYPE:
+				emit(CALL, 2, addr);
+				emit(STWi, addr, x);
+				break;
+			case STR_TYPE:
+				emit(CALL, 3, addr);
+				// emit(SSTR, addr);
+				break;
+			default:
+				break;
+		}
+
+	    return addr;  // This is not an expression, hence no value to return.
 	}
 
 	@Override
@@ -321,6 +392,10 @@ public final class CodeGen extends ASTBaseVisitor<Integer> {
 	// TODO
 	@Override
 	protected Integer visitRepeat(AST node) {
+		// NAO ENTENDI O QUE EH PC E PC + OFF, SO SEI Q TEM Q VISITAR NESSA ORDEM
+		// ACHO Q PC EH TIPO A LINHA DO UNTIL E PC + OFF EH A CONTA Q DA NA LINHA LOGO DPS DO REPEAT
+		emit(BOFb, visit(node.getChild(0)), visit(node.getChild(1)));
+
 
 	    return -1;  // This is not an expression, hence no value to return.
 	}

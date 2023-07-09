@@ -3,10 +3,9 @@
 }
 
 program addone;
-var
-    int x;
+var int x;
 begin
-    x := 10;
+    read x;
     x := x + 1;
-
+    write x;
 end
