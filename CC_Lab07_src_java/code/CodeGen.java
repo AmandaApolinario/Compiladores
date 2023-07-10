@@ -5,6 +5,7 @@ import static code.OpCode.ADDf;
 import static code.OpCode.ADDi;
 import static code.OpCode.B2Ss;
 import static code.OpCode.BOFb;
+import static code.OpCode.BOTb;
 import static code.OpCode.CALL;
 import static code.OpCode.CATs;
 import static code.OpCode.DIVf;
@@ -216,6 +217,18 @@ public final class CodeGen extends ASTBaseVisitor<Integer> {
 	// TODO
 	@Override
 	protected Integer visitIf(AST node) {
+		int x = visit(node.getChild(0));
+
+		//TEM QUE TERMINAR N SEI COMO FAZ
+
+		if (x == 1) {
+			visit(node.getChild(1));
+		}
+		else {
+			for (int i = 2; i < node.children.size(); i++) {
+				visit(node.getChild(i));
+			}
+		}
 		return -1; // This is not an expression, hence no value to return.
 	}
 
@@ -392,10 +405,15 @@ public final class CodeGen extends ASTBaseVisitor<Integer> {
 	// TODO
 	@Override
 	protected Integer visitRepeat(AST node) {
-		// NAO ENTENDI O QUE EH PC E PC + OFF, SO SEI Q TEM Q VISITAR NESSA ORDEM
-		// ACHO Q PC EH TIPO A LINHA DO UNTIL E PC + OFF EH A CONTA Q DA NA LINHA LOGO DPS DO REPEAT
-		emit(BOFb, visit(node.getChild(0)), visit(node.getChild(1)));
+		// TEM Q TERMINAR NAO SEI COMO FAZ DIREITO
+		int x = visit(node.getChild(0));
+		int y = visit(node.getChild(1));
 
+		if (x != -1) {
+			emit(BOTb, x, y);
+		} else {
+			emit(BOFb, x, y);
+		}
 
 	    return -1;  // This is not an expression, hence no value to return.
 	}
