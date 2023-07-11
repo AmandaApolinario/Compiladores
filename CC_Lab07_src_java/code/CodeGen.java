@@ -184,6 +184,10 @@ public final class CodeGen extends ASTBaseVisitor<Integer> {
 				x = newFloatReg();
 				emit(EQUf, x, esq, dir);
 				break;
+			case BOOL_TYPE:
+				x = newIntReg();
+				emit(EQUi, x, esq, dir);
+				break;
 			default:
 				// FAZER ALGO PRA STRING AQUI?????
 				x = newIntReg();
@@ -219,16 +223,20 @@ public final class CodeGen extends ASTBaseVisitor<Integer> {
 	protected Integer visitIf(AST node) {
 		int x = visit(node.getChild(0));
 
-		//TEM QUE TERMINAR N SEI COMO FAZ
+		int offInit = nextInstr;
+		emit(BOFb, x, 0);
 
-		if (x == 1) {
-			visit(node.getChild(1));
+		visit(node.getChild(1));
+
+		backpatchBranch(offInit,nextInstr-offInit+1); 
+
+		if(node.children.size() == 3) {
+			int jumpInit = nextInstr;
+			emit(JUMP, 0);
+			visit(node.getChild(2));
+			backpatchJump(jumpInit, nextInstr);
 		}
-		else {
-			for (int i = 2; i < node.children.size(); i++) {
-				visit(node.getChild(i));
-			}
-		}
+
 		return -1; // This is not an expression, hence no value to return.
 	}
 
@@ -411,7 +419,7 @@ public final class CodeGen extends ASTBaseVisitor<Integer> {
 		int y = visit(node.getChild(1));
 		int off = offInit - nextInstr;
 
-		emit(BOTb, y, off);
+		emit(BOFb, y, off);
 
 	    return -1;  // This is not an expression, hence no value to return.
 	}
