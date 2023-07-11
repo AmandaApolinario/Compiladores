@@ -405,15 +405,13 @@ public final class CodeGen extends ASTBaseVisitor<Integer> {
 	// TODO
 	@Override
 	protected Integer visitRepeat(AST node) {
-		// TEM Q TERMINAR NAO SEI COMO FAZ DIREITO
-		int x = visit(node.getChild(0));
+		
+		int offInit = nextInstr;
+		visit(node.getChild(0));
 		int y = visit(node.getChild(1));
+		int off = offInit - nextInstr;
 
-		if (x != -1) {
-			emit(BOTb, x, y);
-		} else {
-			emit(BOFb, x, y);
-		}
+		emit(BOTb, y, off);
 
 	    return -1;  // This is not an expression, hence no value to return.
 	}
